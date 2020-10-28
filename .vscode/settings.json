@@ -1,0 +1,7 @@
+{
+  "restructuredtext.confPath": "${workspaceFolder}\\doc\\src\\src_sphinx\\source",
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/__pycache__.*": true
+  }
+}
