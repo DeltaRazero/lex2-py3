@@ -1,0 +1,117 @@
+"""<internal>"""
+
+'''
+zlib License
+
+(C) 2020 DeltaRazero
+All rights reserved.
+'''
+
+# ***************************************************************************************
+
+import typing as _t
+
+from .misc import Ptr_t as _Ptr_t
+from ._interface_matcher import IMatcher as _IMatcher
+
+# ***************************************************************************************
+
+class Rule:
+    """Class representing a rule, used as filter during lexical analysis.
+    """
+
+  # --- FIELDS --- #
+
+    _id : str
+    _regexPattern : str
+
+    _matcher : _Ptr_t[_IMatcher]
+
+
+  # --- CONSTRUCTOR --- #
+
+    def __init__(self, id: str, regexPattern: str):
+        """Rule object instance initializer.
+
+        Parameters
+        ----------
+        id : str
+            The identifying string of a resulting token's type (e.g. "NUMBER", "WORD").
+        regexPattern : str
+            Regex pattern used by a lexer to identify tokens during lexical analysis.
+        """
+        self._id = id
+        self._regexPattern = regexPattern
+
+        self._matcher = None
+
+        return
+
+
+    def __del__(self):
+        self._DestructMatcher()
+        return
+
+
+  # --- PRIVATE METHODS --- #
+
+    def _DestructMatcher(self) -> None:
+        if (self._matcher):
+            del self._matcher
+        self._matcher = None
+        return
+
+
+  # --- GETTERS --- #
+
+    def GetId(self) -> str:
+        """Gets the rule identifier string.
+
+        Returns
+        -------
+        str
+        """
+        return self._id
+
+
+    def GetRegexPattern(self) -> str:
+        """Gets the regex pattern string.
+
+        The regex pattern string is used by a matcher to perform regex matching.
+
+        Returns
+        -------
+        str
+        """
+        return self._regexPattern
+
+
+    def GetMatcher(self) -> _Ptr_t[_IMatcher]:
+        """Gets the rule matcher object reference.
+
+        The rule matcher object is used by a lexer object to identify tokens during
+        lexical analysis.
+
+        Returns
+        -------
+        Ptr_t[IMatcher]
+        """
+        return self._matcher
+
+
+  # --- SETTERS --- #
+
+    def SetMatcher(self, matcher: _IMatcher) -> None:
+        """Sets the rule matcher object reference.
+
+        Parameters
+        ----------
+        matcher : IMatcher
+        """
+        self._DestructMatcher()
+        self._matcher = matcher
+        return
+
+# *****************************************************************************
+
+Ruleset_t = _t.List[Rule]
