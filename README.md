@@ -31,6 +31,10 @@
     <a href="https://github.com/deltarazero/libfmpatch-python3/releases">
         <img src="https://img.shields.io/github/v/release/deltarazero/liblexer2-python3-informational?logo=github&logoColor=white"
         alt="License"/></a>
+    <!-- Issues open -->
+    <a href="https://github.com/deltarazero/libfmpatch-python3/releases">
+        <img src="https://img.shields.io/github/issues/deltarazero/liblexer2-python3?logo=github&logoColor=white"
+        alt="License"/></a>
     <!-- Python3 version -->
     <img src="https://img.shields.io/badge/python-3.6+-informational.svg?logo=python&logoColor=white"/>
 </div>
