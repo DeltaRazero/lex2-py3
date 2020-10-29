@@ -28,3 +28,4 @@ from ._interface_matcher import IMatcher
 from ._interface_lexer   import ILexer
 
 from . import lexer
+from ._make_lexer import MakeLexer

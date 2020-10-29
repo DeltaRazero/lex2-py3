@@ -29,7 +29,7 @@ class Re_Lexer (_AbstractLexer):
 
   # --- CONSTANTS --- #
 
-    _VENDOR_ID = "RE_PYTHON_DEFAULT"
+    VENDOR_ID = "RE_PYTHON_DEFAULT"
 
 
   # --- CONSTRUCTOR --- #
@@ -54,7 +54,7 @@ class Re_Lexer (_AbstractLexer):
             By default Textstream()
         """
         super().__init__(
-            vendorId=self._VENDOR_ID,
+            vendorId=self.VENDOR_ID,
             ruleset=ruleset,
             handleFlags=handleFlags,
             textstream=textstream
@@ -65,7 +65,7 @@ class Re_Lexer (_AbstractLexer):
   # --- PROTECTED METHODS --- #
 
     def _CompileRule(self, rule: _rule.Rule) -> _IMatcher:
-        return _Re_Matcher(self._VENDOR_ID, rule.GetId(), rule.GetRegexPattern())
+        return _Re_Matcher(self.VENDOR_ID, rule.GetId(), rule.GetRegexPattern())
 
 
     def _MatchRule(self, rule: _rule.Rule) -> _misc.Ptr_t[_Token]:
