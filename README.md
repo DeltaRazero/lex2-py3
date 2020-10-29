@@ -1,6 +1,8 @@
 <!-- HEADER -->
 <div align="center">
-    <img src="./rsrc/lexer2_logo_title.svg" alt="jgmenu" height="122">
+    <a href="https://github.com/deltarazero/libfmpatch-python3">
+        <img src="./rsrc/lexer2_logo_title.svg"
+        alt="lexer2 logo+title" height="122"></a>
     <br/>
     <p>
         Flexible, ruleset-based tokenizer using regex.
@@ -28,13 +30,13 @@
         <img src="https://img.shields.io/badge/license-zlib-informational.svg"
         alt="License"/></a>
     <!-- Library version -->
-    <a href="https://github.com/deltarazero/libfmpatch-python3/releases">
-        <img src="https://img.shields.io/github/v/release/deltarazero/liblexer2-python3-informational?logo=github&logoColor=white"
-        alt="License"/></a>
+    <a href="https://github.com/deltarazero/libfmpatch-python3/tags">
+        <img src="https://img.shields.io/github/v/tag/deltarazero/liblexer2-python3?logo=github&logoColor=white"
+        alt="Library version"/></a>
     <!-- Issues open -->
-    <a href="https://github.com/deltarazero/libfmpatch-python3/releases">
+    <a href="https://github.com/deltarazero/libfmpatch-python3/issues">
         <img src="https://img.shields.io/github/issues/deltarazero/liblexer2-python3?logo=github&logoColor=white"
-        alt="License"/></a>
+        alt="Issues open"/></a>
     <!-- Python3 version -->
     <img src="https://img.shields.io/badge/python-3.6+-informational.svg?logo=python&logoColor=white"/>
 </div>
@@ -71,7 +73,7 @@ ruleset: lexer2.Ruleset_t = [
     lexer2.Rule("NUMBER",      r"[0-9]+"),
     lexer2.Rule("PUNCTUATION", r"[.,:;!?\\-]")
 ]
-lexer = lexer2.lexer.re_python.Re_Lexer(ruleset=ruleset)
+lexer: lexer2.ILexer = lexer2.MakeLexer(ruleset=ruleset)
 
 # Load input data by opening a file
 lexer.GetTextstream().Open(r"C:/path/to/file.txt")
@@ -94,6 +96,8 @@ while (1):
         "col: {}".format(token.GetPosition().col+1),
     ]
     print("{: <20} {: <20} {: <10} {: <10}".format(*info))
+
+lexer.GetTextstream().Close()
 ```
 
 ```console
@@ -114,7 +118,7 @@ while (1):
 
 ## Contributing
 
-Contribution to this library is always welcome. The [repository is hosted on GitHub](sad). You can contribute by doing one of the following:
+Contribution to this library is always welcome. The [repository is hosted on GitHub](https://github.com/deltarazero/libfmpatch-python3). You can contribute by doing one of the following:
 
 * __Submitting a pull request:__ See ["About pull requests"](https://help.github.com/articles/about-pull-requests) for more information. <br/>
 _I don't recommend maintaining your own fork of the repository, but to submit pull requests instead, as this will make it less confusing for users to know which repository of the library is the most up-to-date version._
