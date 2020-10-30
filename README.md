@@ -1,8 +1,8 @@
 <!-- HEADER -->
 <div align="center">
-    <a href="https://github.com/deltarazero/libfmpatch-python3">
-        <img src="./rsrc/lexer2_logo_title.svg"
-        alt="lexer2 logo+title" height="122"></a>
+    <a href="https://github.com/deltarazero/liblexer2-python3">
+        <img src="./.rsrc/lexer2_logo_title.svg"
+        alt="lexer2" height="122"></a>
     <br/>
     <p>
         Flexible, ruleset-based tokenizer using regex.
@@ -30,11 +30,11 @@
         <img src="https://img.shields.io/badge/license-zlib-informational.svg"
         alt="License"/></a>
     <!-- Library version -->
-    <a href="https://github.com/deltarazero/libfmpatch-python3/tags">
+    <a href="https://github.com/deltarazero/liblexer2-python3/tags">
         <img src="https://img.shields.io/github/v/tag/deltarazero/liblexer2-python3?logo=github&logoColor=white"
         alt="Library version"/></a>
     <!-- Issues open -->
-    <a href="https://github.com/deltarazero/libfmpatch-python3/issues">
+    <a href="https://github.com/deltarazero/liblexer2-python3/issues">
         <img src="https://img.shields.io/github/issues/deltarazero/liblexer2-python3?logo=github&logoColor=white"
         alt="Issues open"/></a>
     <!-- Python3 version -->
@@ -57,7 +57,7 @@ lexer2 is written in **pure Python (and therefore platform independent)\*** and 
 
 The recommended way to install the library is by downloading it from the Python Package Index (PyPI) through ``pip`` Python package manager:
 ```console
-pip install lexer2-python3
+pip install liblexer2-python3
 ```
 However, you can also manually install the library by downloading the latest release on GitHub and copying the ``lexer2`` folder to your project's includes/libraries directory.
 
@@ -118,7 +118,7 @@ lexer.GetTextstream().Close()
 
 ## Contributing
 
-Contribution to this library is always welcome. The [repository is hosted on GitHub](https://github.com/deltarazero/libfmpatch-python3). You can contribute by doing one of the following:
+Contribution to this library is always welcome. The [repository is hosted on GitHub](https://github.com/deltarazero/liblexer2-python3). You can contribute by doing one of the following:
 
 * __Submitting a pull request:__ See ["About pull requests"](https://help.github.com/articles/about-pull-requests) for more information. <br/>
 _I don't recommend maintaining your own fork of the repository, but to submit pull requests instead, as this will make it less confusing for users to know which repository of the library is the most up-to-date version._
