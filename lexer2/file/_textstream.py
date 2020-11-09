@@ -9,10 +9,10 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import typing as _t
+import io as _io
 
-from ._interface import ITextstream  as _ITextstream
-from ._interface import TextPosition as _TextPosition
+from ._interface_textstream import ITextstream  as _ITextstream
+from ._textposition         import TextPosition as _TextPosition
 
 # ***************************************************************************************
 
@@ -20,22 +20,35 @@ class Textstream (_ITextstream):
 
   # --- FIELDS --- #
 
-    _textPos  : _TextPosition
-    _newlines : _t.List[_TextPosition]
+    _chunkSize  : int
+    _chunkSplit : int
 
-    _encoding   : str
+    _tp : _TextPosition
+
+    # _encoding   : str
     _convertEol : bool
 
+    _stringStream : _io.StringIO
+
     _strBuffer : str
-    _strBufferLength : int
-    # _strBufferPosition : int
+    _strBufferSize : int
+    _strBufferPos  : int
 
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
-    def __init__(self) -> None:
-        self._strBuffer = ""
-        self._textPos = _TextPosition()
+    def __init__(self, chunkSize: int=512) -> None:
+
+        self._chunkSize  = chunkSize // 2 * 2
+        self._chunkSplit = self._chunkSize // 2
+
+        self._tp = _TextPosition()
+
+        self._stringStream = _io.StringIO()
+        self._stringStream.close()
+
+        self.Close()
+
         return
 
 
@@ -54,159 +67,107 @@ class Textstream (_ITextstream):
         # Read file in given encoding
         self.Close()
         with open(fp, "rb") as f:
-            data = f.read()
-            self._strBuffer = data.decode(self._encoding, "ignore")
-
-        self._PrepareVariables()
+            bin_data = f.read()
+            str_data = bin_data.decode(self._encoding, "ignore")
+            self._PrepareData(str_data)
 
         return
 
 
-    def Load(self, strData: str,  convertLineEndings: bool=True) -> None:
+    def Load(self, strData: str, convertLineEndings: bool=True) -> None:
 
         self._convertEol = convertLineEndings
 
         self.Close()
-        self._strBuffer = strData
-
-        self._PrepareVariables()
+        self._PrepareData(strData)
 
         return
 
 
     def Close(self) -> None:
 
-        if (self._strBuffer):
-            del self._strBuffer
+        if (not self._stringStream.closed):
+            self._stringStream.close()
+
         self._strBuffer = ""
-        _TextPosition.Reset(self._textPos)
+        self._strBufferSize = 0
+
+        self._strBufferPos   = 0
+
+        _TextPosition.Reset(self._tp)
 
         return
 
 
-    # In characters, not in byte mode
-    def Seek(self, offset: int, whence: int=0) -> None:
+    def Update(self, n: int) -> None:
 
-        new_pos : int
-        # 0 Absolute
-        # 1 Relative
-        # 2 Absolute (reversed)
-        if   (whence == 0): new_pos = offset
-        elif (whence == 1): new_pos = self._textPos.pos + offset
-        elif (whence == 2): new_pos = (self._strBufferLength-1) - offset
-        else:
-            raise Exception()
+        self._strBufferPos   += n
 
-        if (new_pos < 0  or  new_pos > self._strBufferLength):
-            raise IndexError()
+        if (self._strBufferPos > self._chunkSplit):
 
-        self._textPos.pos = new_pos
+            n = self._strBufferSize - self._strBufferPos
+            if (n):  # NOTE: Last n characters (n=0) doesn't work in Python
+                self._strBuffer =\
+                    self._strBuffer[-n:] +\
+                    self._stringStream.read(self._strBufferPos)
+            else:
+                self._strBuffer =\
+                    self._stringStream.read(self._strBufferPos)
 
-        # If seeking past last character
-        if (not new_pos < self._strBufferLength):
-            last_nl = self._newlines[-1]
-            self._textPos.ln  = last_nl.ln+1
-            self._textPos.col = new_pos - last_nl.pos + 1
-            # NOTE: self._pos.pos already set
-            return
-
-        # Track line- and column number for chosen new position
-        # TODO: Maybe add a check/seek block when the new_pos is too far away (from the start/end)
-
-        self._CalculateTextPosition(new_pos)
+            self._strBufferSize  = len(self._strBuffer)
+            self._strBufferPos   = 0
 
         return
 
 
-    def Tell(self) -> _TextPosition:
-        return self._textPos
+    def UpdateW(self) -> None:
+
+        n = self._chunkSize
+        self._strBuffer = self._stringStream.read(n)
+        self._strBufferSize = len(self._strBuffer)
+
+        return
 
 
     def IsEOF(self) -> bool:
-        return not (self._textPos.pos < self._strBufferLength)
+
+        # NOTE: In C++ you would just do:
+        #
+        #     return _strBuffer.empty()
+        #
+        return not self._strBuffer
 
 
-    def GetBuffer(self) -> str:
+  # --- INTERFACE GETTERS --- #
+
+    def GetTextPosition(self) -> _TextPosition:
+        return self._tp
+
+
+    def GetChunkSize(self) -> int:
+        return self._chunkSize
+
+
+    def GetStrBuffer(self) -> str:
         return self._strBuffer
 
 
-    def GetBufferLength(self) -> int:
-        return self._strBufferLength
+    def GetStrBufferSize(self) -> int:
+        return self._strBufferSize
 
 
-    def GetBufferPosition(self) -> int:
-        return self._textPos.pos
-        # return self._strBufferPosition
+    def GetStrBufferPosition(self) -> int:
+        return self._strBufferPos
 
 
   # --- PRIVATE METHODS --- #
 
-    def _PrepareVariables(self) -> None:
+    def _PrepareData(self, strData: str) -> None:
 
-        # Prepare string buffer variables
         if (self._convertEol):  # Convert all line-endings to POSIX format ('\n')
-            self._strBuffer = self._strBuffer.replace("\r\n", "\n")
-        self._strBufferLength = self._strBuffer.__len__()
+            strData = strData.replace("\r\n", "\n")
 
-        # Find all NEWLINE locations (speeds up seeking)
-        self._newlines = [
-            _TextPosition()  # Dummy NEWLINE for line 0
-        ]
-        ln,col,pos = 0,0,0
-        for pos, char in enumerate(self._strBuffer):
-            # Save position of NEWLINE when encountered
-            if (char == '\n'):
-                ln += 1
-                self._newlines.append(_TextPosition(pos, col, ln))
-                col=0
-                continue
-            col+=1
-        # Dummy final NEWLINE for overflow search
-        self._newlines.append(_TextPosition(
-            ln =ln +1,
-            col=col+1,
-            pos=pos+1
-        ))
-
-        return
-
-
-    def _CalculateTextPosition(self, newPos: int) -> None:
-
-        # Start from the begin of current line
-        ln = self._textPos.ln
-        line = self._newlines[ln]
-
-        # Decrease lines to go backwards
-        if (newPos < line.pos):
-            while(1):
-                ln -= 1
-                line = self._newlines[ln]
-                # Seek behind NEWLINE
-                if (newPos > line.pos):
-                    self._textPos.col = newPos - line.pos - 1
-                    break
-                # Seek at the NEWLINE itself
-                elif (newPos == line.pos):
-                    self._textPos.col = line.col
-                    if (ln != 0): ln -= 1
-                    break
-            self._textPos.ln = ln
-
-        # Increase lines to go forwards (or stay on same line)
-        else:
-            while(1):
-                ln += 1
-                line = self._newlines[ln]
-                # Seek in front of NEWLINE
-                if (newPos < line.pos):
-                    self._textPos.col = line.col - (line.pos - newPos) - 1
-                    break
-                # Seek at the NEWLINE itself
-                elif (newPos == line.pos):
-                    self._textPos.col = line.col
-                    break
-            if (ln != 0): ln = ln-1
-            self._textPos.ln = ln
+        self._stringStream = _io.StringIO(strData)
+        self.UpdateW()
 
         return

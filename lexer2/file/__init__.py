@@ -9,7 +9,8 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from ._interface import ITextstream, TextPosition
+from ._textposition import TextPosition
 
-from ._textstream          import Textstream
-# from ._textstream_buffered import BufferedTextstream  # TODO
+from ._interface_textstream import ITextstream
+from ._textstream           import Textstream
+# from ._textstream_buffered  import BufferedTextstream  # TODO
