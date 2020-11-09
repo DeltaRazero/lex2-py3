@@ -216,12 +216,10 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
             # c = 0
             # for i in range(self._ts._strBufferPos, self._ts._strBufferSize):
             #     char = self._ts._strBuffer[i]
-            #     # char = ord(self._ts._strBuffer[i])
 
 
                 # SPACE character
                 if (char == ' '):
-                # if (char == 32):
                     if (flag_return_space):
                         token = _Token(
                             _predefs.space.id_,
@@ -236,7 +234,6 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
                 # NEWLINE character
                 elif (char == '\n'):
-                # elif (char == 10):
                     if (flags.newline == _flags.HFlag.HANDLE_AND_RETURN):
                         token = _Token(
                             _predefs.newline.id_,
@@ -251,7 +248,6 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
                 # TAB character
                 elif (char == '\t'):
-                # elif (char == 9):
                     if (flags.tab == _flags.HFlag.HANDLE_AND_RETURN):
                         token = _Token(
                             _predefs.tab.id_,
@@ -296,7 +292,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         the unknown token type.
         """
         # txt_pos = self._ts.GetTextPosition()
-        txt_pos = self._ts._tp
+        txt_pos: _file.TextPosition = self._ts._tp
 
         # Match mainloop
         ruleset: _rule.Ruleset_t = self._rulesets[-1]
@@ -327,7 +323,8 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                         temp_token = self._MatchRule(rule)
 
                         n1 = len(temp_token.data)
-                        n2 = self._ts.GetChunkSize() - self._ts.GetStrBufferPosition()
+                        # n2 = self._ts.GetChunkSize() - self._ts.GetStrBufferPosition()
+                        n2 = self._ts._chunkSize - self._ts._strBufferPos
 
                         # Update positions
                         self._ts.Update(len(temp_token.data))

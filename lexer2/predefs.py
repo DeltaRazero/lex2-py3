@@ -42,7 +42,7 @@ class BaseComment (_Rule, metaclass=_abc.ABCMeta):
 
 
 class SinglelineComment (BaseComment):
-    """Rule template for filtering single-line comments.
+    """Rule template for filtering singleline comments.
     """
 
   # --- CONSTRUCTOR --- #
@@ -66,7 +66,7 @@ class SinglelineComment (BaseComment):
 
 
 class MultilineComment (BaseComment):
-    """Rule template for filtering single-line comments.
+    """Rule template for filtering singleline comments.
     """
 
   # --- CONSTRUCTOR --- #
@@ -93,8 +93,8 @@ class MultilineComment (BaseComment):
 
 # ***************************************************************************************
 
-# def __MakeDummyRule(id: str) -> _Rule: return _Rule(id, "")
-__MakeDummyRule: _t.Callable[[str], _Rule] = lambda id: _Rule(id, r"a^")
+def __MakeDummyRule(id: str) -> _Rule: return _Rule(id, r"a^")
+# __MakeDummyRule: _t.Callable[[str], _Rule] = lambda id: _Rule(id, r"a^")
 
 # These rule object instances are not meant to be used in rulesets, as they will not be
 # used / will not match anything.
