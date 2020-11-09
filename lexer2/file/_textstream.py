@@ -20,15 +20,14 @@ class Textstream (_ITextstream):
 
   # --- FIELDS --- #
 
-    _chunkSize  : int
-    _chunkSplit : int
-
-    _tp : _TextPosition
-
     # _encoding   : str
     _convertEol : bool
 
+    _tp : _TextPosition
     _stringStream : _io.StringIO
+
+    _chunkSize  : int
+    _chunkSplit : int
 
     _strBuffer : str
     _strBufferSize : int
@@ -38,14 +37,22 @@ class Textstream (_ITextstream):
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
     def __init__(self, chunkSize: int=512) -> None:
+        """TextPosition object instance initializer.
+
+        Parameters
+        ----------
+        chunkSize : int, optional
+            Size of a single string buffer chunk (in characters). Note that this number
+            will be floored to the nearest even number.
+            By default 512.
+        """
+
+        self._tp = _TextPosition()
+        self._stringStream = _io.StringIO()
+        self._stringStream.close()
 
         self._chunkSize  = chunkSize // 2 * 2
         self._chunkSplit = self._chunkSize // 2
-
-        self._tp = _TextPosition()
-
-        self._stringStream = _io.StringIO()
-        self._stringStream.close()
 
         self.Close()
 
@@ -91,8 +98,7 @@ class Textstream (_ITextstream):
 
         self._strBuffer = ""
         self._strBufferSize = 0
-
-        self._strBufferPos   = 0
+        self._strBufferPos  = 0
 
         _TextPosition.Reset(self._tp)
 

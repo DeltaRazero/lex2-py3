@@ -14,3 +14,5 @@ from ._textposition import TextPosition
 from ._interface_textstream import ITextstream
 from ._textstream           import Textstream
 # from ._textstream_buffered  import BufferedTextstream  # TODO
+
+from ._make_textstream import MakeTextstream
