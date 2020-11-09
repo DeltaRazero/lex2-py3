@@ -20,9 +20,13 @@ class Rule:
     """Class representing a rule, used as filter during lexical analysis.
     """
 
+  # --- RUNTIME CONSTANTS --- #
+
+    ID : str
+
+
   # --- FIELDS --- #
 
-    _id : str
     _regexPattern : str
 
     _matcher : _Ptr_t[_IMatcher]
@@ -40,7 +44,7 @@ class Rule:
         regexPattern : str
             Regex pattern used by a lexer to identify tokens during lexical analysis.
         """
-        self._id = id
+        self.ID = id
         self._regexPattern = regexPattern
 
         self._matcher = None
@@ -63,16 +67,6 @@ class Rule:
 
 
   # --- GETTERS --- #
-
-    def GetId(self) -> str:
-        """Gets the rule identifier string.
-
-        Returns
-        -------
-        str
-        """
-        return self._id
-
 
     def GetRegexPattern(self) -> str:
         """Gets the regex pattern string.

@@ -63,7 +63,7 @@ class Token:
         -------
         bool
         """
-        return self._id == expectedRule.GetId()
+        return self._id == expectedRule.ID
 
 
     def ValidateRule(self, expectedRule: _Rule) -> None:
