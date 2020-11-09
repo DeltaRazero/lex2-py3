@@ -25,11 +25,14 @@ class Token:
     # Identifying string of the token's type (e.g. "NUMBER", "WORD") -- rule ID
     id_ : str
 
-    # String data of the identified token type
-    data_ : str
-
     # Position in the textstream where the token occurs
     position_ : _file.TextPosition
+
+
+  # --- PROPERTIES --- #
+
+    # String data of the identified token type
+    data : str
 
 
   # --- CONSTRUCTOR --- #
@@ -46,8 +49,8 @@ class Token:
         position : TextPosition
             Position in the textstream where the token occurs.
         """
-        self.id_   = id
-        self.data_ = data
+        self.id_  = id
+        self.data = data
         self.position_ = position
 
         return
@@ -84,5 +87,5 @@ class Token:
             When the token's identifier does not match that of a given rule.
         """
         if (not self.IsRule(expectedRule)):
-            raise _excs.UnknownTokenError(self.position_, self.data_)
+            raise _excs.UnknownTokenError(self.position_, self.data)
         return
