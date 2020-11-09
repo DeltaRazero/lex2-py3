@@ -20,14 +20,16 @@ class Rule:
     """Class representing a rule, used as filter during lexical analysis.
     """
 
-  # --- RUNTIME CONSTANTS --- #
+  # --- RUNTIME/READONLY CONSTANTS --- #
 
-    ID : str
+    # Rule identifier string
+    id_ : str
+
+    # The regex pattern string is used by a matcher to perform regex matching.
+    regexPattern_ : str
 
 
   # --- FIELDS --- #
-
-    _regexPattern : str
 
     _matcher : _Ptr_t[_IMatcher]
 
@@ -44,8 +46,8 @@ class Rule:
         regexPattern : str
             Regex pattern used by a lexer to identify tokens during lexical analysis.
         """
-        self.ID = id
-        self._regexPattern = regexPattern
+        self.id_ = id
+        self.regexPattern_ = regexPattern
 
         self._matcher = None
 
@@ -67,18 +69,6 @@ class Rule:
 
 
   # --- GETTERS --- #
-
-    def GetRegexPattern(self) -> str:
-        """Gets the regex pattern string.
-
-        The regex pattern string is used by a matcher to perform regex matching.
-
-        Returns
-        -------
-        str
-        """
-        return self._regexPattern
-
 
     def GetMatcher(self) -> _Ptr_t[_IMatcher]:
         """Gets the rule matcher object reference.

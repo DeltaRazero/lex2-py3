@@ -20,12 +20,16 @@ class Token:
     """Represents a token that is output during lexical analysis.
     """
 
-  # --- FIELDS --- #
+  # --- RUNTIME/READONLY CONSTANTS --- #
 
-    _id   : str
-    _data : str
+    # Identifying string of the token's type (e.g. "NUMBER", "WORD") -- rule ID
+    id_ : str
 
-    _position : _file.TextPosition
+    # String data of the identified token type
+    data_ : str
+
+    # Position in the textstream where the token occurs
+    position_ : _file.TextPosition
 
 
   # --- CONSTRUCTOR --- #
@@ -42,9 +46,9 @@ class Token:
         position : TextPosition
             Position in the textstream where the token occurs.
         """
-        self._id   = id
-        self._data = data
-        self._position = position
+        self.id_   = id
+        self.data_ = data
+        self.position_ = position
 
         return
 
@@ -63,7 +67,7 @@ class Token:
         -------
         bool
         """
-        return self._id == expectedRule.ID
+        return self.id_ == expectedRule.id_
 
 
     def ValidateRule(self, expectedRule: _Rule) -> None:
@@ -80,37 +84,5 @@ class Token:
             When the token's identifier does not match that of a given rule.
         """
         if (not self.IsRule(expectedRule)):
-            raise _excs.UnknownTokenError(self._position, self._data)
+            raise _excs.UnknownTokenError(self.position_, self.data_)
         return
-
-
-  # --- GETTERS --- #
-
-    def GetId(self) -> str:
-        """Gets the identifying string of the token's type (e.g. "NUMBER", "WORD").
-
-        Returns
-        -------
-        str
-        """
-        return self._id
-
-
-    def GetData(self) -> str:
-        """Gets the string data of the identified token type.
-
-        Returns
-        -------
-        str
-        """
-        return self._data
-
-
-    def GetPosition(self) -> _file.TextPosition:
-        """Gets the position in the textstream where the token occurs.
-
-        Returns
-        -------
-        TextPosition
-        """
-        return self._position

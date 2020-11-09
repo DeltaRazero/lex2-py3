@@ -176,7 +176,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 rule.SetMatcher(self._CompileRule(rule))
 
             # Comment rules also have an addition rule to be compiled
-            if (rule.ID == _predefs.comment.ID):
+            if (rule.id_ == _predefs.comment.id_):
                 # rule = static_cast<BaseComment*>(rule)->ruleEnd
                 rule: _rule.Rule = rule.ruleEnd_
                 if (self._NeedsCompilation(rule)):
@@ -222,7 +222,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 # if (char == 32):
                     if (flag_return_space):
                         token = _Token(
-                            _predefs.space.ID,
+                            _predefs.space.id_,
                             "",
                             _file.TextPosition(
                                 txt_pos.pos,
@@ -237,7 +237,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 # elif (char == 10):
                     if (flags.newline == _flags.HFlag.HANDLE_AND_RETURN):
                         token = _Token(
-                            _predefs.newline.ID,
+                            _predefs.newline.id_,
                             "",
                             _file.TextPosition(
                                 txt_pos.pos,
@@ -252,7 +252,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 # elif (char == 9):
                     if (flags.tab == _flags.HFlag.HANDLE_AND_RETURN):
                         token = _Token(
-                            _predefs.tab.ID,
+                            _predefs.tab.id_,
                             "",
                             _file.TextPosition(
                                 txt_pos.pos,
@@ -303,8 +303,8 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
             if (token):
 
                 # Update positions
-                self._ts.Update(len(token._data))
-                _file.TextPosition.Update(txt_pos, token._data)
+                self._ts.Update(len(token.data_))
+                _file.TextPosition.Update(txt_pos, token.data_)
 
                 # COMMENTs can easily span across multiple chunks, so it is not wise to
                 # create a single regex pattern defining the start and stop. Instead,
@@ -322,17 +322,17 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                         # multiline comment are found.
                         temp_token = self._MatchRule(rule)
 
-                        n1 = len(temp_token._data)
+                        n1 = len(temp_token.data_)
                         n2 = self._ts.GetChunkSize() - self._ts.GetStrBufferPosition()
 
                         # Update positions
-                        self._ts.Update(len(temp_token._data))
-                        _file.TextPosition.Update(txt_pos, temp_token._data)
+                        self._ts.Update(len(temp_token.data_))
+                        _file.TextPosition.Update(txt_pos, temp_token.data_)
 
                         # Append the intermediate string data from the temporary comment
                         # token to the parent comment token (which is the token that will
                         # be returned).
-                        token._data += temp_token._data  # TODO: MAKE PUBLIC
+                        token.data_ += temp_token.data_
                         del temp_token
 
                         # The pattern defining the end will match ALL characters until
