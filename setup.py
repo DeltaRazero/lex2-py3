@@ -17,7 +17,7 @@ def ReadTxt(fName: str):
 
 setuptools.setup(
     name="liblexer2-python3",
-    version = "0.9.0",
+    version = "0.9.1",
 
     packages=setuptools.find_packages(),
     python_requires='>=3.6',
