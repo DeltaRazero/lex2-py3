@@ -10,7 +10,7 @@ All rights reserved.
 # ***************************************************************************************
 
 import typing as _t
-_T = _t.TypeVar('T')  #type: ignore
+T = _t.TypeVar('T')
 
 # ***************************************************************************************
 
@@ -18,4 +18,4 @@ _T = _t.TypeVar('T')  #type: ignore
 VoidPtr_t = _t.Any
 
 # Typedef to simulate pointer type
-Ptr_t = _t.Union[_T, None]
+Ptr_t = _t.Union[T, None]

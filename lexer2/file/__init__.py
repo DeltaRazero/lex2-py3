@@ -1,4 +1,4 @@
-"""Materials related to textfile- and position reading."""
+"""Components related to textfile- and position reading."""
 
 '''
 zlib License

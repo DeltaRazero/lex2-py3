@@ -1,4 +1,4 @@
-"""Assets of a lexer implementation with Python's builtin `re` module."""
+"""Components of a lexer implementation with Python's builtin `re` module."""
 
 '''
 zlib License
