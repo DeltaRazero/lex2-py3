@@ -9,6 +9,8 @@ All rights reserved.
 
 # ***************************************************************************************
 
+import typing as _t
+
 from ._re_matcher import Re_Matcher as _Re_Matcher
 
 from .. import AbstractLexer as _AbstractLexer
@@ -65,26 +67,30 @@ class Re_Lexer (_AbstractLexer):
   # --- PROTECTED METHODS --- #
 
     def _CompileRule(self, rule: _rule.Rule) -> _IMatcher:
-        return _Re_Matcher(self.VENDOR_ID, rule.GetId(), rule.GetRegexPattern())
+        return _Re_Matcher(self.VENDOR_ID, rule.ID, rule.GetRegexPattern())
 
 
     def _MatchRule(self, rule: _rule.Rule) -> _misc.Ptr_t[_Token]:
 
         token: _misc.Ptr_t[_Token] = None
 
-        matcher: _Re_Matcher = rule.GetMatcher()  #type: ignore[reportGeneralTypeIssues]
-        regex_match = matcher.GetPatternMatcher().match(
-            self._ts.GetBuffer(),         # Data input
-            self._ts.GetBufferPosition(), # Read STARTING AT position
-            self._ts.GetBufferLength()    # Read UNTIL position
+        # NOTE: Inlined version
+        matcher: _Re_Matcher = rule._matcher
+        regex_match = matcher._pattern.match(
+            # Data input
+            self._ts._strBuffer,
+            # Read STARTING AT position
+            self._ts._strBufferPos,
+            # Read UNTIL position
+            self._ts._strBufferSize
         )
-        # regex_match: _misc.Ptr_t[_t.Match[str]] # _t.Union[_t.Match[str], None]
 
         # Create token if a match was found
         if (regex_match):
-            txt_pos = self._ts.Tell()
+            # txt_pos = self._ts.GetTextPosition()
+            txt_pos = self._ts._tp
             token = _Token(
-                rule.GetId(),
+                rule.ID,
                 regex_match.group(),
                 _file.TextPosition(
                     txt_pos.pos,

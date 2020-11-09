@@ -9,45 +9,35 @@ All rights reserved.
 
 # ***************************************************************************************
 
+import abc    as _abc
+import typing as _t
+
 from ._rule import Rule as _Rule
 
 # ***************************************************************************************
 
-space = _Rule(
-    "SPACE",
-    r" "
-)
-
-tab = _Rule(
-    "TAB",
-    r"\t"
-)
-
-newline = _Rule(
-    "NEWLINE",
-    r"\n"
-)
-
-unknownToken = _Rule(
-    "UNKNOWN_TOKEN",
-    r"[^ \t\n]*"
-)
-
-# ***************************************************************************************
-
-class BaseComment (_Rule):
+class BaseComment (_Rule, metaclass=_abc.ABCMeta):
     """Base class for a rule filtering comments.
     """
 
-    def __init__(self, regexPattern: str, name: str="COMMENT"):
-        _Rule.__init__(self, name, regexPattern)
+  # --- CONSTANTS --- #
 
+    RULE_ID = "COMMENT"
+
+  # --- READONLY PROPERTIES --- #
+
+    ruleEnd_ : _Rule
+
+
+  # --- CONSTRUCTOR --- #
+
+    @_abc.abstractmethod
+    def __init__(self, regexPatternStart: str, regexPatternEnd: str):
+        """
+        """
+        _Rule.__init__(self, self.RULE_ID, regexPatternStart)
+        self.ruleEnd_ = _Rule(self.RULE_ID, regexPatternEnd)
         return
-
-# This rule object instance is not meant to be used by the user, as it doesn't actually
-# match anything. Instead, it's used by lexers as common object to identify tokens as
-# "COMMENT" (rules that inherit BaseComment, SinglinelineComment or MultilineComment)
-_comment_ = BaseComment(r"a^")
 
 
 class SinglelineComment (BaseComment):
@@ -56,60 +46,61 @@ class SinglelineComment (BaseComment):
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, identifyingChars: str):
+    def __init__(self, identifyingRegex: str):
         """SinglelineComment object instance initializer.
 
         Parameters
         ----------
-        identifyingChars : str
-            Combination of characters that identify the start of a single-line comment
-            (e.g. "//" or "#").
+        identifyingRegex : str
+            This regex pattern denotes the start of a singleline comment. For example:
+            r"//".
         """
-        BaseComment.__init__(self, self._GenerateRegex(identifyingChars))
+        BaseComment.__init__(
+            self,
+            regexPatternStart=identifyingRegex,
+            regexPatternEnd  =r".*"
+        )
 
         return
 
 
-  # --- PRIVATE METHODS --- #
-
-    @staticmethod
-    def _GenerateRegex(identifyingChars: str) -> str:
-        return "[{0}].*".format(identifyingChars)
-
-
 class MultilineComment (BaseComment):
-    """Rule template for filtering multi-line comments.
+    """Rule template for filtering single-line comments.
     """
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, identifyingStartChars: str, identifyingEndChars: str):
+    def __init__(self, identifyingStartRegex: str, identifyingEndRegex: str):
         """SinglelineComment object instance initializer.
 
         Parameters
         ----------
-        identifyingStartChars : str
-            Combination of characters that identify the start of a multi-line comment
-            (e.g. "/*").
-        identifyingEndChars : str
-            Combination of characters that identify the end of a multi-line comment
-            (e.g. "*/").
+        identifyingStartRegex : str
+            This regex pattern denotes the start of a multiline comment. For example:
+            r"/\*" (/*).
+        identifyingEndRegex : str
+            This regex pattern denotes the start of a multiline comment. For example:
+            r"\*/" (*/).
         """
-        BaseComment.__init__(self, self._GenerateRegex(identifyingStartChars, identifyingEndChars))
+        BaseComment.__init__(
+            self,
+            regexPatternStart=identifyingStartRegex,
+            regexPatternEnd  =r"[\s\S]*{}|[\s\S]*".format(identifyingEndRegex)
+        )
 
         return
 
+# ***************************************************************************************
 
-  # --- PRIVATE METHODS --- #
+# def __MakeDummyRule(id: str) -> _Rule: return _Rule(id, "")
+__MakeDummyRule: _t.Callable[[str], _Rule] = lambda id: _Rule(id, r"a^")
 
-    @staticmethod
-    def _GenerateRegex(identifyingStartChars: str, identifyingEndChars: str) -> str:
-        regex_start = ""
-        for char in identifyingStartChars:
-            regex_start += "\\{0}".format(char)
-
-        regex_end = ""
-        for char in identifyingEndChars:
-            regex_end += "\\{0}".format(char)
-
-        return "({0})(.|\\n)+?({1})".format(regex_start, regex_end)
+# These rule object instances are not meant to be used in rulesets, as they will not be
+# used / will not match anything.
+# Instead, they are used internally by a lexer to identify tokens (the rule ID property
+# is used for this).
+space        = __MakeDummyRule("SPACE")
+tab          = __MakeDummyRule("TAB")
+newline      = __MakeDummyRule("NEWLINE")
+unknownToken = __MakeDummyRule("UNKNOWN_TOKEN")
+comment      = __MakeDummyRule(BaseComment.RULE_ID)

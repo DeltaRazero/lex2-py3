@@ -102,152 +102,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
 
     def GetNextToken(self) -> _Token:
-
-        flags = self._hFlags
-
-        # This is the resulting token to return
-        token: _misc.Ptr_t[_Token] = None
-
-        # Single characters that are usually skipped. These are predefined rules in the
-        # library.
-        while(1):
-
-            # If the textream has reached the end of data
-            if (self._ts.IsEOF()):
-                # return token
-                raise _excs.EndOfTextstream()
-                # raise EOFError()
-
-            # NOTE: This is a hack in order to improve performance. Languages that use
-            # compilers would probably just inline the GetBuffer() and Tell() calls, but
-            # an interpreted languages such as Python obviously can't do that.
-            char = self._ts._strBuffer[self._ts._textPos.pos]  #type: ignore[reportUnknownMemberType]
-            # char = self._ts.GetBuffer()[self._ts.Tell().pos]
-
-            # SPACE character
-            if (char == ' '):
-                if (flags.space == _flags.HFlag.HANDLE_AND_RETURN):
-                    txt_pos = self._ts.Tell()
-                    token = _Token(
-                        _predefs.space.GetId(),
-                        "",
-                        _file.TextPosition(
-                            txt_pos.pos,
-                            txt_pos.col,
-                            txt_pos.ln
-                        )
-                    )
-                self._ts.Seek(1, 1)
-
-            # NEWLINE character
-            elif (char == '\n'):
-                if (flags.newline == _flags.HFlag.HANDLE_AND_RETURN):
-                    txt_pos = self._ts.Tell()
-                    token = _Token(
-                        _predefs.newline.GetId(),
-                        "",
-                        _file.TextPosition(
-                            txt_pos.pos,
-                            txt_pos.col,
-                            txt_pos.ln
-                        )
-                    )
-                self._ts.Seek(1, 1)
-
-            # TAB character
-            elif (char == '\t'):
-                if (flags.tab == _flags.HFlag.HANDLE_AND_RETURN):
-                    txt_pos = self._ts.Tell()
-                    token = _Token(
-                        _predefs.tab.GetId(),
-                        "",
-                        _file.TextPosition(
-                            txt_pos.pos,
-                            txt_pos.col,
-                            txt_pos.ln
-                        )
-                    )
-                self._ts.Seek(1, 1)  # TODO: Textstreams should get a read1() method
-
-            # Else break to the main regex matching loop
-            else:
-                break
-
-            # If we didn't break AND we HFlag.HANDLE_AND_RETURN set for one of the above
-            # characters
-            if (token):
-                return token
-
-        # Main regex matching loop
-        ruleset: _rule.Ruleset_t = self._rulesets[-1]
-        for rule in ruleset:
-
-            token = self._MatchRule(rule)
-            # If the (implemented) regex pattern matcher created a match
-            if (token):
-
-                # Seek past token
-                self._ts.Seek(len(token.GetData()), 1)
-
-                # Check if the token should be ignored by checking HFlag values
-                # COMMENT
-                if (token.IsRule(_predefs._comment_)):  #type: ignore[reportPrivateUsage]
-                    if (self._hFlags.comment==_flags.HFlag.HANDLE_AND_IGNORE):
-                        return self.GetNextToken()
-                # USER-DEFINED RULES
-                for rule in self._hFlags.userFlags:
-                    if (token.IsRule(rule)):
-                        if (self._hFlags.userFlags[rule]==_flags.HFlag.HANDLE_AND_IGNORE):  ## token.GetId() == flag_key
-                            return self.GetNextToken()
-                        break
-
-                # Else return the token as normally intended
-                return token
-
-        # If no recognizable token type was found (no regex pattern was matched), meaning
-        # an unknown token, then the procedure below is used.
-
-        # Store the start position before skipping any characters
-        txt_pos = self._ts.Tell()
-        unknown_start_index: int = txt_pos.pos  # TODO: Can be removed with length variable if textstream has read method
-        position = _file.TextPosition(
-            txt_pos.pos,
-            txt_pos.col,
-            txt_pos.ln
-        )
-
-        # Mainloop for skipping characters
-        while(1):
-
-            self._ts.Seek(1, 1)  # TODO: Textstreams should get a read1() method
-
-            if (self._ts.IsEOF()):
-                break
-
-            char = self._ts.GetBuffer()[self._ts.Tell().pos]  # TODO: Length++
-            if (char in (' ', '\t', '\n') ):
-                break
-
-        # If the HANDLE_AND_IGNORE option is set for the 'unknownToken' flag,
-        # all characters are skipped until a SPACE, TAB or NEWLINE character is
-        # encountered.
-        if (self._hFlags.unknownToken == _flags.HFlag.HANDLE_AND_IGNORE):
-            return self.GetNextToken()
-
-        # Else, if the HANDLE_AND_RETURN option is set, raise an UnknownTokenError
-        # with the unknown data attached as lexer token.
-        token = _Token(
-            _predefs.unknownToken.GetId(),
-            # NOTE: This will not work for buffered textstreams, as the length of an
-            # unknown token can be larger than the buffer size.
-            # TODO: Therefore, textstreams should get a read(n) method instead.
-            self._ts.GetBuffer()[unknown_start_index : self._ts.Tell().pos],
-            position
-        )
-        raise _excs.UnknownTokenError(
-            token.GetPosition(),
-            token.GetData()
-        )
+        return self._GNT_P1_ScanChars()
 
 
   # --- PROTECTED METHODS --- #
@@ -291,32 +146,272 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
   # --- PRIVATE METHODS --- #
 
+    def _NeedsCompilation(self, rule: _rule.Rule) -> bool:
+        """Check if the regex pattern matcher in a rule object needs to be compiled.
+        """
+        needs_compilation = False
+        matcher = rule.GetMatcher()
+        # If a Matcher object already compiled and stored, check its vendor ID
+        if (matcher):
+            needs_compilation = matcher.GetVendorId() != self._vendorId
+        # If no object Matcher object stored at all
+        else:
+            needs_compilation = True
+
+        return needs_compilation
+
+
     def _CompileRuleset(self, ruleset: _rule.Ruleset_t) -> None:
         """Checks and compiles rules within a newly pushed ruleset.
 
         Whenever a ruleset is pushed, this method will check if all rules have their
         corresponding IMatcher-compatible object set to the matcher type, used by
         a specific lexer/matcher implementation, and compiles if necessary.
-
-        Parameters
-        ----------
-        ruleset : Ruleset_t
         """
         for rule in ruleset:
 
-            needs_compilation = False
-            # Check if the lexer implementation identifier ('vendor ID') is different
-            matcher = rule.GetMatcher()
-            # If a Matcher object already compiled and stored
-            if (matcher):
-                needs_compilation = matcher.GetVendorId() != self._vendorId
-            # If not compiled at all
-            else:
-                needs_compilation = True
-
             # Call the specific lexer implementation's CompileRule() method for regex
             # pattern matcher compilation
-            if (needs_compilation):
+            if (self._NeedsCompilation(rule)):
                 rule.SetMatcher(self._CompileRule(rule))
 
+            # Comment rules also have an addition rule to be compiled
+            if (rule.ID == _predefs.comment.ID):
+                # rule = static_cast<BaseComment*>(rule)->ruleEnd
+                rule: _rule.Rule = rule.ruleEnd_
+                if (self._NeedsCompilation(rule)):
+                    rule.SetMatcher(self._CompileRule(rule))
+
         return
+
+
+    def _GNT_P1_ScanChars(self) -> _Token:
+        """GetNextToken() -- Part 1 --
+
+        This part of the GetNextMethod() method set scans for single characters that are
+        usually skipped (SPACE, TAB, NEWLINE). These are predefined rules in the library
+        and are scanned independent of a regex engine implementation.
+
+        When a character other than the predefined ones is found, this signals that the
+        lexer may scan for user-defined tokens, using the regex engine implementation.
+        """
+        flags = self._hFlags
+        txt_pos: _file.TextPosition = self._ts.GetTextPosition()
+
+        # NOTE: In CPython it is faster to cache (only) this flag beforehand
+        flag_return_space = flags.space is _flags.HFlag.HANDLE_AND_RETURN
+
+        # Scan mainloop
+        token: _misc.Ptr_t[_Token] = None
+        while(1):
+
+            # NOTE: --- METHOD 1 ---
+            buf: str = self._ts.GetStrBuffer()[self._ts.GetStrBufferPosition():]
+            for c, char in enumerate(buf):
+
+
+            # NOTE: --- METHOD 2 ---
+            # c = 0
+            # for i in range(self._ts._strBufferPos, self._ts._strBufferSize):
+            #     char = self._ts._strBuffer[i]
+            #     # char = ord(self._ts._strBuffer[i])
+
+
+                # SPACE character
+                if (char == ' '):
+                # if (char == 32):
+                    if (flag_return_space):
+                        token = _Token(
+                            _predefs.space.ID,
+                            "",
+                            _file.TextPosition(
+                                txt_pos.pos,
+                                txt_pos.col,
+                                txt_pos.ln
+                            )
+                        )
+                    _file.TextPosition.UpdateCol(txt_pos)
+
+                # NEWLINE character
+                elif (char == '\n'):
+                # elif (char == 10):
+                    if (flags.newline == _flags.HFlag.HANDLE_AND_RETURN):
+                        token = _Token(
+                            _predefs.newline.ID,
+                            "",
+                            _file.TextPosition(
+                                txt_pos.pos,
+                                txt_pos.col,
+                                txt_pos.ln
+                            )
+                        )
+                    _file.TextPosition.UpdateNl(txt_pos)
+
+                # TAB character
+                elif (char == '\t'):
+                # elif (char == 9):
+                    if (flags.tab == _flags.HFlag.HANDLE_AND_RETURN):
+                        token = _Token(
+                            _predefs.tab.ID,
+                            "",
+                            _file.TextPosition(
+                                txt_pos.pos,
+                                txt_pos.col,
+                                txt_pos.ln
+                            )
+                        )
+                    _file.TextPosition.UpdateCol(txt_pos)
+
+                # Else break to the main regex matching loop
+                else:
+                    self._ts.Update(c)
+                    return self._GNT_P2_MatchRegexes()
+
+                # If we didn't break AND we HFlag.HANDLE_AND_RETURN set for one of the above
+                # characters
+                if (token):
+                    self._ts.Update(c+1)
+                    return token
+
+                # NOTE: --- METHOD 2 ---
+                # c += 1
+
+            # describe 'rare under normal circumstances'
+            # In case the buffer is entirely exhausted, refill the whole string buffer
+            self._ts.UpdateW()
+            # If the textstream has reached the end of data
+            if (self._ts.IsEOF()):
+                raise _excs.EndOfTextstream()
+
+
+    def _GNT_P2_MatchRegexes(self) -> _Token:
+        """GetNextToken() -- Part 2 --
+
+        This part of the GetNextMethod() method set scans for tokens using the rules as
+        defined by the user.
+
+        When no regex match is made, then the lexer will jump to the method to handle
+        the unknown token type.
+        """
+        # Match mainloop
+        txt_pos = self._ts.GetTextPosition()
+        ruleset: _rule.Ruleset_t = self._rulesets[-1]
+        for rule in ruleset:
+
+            # A token is returned if the (implemented) regex pattern matcher found a match.
+            token = self._MatchRule(rule)
+            if (token):
+
+                # Update positions
+                self._ts.Update(len(token._data))
+                _file.TextPosition.Update(txt_pos, token._data)
+
+                # COMMENTs can easily span across multiple chunks, so it is not wise to
+                # create a single regex pattern defining the start and stop. Instead,
+                # there is a regex pattern for defining the begin and one defining the
+                # end.
+                if (token.IsRule(_predefs.comment)):
+                    # rule = static_cast<BaseComment*>(rule)->ruleEnd
+                    rule: _rule.Rule = rule.ruleEnd_
+
+                    while(1):
+
+                        # Using the end regex matcher (stored in a comment rule object),
+                        # ALL characters are matched until a NEWLINE character (for
+                        # singleline comments) or the characters defining the end of a
+                        # multiline comment are found.
+                        temp_token = self._MatchRule(rule)
+
+                        n1 = len(temp_token._data)
+                        n2 = self._ts.GetChunkSize() - self._ts.GetStrBufferPosition()
+
+                        # Update positions
+                        self._ts.Update(len(temp_token._data))
+                        _file.TextPosition.Update(txt_pos, temp_token._data)
+
+                        # Append the intermediate string data from the temporary comment
+                        # token to the parent comment token (which is the token that will
+                        # be returned).
+                        token._data += temp_token._data  # TODO: MAKE PUBLIC
+                        del temp_token
+
+                        # The pattern defining the end will match ALL characters until
+                        # the characters denoting the end of a comment is found. By doing
+                        # this we know when the end is reached if the temporary token's
+                        # length is smaller than the readable string data in the chunk
+                        # (= chunkSize - strBufferPos).
+                        if (n1 < n2):
+                            break
+
+                        # If the textstream has reached the end of data
+                        if (self._ts.IsEOF()):
+                            del token
+                            raise _excs.EndOfTextstream()
+                            # TODO? UnterminatedCommentError
+
+                    # Check HFlag value if the token should be ignored
+                    if (self._hFlags.comment==_flags.HFlag.HANDLE_AND_IGNORE):
+                        del token
+                        return self.GetNextToken()
+                    return token
+
+                # Check user-defined HFlag values if the token should be ignored
+                for rule in self._hFlags.userFlags:
+                    if (token.IsRule(rule)):
+                        if (self._hFlags.userFlags[rule] == _flags.HFlag.HANDLE_AND_IGNORE):  ## token.GetId() == flag_key
+                            del token
+                            return self.GetNextToken()
+                        break
+
+                # Else return the token as normally intended
+                return token
+
+            # Else no match
+            del token
+
+        # If no matches were found at all (no regex pattern matched), the lexer has
+        # identified an unknown token.
+        # Either an error is raised about the unknown token or it is skipped entirely.
+        self._GNT_P3_HandleUnknownToken()
+
+
+    def _GNT_P3_HandleUnknownToken(self) -> _Token:
+        """GetNextToken() -- Part 3 --
+
+        This part of the GetNextMethod() method set handles tokens that had no regex
+        match; they are seen as unknown tokens.
+
+        Depending on the HFlag value for 'unknownToken', either an error is raised about
+        the unknown token, or it is skipped entirely.
+        """
+        # Store the start position before skipping any characters
+        txt_pos = self._ts.GetTextPosition()
+        start_pos = _file.TextPosition(
+            txt_pos.pos,
+            txt_pos.col,
+            txt_pos.ln
+        )
+
+        # Skip mainloop
+        unknown_data = ""
+        buf = self._ts.GetStrBuffer()[self._ts.GetStrBufferPosition():]
+        for c, char in enumerate(buf):
+            # Store unknown characters until SPACE, TAB or NEWLINE character
+            if (char in (' ', '\t', '\n') ):
+                unknown_data = buf[:c]
+                break
+        # If the entire buffer is exhausted
+        if (not unknown_data):
+            unknown_data = buf
+
+        # If the HFlag value HANDLE_AND_IGNORE is set for 'unknownToken', the unknown
+        # data is ignored and the lexer will (try to) return the next token.
+        if (self._hFlags.unknownToken == _flags.HFlag.HANDLE_AND_IGNORE):
+            return self.GetNextToken()
+
+        # Else (HANDLE_AND_RETURN), raise an UnknownTokenError with the data collected in
+        # the above procedures.
+        raise _excs.UnknownTokenError(
+            start_pos,
+            unknown_data
+        )
