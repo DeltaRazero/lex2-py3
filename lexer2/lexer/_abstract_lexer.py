@@ -314,7 +314,17 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 if (token.IsRule(_predefs.comment)):
                     # rule = static_cast<BaseComment*>(rule)->ruleEnd
                     rule: _rule.Rule = rule.ruleEnd
+                    temp_token: _Token
+                    sstream: _io.StringIO
 
+                    # If a comment token doesn't have to be returned, we can optimize a
+                    # little by leaving out some string operations.
+                    doReturn = self._hFlags.comment==_flags.HFlag.HANDLE_AND_RETURN
+                    if (doReturn):
+                        # sstream << token.data
+                        sstream = _io.StringIO(token.data)
+
+                    # Comment handling mainloop
                     while(1):
 
                         # Using the end regex matcher (stored in a comment rule object),
@@ -334,7 +344,9 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                         # Append the intermediate string data from the temporary comment
                         # token to the parent comment token (which is the token that will
                         # be returned).
-                        token.data += temp_token.data
+                        if (doReturn):
+                            # sstream << temp_token.data
+                            sstream.write(temp_token.data)
                         del temp_token
 
                         # The pattern defining the end will match ALL characters until
@@ -352,12 +364,18 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                             # TODO? UnterminatedCommentError
 
                     # Check HFlag value if the token should be ignored
-                    if (self._hFlags.comment==_flags.HFlag.HANDLE_AND_IGNORE):
+                    if (doReturn):
+                        comment_token = _Token(token.id, sstream.read(), token.position)
+                        sstream.close()
+                        del token
+                        return comment_token
+                    else:
                         del token
                         return self.GetNextToken()
-                    return token
 
-                # Check user-defined HFlag values if the token should be ignored
+                # Continue here if it wasn't a COMMENT
+
+                # Check user-defined HFlag values if the token should be returned or ignored
                 for rule in self._hFlags.userFlags:
                     if (token.IsRule(rule)):
                         if (self._hFlags.userFlags[rule] == _flags.HFlag.HANDLE_AND_IGNORE):  ## token.GetId() == flag_key
