@@ -22,17 +22,6 @@ class IMatcher (metaclass=_abc.ABCMeta):
   # --- INTERFACE METHODS --- #
 
     @_abc.abstractmethod
-    def GetRuleId(self) -> str:
-        """Gets the rule identifier string.
-
-        Returns
-        -------
-        str
-        """
-        pass
-
-
-    @_abc.abstractmethod
     def GetVendorId(self) -> str:
         """Gets the lexer implementation identifier string (a.k.a. 'vendor ID').
 

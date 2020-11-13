@@ -27,27 +27,23 @@ class AbstractMatcher (_IMatcher, metaclass=_abc.ABCMeta):
 
   # --- PRIVATE FIELDS --- #
 
-    _ruleId   : str
     _vendorId : str
 
 
   # --- CONSTRUCTOR --- #
 
     @_abc.abstractmethod
-    def __init__(self, vendorId: str, ruleId: str, regexPattern: str) -> None:
+    def __init__(self, vendorId: str, regexPattern: str) -> None:
         """AbstractMatcher object instance initializer.
 
         Parameters
         ----------
         vendorId : str
             Lexer implementation identifier string (a.k.a. 'vendor ID').
-        ruleId : str
-            The identifying string of a resulting token's type (e.g. "NUMBER", "WORD").
         regexPattern : str
             Regex pattern used by a lexer to identify tokens during lexical analysis.
         """
         self._vendorId = vendorId
-        self._ruleId   = ruleId
         self._regexPattern = regexPattern
 
         self._CompilePattern()
@@ -66,13 +62,8 @@ class AbstractMatcher (_IMatcher, metaclass=_abc.ABCMeta):
 
   # --- GETTERS --- #
 
-    def GetRuleId(self) -> str:
-        return self._ruleId
-
-
     def GetVendorId(self) -> str:
         return self._vendorId
-
 
     @_abc.abstractmethod
     def GetPatternMatcher(self) -> _misc.VoidPtr_t:

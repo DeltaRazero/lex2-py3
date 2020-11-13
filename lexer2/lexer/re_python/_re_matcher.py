@@ -29,19 +29,17 @@ class Re_Matcher (_AbstractMatcher):
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, vendorId: str, ruleId: str, regexPattern: str):
+    def __init__(self, vendorId: str, regexPattern: str):
         """AbstractMatcher object instance initializer.
 
         Parameters
         ----------
         vendorId : str
             Lexer implementation identifier string (a.k.a. 'vendor ID').
-        ruleId : str
-            The identifying string of a resulting token's type (e.g. "NUMBER", "WORD").
         regexPattern : str
             Regex pattern used by a lexer to identify tokens during lexical analysis.
         """
-        super().__init__(vendorId, ruleId, regexPattern)
+        super().__init__(vendorId, regexPattern)
         return
 
 

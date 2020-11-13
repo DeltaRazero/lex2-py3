@@ -65,7 +65,7 @@ class Re_Lexer (_AbstractLexer):
   # --- PROTECTED METHODS --- #
 
     def _CompileRule(self, rule: _rule.Rule) -> _IMatcher:
-        return _Re_Matcher(self.VENDOR_ID, rule.id, rule.regexPattern)
+        return _Re_Matcher(self.VENDOR_ID, rule.regexPattern)
 
 
     def _MatchRule(self, rule: _rule.Rule) -> _misc.Ptr_t[_Token]:
