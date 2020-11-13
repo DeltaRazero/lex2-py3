@@ -18,18 +18,25 @@ from ._rule import Rule as _Rule
 
 class Token:
     """Represents a token that is output during lexical analysis.
+
+    Readonly Fields
+    ---------------
+    id : str
+        The rule ID is the identifying string value of a token's type (e.g. "NUMBER",
+        "WORD").
+    position : TextPosition
+        Position in the textstream where a token occurs.
+    data : str
+        String data of an identified token type.
     """
 
-  # --- RUNTIME/READONLY CONSTANTS --- #
+  # --- READONLY FIELDS --- #
 
     # Identifying string of the token's type (e.g. "NUMBER", "WORD") -- rule ID
-    id_ : str
+    id : str
 
     # Position in the textstream where the token occurs
-    position_ : _file.TextPosition
-
-
-  # --- PROPERTIES --- #
+    position : _file.TextPosition
 
     # String data of the identified token type
     data : str
@@ -49,9 +56,9 @@ class Token:
         position : TextPosition
             Position in the textstream where the token occurs.
         """
-        self.id_  = id
+        self.id  = id
         self.data = data
-        self.position_ = position
+        self.position = position
 
         return
 
@@ -70,7 +77,7 @@ class Token:
         -------
         bool
         """
-        return self.id_ == expectedRule.id_
+        return self.id == expectedRule.id
 
 
     def ValidateRule(self, expectedRule: _Rule) -> None:
@@ -87,5 +94,5 @@ class Token:
             When the token's identifier does not match that of a given rule.
         """
         if (not self.IsRule(expectedRule)):
-            raise _excs.UnknownTokenError(self.position_, self.data)
+            raise _excs.UnknownTokenError(self.position, self.data)
         return

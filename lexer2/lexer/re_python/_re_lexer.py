@@ -65,7 +65,7 @@ class Re_Lexer (_AbstractLexer):
   # --- PROTECTED METHODS --- #
 
     def _CompileRule(self, rule: _rule.Rule) -> _IMatcher:
-        return _Re_Matcher(self.VENDOR_ID, rule.id_, rule.regexPattern_)
+        return _Re_Matcher(self.VENDOR_ID, rule.id, rule.regexPattern)
 
 
     def _MatchRule(self, rule: _rule.Rule) -> _misc.Ptr_t[_Token]:
@@ -88,7 +88,7 @@ class Re_Lexer (_AbstractLexer):
             # txt_pos = self._ts.GetTextPosition()
             txt_pos = self._ts._tp
             token = _Token(
-                rule.id_,
+                rule.id,
                 regex_match.group(),
                 _file.TextPosition(
                     txt_pos.pos,

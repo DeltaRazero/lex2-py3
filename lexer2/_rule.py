@@ -18,15 +18,23 @@ from ._interface_matcher import IMatcher as _IMatcher
 
 class Rule:
     """Class representing a rule, used as filter during lexical analysis.
+
+    Readonly Fields
+    ---------------
+    id : str
+        The rule ID is the identifying string value of a token's type (e.g. "NUMBER",
+        "WORD").
+    regexPattern : TextPosition
+        The regex pattern string is used by a matcher to perform regex matching.
     """
 
-  # --- RUNTIME/READONLY CONSTANTS --- #
+  # --- READONLY FIELDS --- #
 
     # Rule identifier string
-    id_ : str
+    id : str
 
     # The regex pattern string is used by a matcher to perform regex matching.
-    regexPattern_ : str
+    regexPattern : str
 
 
   # --- FIELDS --- #
@@ -46,9 +54,8 @@ class Rule:
         regexPattern : str
             Regex pattern used by a lexer to identify tokens during lexical analysis.
         """
-        self.id_ = id
-        self.regexPattern_ = regexPattern
-
+        self.id = id
+        self.regexPattern = regexPattern
         self._matcher = None
 
         return

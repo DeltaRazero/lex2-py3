@@ -11,6 +11,7 @@ All rights reserved.
 
 import abc    as _abc
 import typing as _t
+import io     as _io
 
 from .. import excs    as _excs
 from .. import file    as _file
@@ -176,7 +177,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 rule.SetMatcher(self._CompileRule(rule))
 
             # Comment rules also have an addition rule to be compiled
-            if (rule.id_ == _predefs.comment.id_):
+            if (rule.id == _predefs.comment.id):
                 # rule = static_cast<BaseComment*>(rule)->ruleEnd
                 rule: _rule.Rule = rule.ruleEnd
                 if (self._NeedsCompilation(rule)):
@@ -222,7 +223,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 if (char == ' '):
                     if (flag_return_space):
                         token = _Token(
-                            _predefs.space.id_,
+                            _predefs.space.id,
                             "",
                             _file.TextPosition(
                                 txt_pos.pos,
@@ -236,7 +237,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 elif (char == '\n'):
                     if (flags.newline == _flags.HFlag.HANDLE_AND_RETURN):
                         token = _Token(
-                            _predefs.newline.id_,
+                            _predefs.newline.id,
                             "",
                             _file.TextPosition(
                                 txt_pos.pos,
@@ -250,7 +251,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 elif (char == '\t'):
                     if (flags.tab == _flags.HFlag.HANDLE_AND_RETURN):
                         token = _Token(
-                            _predefs.tab.id_,
+                            _predefs.tab.id,
                             "",
                             _file.TextPosition(
                                 txt_pos.pos,
