@@ -19,7 +19,7 @@ class IMatcher (metaclass=_abc.ABCMeta):
     """Common interface to a rule matcher object instance.
     """
 
-  # --- INTERFACE METHODS --- #
+  # --- INTERFACE GETTERS --- #
 
     @_abc.abstractmethod
     def GetVendorId(self) -> str:

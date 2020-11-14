@@ -22,11 +22,13 @@ class AbstractMatcher (_IMatcher, metaclass=_abc.ABCMeta):
 
   # --- PROTECTED FIELDS --- #
 
+    # Regex pattern used by a lexer to identify tokens during lexical analysis.
     _regexPattern : str
 
 
   # --- PRIVATE FIELDS --- #
 
+    # Lexer implementation identifier string (a.k.a. 'vendor ID').
     _vendorId : str
 
 
