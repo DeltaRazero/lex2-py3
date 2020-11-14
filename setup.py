@@ -15,22 +15,24 @@ def ReadTxt(fName: str):
 
 # ***************************************************************************************
 
+import lexer2
+
 setuptools.setup(
     name="liblexer2-python3",
-    version = "0.9.1",
+    version=lexer2.__version__,
 
     packages=setuptools.find_packages(),
     python_requires='>=3.6',
 
     author="DeltaRazero",
     author_email="deltarazero@gmail.com",
-    license = "zlib",
+    license="zlib",
 
     description="Flexible, ruleset-based tokenizer using regex.",
     long_description=ReadTxt("./README.md"),
     long_description_content_type="text/markdown",
 
-    keywords = "lexer tokenizer sphinx",
+    keywords="lexer tokenizer sphinx",
     classifiers=[
         "Programming Language :: Python :: 3",
         "Operating System :: OS Independent",
