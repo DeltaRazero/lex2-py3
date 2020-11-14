@@ -90,10 +90,10 @@ while (1):
         break
 
     info = [
-        token.id_,
+        token.id,
         token.data,
-         "ln: {}".format(token.position_.ln +1),
-        "col: {}".format(token.position_.col+1),
+         "ln: {}".format(token.position.ln +1),
+        "col: {}".format(token.position.col+1),
     ]
     print("{: <20} {: <20} {: <10} {: <10}".format(*info))
 
