@@ -68,5 +68,5 @@ class AbstractMatcher (_IMatcher, metaclass=_abc.ABCMeta):
         return self._vendorId
 
     @_abc.abstractmethod
-    def GetPatternMatcher(self) -> _misc.VoidPtr_t:
+    def GetPatternMatcher(self) -> _misc.voidptr_t:
         pass

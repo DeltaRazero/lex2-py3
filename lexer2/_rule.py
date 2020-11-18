@@ -11,7 +11,7 @@ All rights reserved.
 
 import typing as _t
 
-from .misc import Ptr_t as _Ptr_t
+from .misc import ptr_t as _ptr_t
 from ._interface_matcher import IMatcher as _IMatcher
 
 # ***************************************************************************************
@@ -39,7 +39,7 @@ class Rule:
 
   # --- FIELDS --- #
 
-    _matcher : _Ptr_t[_IMatcher]
+    _matcher : _ptr_t[_IMatcher]
 
 
   # --- CONSTRUCTOR --- #
@@ -77,7 +77,7 @@ class Rule:
 
   # --- GETTERS --- #
 
-    def GetMatcher(self) -> _Ptr_t[_IMatcher]:
+    def GetMatcher(self) -> _ptr_t[_IMatcher]:
         """Gets the rule matcher object reference.
 
         The rule matcher object is used by a lexer object to identify tokens during
@@ -85,7 +85,7 @@ class Rule:
 
         Returns
         -------
-        Ptr_t[IMatcher]
+        ptr_t[IMatcher]
         """
         return self._matcher
 
@@ -105,4 +105,4 @@ class Rule:
 
 # *****************************************************************************
 
-Ruleset_t = _t.List[Rule]
+ruleset_t = _t.List[Rule]

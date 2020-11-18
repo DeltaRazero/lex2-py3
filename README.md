@@ -67,7 +67,7 @@ Usage of lexer2 is relatively simple, as demonstrated by the short example below
 import lexer2
 
 # Define ruleset and prepare the lexer object instance
-ruleset: lexer2.Ruleset_t = [
+ruleset: lexer2.ruleset_t = [
     #          Identifier     Regex pattern
     lexer2.Rule("WORD",        r"[a-zA-Z]+"),
     lexer2.Rule("NUMBER",      r"[0-9]+"),

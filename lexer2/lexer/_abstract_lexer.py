@@ -34,7 +34,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
     _vendorId: str
 
-    _rulesets : _t.List[_rule.Ruleset_t]
+    _rulesets : _t.List[_rule.ruleset_t]
     _hFlags   : _flags.HFlags
 
     _ts : _file.ITextstream
@@ -45,7 +45,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
     @_abc.abstractmethod
     def __init__(self,
                  vendorId: str,
-                 ruleset: _rule.Ruleset_t=[],
+                 ruleset: _rule.ruleset_t=[],
                  handleFlags: _flags.HFlags=_flags.HFlags(),
                  textstream: _file.ITextstream=_file.Textstream(),
     ):
@@ -55,7 +55,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         ----------
         vendorId : str
             Lexer implementation identifier string (a.k.a. 'vendor ID').
-        ruleset : Ruleset_t, optional
+        ruleset : ruleset_t, optional
             Initial ruleset.
             By default []
         handleFlags : HFlags, optional
@@ -82,7 +82,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         return self._ts
 
 
-    def PushRuleset(self, ruleset: _rule.Ruleset_t) -> None:
+    def PushRuleset(self, ruleset: _rule.ruleset_t) -> None:
         # Before pushing the ruleset, we check if the pattern matchers (saved in the rule
         # objects) are compiled for the specific lexer implementation this function is called from.
         self._CompileRuleset(ruleset)
@@ -124,7 +124,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
 
     @_abc.abstractmethod
-    def _MatchRule(self, rule: _rule.Rule) -> _misc.Ptr_t[_Token]:
+    def _MatchRule(self, rule: _rule.Rule) -> _misc.ptr_t[_Token]:
         """Requests implemented lexer to match a rule.
 
         The implementation calls the GetMatcher() method from a Rule object to match
@@ -138,7 +138,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
         Returns
         -------
-        Ptr_t[Token]
+        ptr_t[Token]
             A regex matcher should not return anything whenever no regex match was found.
             Therefore the return type is a pointer/reference of Token (i.e. Token*).
         """
@@ -162,7 +162,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         return needs_compilation
 
 
-    def _CompileRuleset(self, ruleset: _rule.Ruleset_t) -> None:
+    def _CompileRuleset(self, ruleset: _rule.ruleset_t) -> None:
         """Checks and compiles rules within a newly pushed ruleset.
 
         Whenever a ruleset is pushed, this method will check if all rules have their
@@ -204,7 +204,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         flag_return_space = flags.space is _flags.HFlag.HANDLE_AND_RETURN
 
         # Scan mainloop
-        token: _misc.Ptr_t[_Token] = None
+        token: _misc.ptr_t[_Token] = None
         while(1):
 
             # NOTE: --- METHOD 1 ---
@@ -296,7 +296,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         txt_pos: _file.TextPosition = self._ts._tp
 
         # Match mainloop
-        ruleset: _rule.Ruleset_t = self._rulesets[-1]
+        ruleset: _rule.ruleset_t = self._rulesets[-1]
         for rule in ruleset:
 
             # A token is returned if the (implemented) regex pattern matcher found a match.

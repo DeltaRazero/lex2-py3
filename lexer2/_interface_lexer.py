@@ -13,7 +13,7 @@ import abc as _abc
 
 from . import file as _file
 from ._token import Token     as _Token
-from ._rule  import Ruleset_t as _Ruleset_t
+from ._rule  import ruleset_t as _ruleset_t
 from ._flags import HFlags    as _HFlags
 
 # ***************************************************************************************
@@ -25,12 +25,12 @@ class ILexer (metaclass=_abc.ABCMeta):
   # --- INTERFACE METHODS --- #
 
     @_abc.abstractmethod
-    def PushRuleset(self, ruleset: _Ruleset_t) -> None:
+    def PushRuleset(self, ruleset: _ruleset_t) -> None:
         """Pushes a ruleset to the lexer's ruleset-stack.
 
         Parameters
         ----------
-        ruleset : Ruleset_t
+        ruleset : ruleset_t
         """
         pass
 

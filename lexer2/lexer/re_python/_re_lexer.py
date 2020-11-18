@@ -35,7 +35,7 @@ class Re_Lexer (_AbstractLexer):
   # --- CONSTRUCTOR --- #
 
     def __init__(self,
-                 ruleset: _rule.Ruleset_t=[],
+                 ruleset: _rule.ruleset_t=[],
                  handleFlags: _flags.HFlags=_flags.HFlags(),
                  textstream: _file.ITextstream=_file.Textstream()
     ):
@@ -43,7 +43,7 @@ class Re_Lexer (_AbstractLexer):
 
         Parameters
         ----------
-        ruleset : Ruleset_t, optional
+        ruleset : ruleset_t, optional
             Initial ruleset.
             By default []
         handleFlags : HFlags, optional
@@ -68,9 +68,9 @@ class Re_Lexer (_AbstractLexer):
         return _Re_Matcher(self.VENDOR_ID, rule.regexPattern)
 
 
-    def _MatchRule(self, rule: _rule.Rule) -> _misc.Ptr_t[_Token]:
+    def _MatchRule(self, rule: _rule.Rule) -> _misc.ptr_t[_Token]:
 
-        token: _misc.Ptr_t[_Token] = None
+        token: _misc.ptr_t[_Token] = None
 
         # NOTE: Inlined version
         matcher: _Re_Matcher = rule._matcher

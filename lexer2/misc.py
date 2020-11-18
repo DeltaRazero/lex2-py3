@@ -15,7 +15,7 @@ T = _t.TypeVar('T')
 # ***************************************************************************************
 
 # Typedef to simulate void*
-VoidPtr_t = _t.Any
+voidptr_t = _t.Any
 
 # Typedef to simulate pointer type
-Ptr_t = _t.Union[T, None]
+ptr_t = _t.Union[T, None]

@@ -14,7 +14,7 @@ from . import file  as _file
 
 from ._interface_lexer import ILexer as _ILexer
 
-from ._rule  import Ruleset_t as _Ruleset_t
+from ._rule  import ruleset_t as _ruleset_t
 from ._flags import HFlags    as _HFlags
 
 DEFAULT_VENDOR = _lexer.re_python.Re_Lexer.VENDOR_ID
@@ -22,7 +22,7 @@ DEFAULT_VENDOR = _lexer.re_python.Re_Lexer.VENDOR_ID
 # ***************************************************************************************
 
 def MakeLexer(vendorId: str=DEFAULT_VENDOR,
-              ruleset: _Ruleset_t=[],
+              ruleset: _ruleset_t=[],
               handleFlags: _HFlags=_HFlags(),
               textstream: _file.ITextstream=_file.Textstream()
 ) -> _ILexer:
@@ -33,7 +33,7 @@ def MakeLexer(vendorId: str=DEFAULT_VENDOR,
     vendorId : str, optional
         Lexer implementation identifier string (a.k.a. 'vendor ID').
         By default "RE_PYTHON_DEFAULT"
-    ruleset : Ruleset_t, optional
+    ruleset : ruleset_t, optional
         Initial ruleset.
         By default []
     handleFlags : HFlags, optional

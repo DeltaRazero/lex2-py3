@@ -21,7 +21,7 @@ from . import file
 from . import misc
 
 from ._token import Token
-from ._rule  import Rule, Ruleset_t
+from ._rule  import Rule, ruleset_t
 from . import predefs
 
 from ._flags import HFlag, HFlags
