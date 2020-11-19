@@ -105,4 +105,6 @@ class Rule:
 
 # *****************************************************************************
 
-ruleset_t = _t.List[Rule]
+# ruleset_t = _t.List[Rule]
+# https://github.com/python/mypy/issues/2984#issuecomment-285716826
+ruleset_t = _t.Sequence[Rule]
