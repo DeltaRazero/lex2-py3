@@ -298,9 +298,8 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         # Match mainloop
         ruleset: _rule.ruleset_t = self._rulesets[-1]
         for rule in ruleset:
-
             # A token is returned if the (implemented) regex pattern matcher found a match.
-            token = self._MatchRule(rule)
+            token: _misc.ptr_t[_Token] = self._MatchRule(rule)
             if (token):
 
                 # Update positions
