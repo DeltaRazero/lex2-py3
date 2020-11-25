@@ -9,7 +9,9 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import io as _io
+import io      as _io
+import typing  as _t
+import pathlib as _pl
 
 from ._interface_textstream import ITextstream  as _ITextstream
 from ._textposition         import TextPosition as _TextPosition
@@ -66,13 +68,19 @@ class Textstream (_ITextstream):
 
   # --- INTERFACE METHODS --- #
 
-    def Open(self, fp: str, encoding: str="UTF-8", convertLineEndings: bool=True) -> None:
+    def Open(self,
+             fp: _t.Union[str, _pl.Path],
+             encoding: str="UTF-8",
+             convertLineEndings: bool=True
+    ) -> None:
 
         self._encoding   = encoding
         self._convertEol = convertLineEndings
 
         # Read file in given encoding
         self.Close()
+        # NOTE: open() accepts both 'str' and 'Path' arguments, so conversion in this
+        # method is not needed.
         with open(fp, "rb") as f:
             bin_data = f.read()
             str_data = bin_data.decode(self._encoding, "ignore")

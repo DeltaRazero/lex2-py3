@@ -9,7 +9,9 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import abc as _abc
+import abc     as _abc
+import typing  as _t
+import pathlib as _pl
 
 from ._textposition import TextPosition as _TextPosition
 
@@ -22,13 +24,17 @@ class ITextstream (metaclass=_abc.ABCMeta):
   # --- INTERFACE METHODS --- #
 
     @_abc.abstractmethod
-    def Open(self, fp: str, encoding: str="UTF-8", convertLineEndings: bool=True) -> None:
+    def Open(self,
+             fp: _t.Union[str, _pl.Path],
+             encoding: str="UTF-8",
+             convertLineEndings: bool=True
+    ) -> None:
         """Opens a textfile.
 
         Parameters
         ----------
-        fp : str
-            Filepath string.
+        fp : Union[str, Path]
+            String or Path object of a filepath.
         encoding : str, optional
             Encoding of textfile. By default "UTF-8".
         convertLineEndings : bool, optional
