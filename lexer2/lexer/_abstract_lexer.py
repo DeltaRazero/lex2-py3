@@ -321,7 +321,8 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                     doReturn = self._hFlags.comment==_flags.HFlag.HANDLE_AND_RETURN
                     if (doReturn):
                         # sstream << token.data
-                        sstream = _io.StringIO(token.data)
+                        sstream = _io.StringIO()
+                        sstream.write(token.data)
 
                     # Comment handling mainloop
                     while(1):
@@ -364,6 +365,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
                     # Check HFlag value if the token should be ignored
                     if (doReturn):
+                        sstream.seek(0)  # Seek back to the beginning of the virtual file
                         comment_token = _Token(token.id, sstream.read(), token.position)
                         sstream.close()
                         del token
