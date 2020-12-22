@@ -9,13 +9,13 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from ._interface_textstream import ITextstream as _ITextstream
-from ._textstream           import Textstream  as _Textstream
-
+from ._interface_textstream import ITextstream         as _ITextstream
+from ._textstream           import Textstream          as _Textstream
+from ._textstream_buffered  import BufferedTextstream  as _BufferedTextstream
 
 # ***************************************************************************************
 
-def MakeTextstream(chunkSize: int=512, isBuffered: bool=False ) -> _ITextstream:
+def MakeTextstream(chunkSize: int=512, isBuffered: bool=False) -> _ITextstream:
     """Creates an ITextstream-compatible textstream object.
 
     Parameters
@@ -37,7 +37,8 @@ def MakeTextstream(chunkSize: int=512, isBuffered: bool=False ) -> _ITextstream:
     textstream: _ITextstream
     # Select implementation
     if (isBuffered):
-        raise NotImplementedError()  # TODO
+        textstream = _BufferedTextstream(chunkSize)
+        # raise NotImplementedError()  # TODO
     else:
         textstream = _Textstream(chunkSize)
 
