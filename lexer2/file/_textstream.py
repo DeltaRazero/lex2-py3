@@ -115,18 +115,14 @@ class Textstream (_ITextstream):
 
     def Update(self, n: int) -> None:
 
-        self._strBufferPos   += n
+        self._strBufferPos += n
 
         if (self._strBufferPos > self._chunkSplit):
 
-            n = self._strBufferSize - self._strBufferPos
-            if (n):  # NOTE: Last n characters (n=0) doesn't work in Python
-                self._strBuffer =\
-                    self._strBuffer[-n:] +\
-                    self._stringStream.read(self._strBufferPos)
-            else:
-                self._strBuffer =\
-                    self._stringStream.read(self._strBufferPos)
+            self._strBuffer =\
+                self._strBuffer[self._strBufferPos:]\
+                +\
+                self._stringStream.read(self._strBufferPos)
 
             self._strBufferSize  = len(self._strBuffer)
             self._strBufferPos   = 0
