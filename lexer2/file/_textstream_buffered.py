@@ -192,10 +192,11 @@ class BufferedTextstream (_ITextstream):
 
     def _Read(self, nChars: int) -> str:
 
-        # Some characters may not have been decoded due to missing bytes (multibyte encoding)
+        # A character may not have been decoded due to missing bytes (multibyte encoding)
+        bb_length = self._BinaryStringLength(self._strBuffer)
         self._binBuffer =\
-            self._binBuffer[self._BinaryStringLength(self._strBuffer):] +\
-            self._f.read(nChars)
+            self._binBuffer[bb_length:] +\
+            self._f.read( nChars - (self._chunkSize - bb_length) )
 
         self._strBuffer = self._binBuffer.decode(self._encoding, "ignore")
         if (self._convertEol):  # Convert all line-endings to POSIX format ('\n')
