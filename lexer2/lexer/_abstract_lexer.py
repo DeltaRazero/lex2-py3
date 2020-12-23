@@ -233,7 +233,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                         )
                     _file.TextPosition.UpdateCol(txt_pos)
 
-                # NEWLINE character
+                # NEWLINE character (UNIX)
                 elif (char == '\n'):
                     if (flags.newline == _flags.HFlag.HANDLE_AND_RETURN):
                         token = _Token(
@@ -246,6 +246,9 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                             )
                         )
                     _file.TextPosition.UpdateNl(txt_pos)
+
+                # NEWLINE character (WINDOWS)
+                # TODO?
 
                 # TAB character
                 elif (char == '\t'):
@@ -275,8 +278,9 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 # NOTE: --- METHOD 2 ---
                 # c += 1
 
-            # describe 'rare under normal circumstances'
-            # In case the buffer is entirely exhausted, refill the whole string buffer
+            # In case the current chunk is entirely exhausted, refill the whole string
+            # buffer (in most cases the textstream reached the end of data though, so
+            # nothing will be read).
             self._ts.UpdateW()
             # If the textstream has reached the end of data
             if (self._ts.IsEOF()):

@@ -1,4 +1,4 @@
-"""<internal>"""
+"""Miscellanous components."""
 
 '''
 zlib License

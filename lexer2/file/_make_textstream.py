@@ -38,7 +38,6 @@ def MakeTextstream(chunkSize: int=512, isBuffered: bool=False) -> _ITextstream:
     # Select implementation
     if (isBuffered):
         textstream = _BufferedTextstream(chunkSize)
-        # raise NotImplementedError()  # TODO
     else:
         textstream = _Textstream(chunkSize)
 

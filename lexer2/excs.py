@@ -1,4 +1,4 @@
-"""Assets of exceptions."""
+"""Components of exceptions."""
 
 '''
 zlib License

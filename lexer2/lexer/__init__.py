@@ -1,4 +1,4 @@
-"""Components related to lexer implementations."""
+"""Components of lexer implementations."""
 
 '''
 zlib License

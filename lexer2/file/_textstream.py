@@ -22,7 +22,7 @@ class Textstream (_ITextstream):
 
   # --- FIELDS --- #
 
-    # _encoding   : str
+    _encoding   : str
     _convertEol : bool
 
     _tp : _TextPosition
@@ -91,6 +91,7 @@ class Textstream (_ITextstream):
 
     def Load(self, strData: str, convertLineEndings: bool=True) -> None:
 
+        self._encoding   = "UTF-8"
         self._convertEol = convertLineEndings
 
         self.Close()
@@ -172,6 +173,7 @@ class Textstream (_ITextstream):
 
   # --- PRIVATE METHODS --- #
 
+    # This method essentially loads the passed string data in a stringstream object.
     def _PrepareData(self, strData: str) -> None:
 
         if (self._convertEol):  # Convert all line-endings to POSIX format ('\n')
