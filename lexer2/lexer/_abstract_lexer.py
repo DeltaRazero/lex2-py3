@@ -310,6 +310,12 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 self._ts.Update(len(token.data))
                 _file.TextPosition.Update(txt_pos, token.data)
 
+                # Throw ChunkSizeError whenever the token data length is equal to or
+                # exceeds the filestream's allocated chunk size.
+                # if (token.data.__len__() >= self._ts.GetChunkSize()):
+                if (token.data.__len__() >= self._ts._chunkSize):
+                    raise _excs.ChunkSizeError(self._ts.GetChunkSize())
+
                 # COMMENTs can easily span across multiple chunks, so it is not wise to
                 # create a single regex pattern defining the start and stop. Instead,
                 # there is a regex pattern for defining the begin and one defining the

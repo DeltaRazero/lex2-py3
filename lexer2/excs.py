@@ -13,15 +13,15 @@ from . import file as _file
 
 # ***************************************************************************************
 
-class BufferSizeError (Exception):
-    """Raised whenever the buffer size of a buffered filestream is too small.
+class ChunkSizeError (Exception):
+    """Raised whenever the chunk size of a filestream is too small.
     """
 
   # --- CONSTRUCTOR --- #
 
     def __init__(self, bufferSize: int):
 
-        message = "Buffer size of {} is too small!" \
+        message = "Chunk size of {} is too small!" \
                   .format(bufferSize)
 
         # Call the base class constructor with the parameters it needs
