@@ -40,7 +40,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
     _ts : _file.ITextstream
 
 
-  # --- CONSTRUCTOR --- #
+  # --- CONSTRUCTOR & DESTRUCTOR --- #
 
     @_abc.abstractmethod
     def __init__(self,
@@ -72,6 +72,15 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
         self._hFlags = handleFlags
         self._ts     = textstream
+
+        return
+
+
+    def __del__(self):
+
+        # Destructing a textstream object does not guarantee buffer close
+        self._ts.Close()
+        del self._ts
 
         return
 
