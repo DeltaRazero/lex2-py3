@@ -14,7 +14,7 @@ import typing as _t
 import io     as _io
 
 from .. import excs    as _excs
-from .. import file    as _file
+from .. import text    as _text
 from .. import predefs as _predefs
 from .. import misc    as _misc
 from .. import _rule
@@ -37,7 +37,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
     _rulesets : _t.List[_rule.ruleset_t]
     _hFlags   : _flags.HFlags
 
-    _ts : _file.ITextstream
+    _ts : _text.ITextstream
 
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
@@ -47,7 +47,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                  vendorId: str,
                  ruleset: _rule.ruleset_t=[],
                  handleFlags: _flags.HFlags=_flags.HFlags(),
-                 textstream: _file.ITextstream=_file.Textstream(),
+                 textstream: _text.ITextstream=_text.Textstream(),
     ):
         """AbstractLexer object instance initializer.
 
@@ -87,7 +87,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
   # --- PUBLIC METHODS --- #
 
-    def GetTextstream(self) -> _file.ITextstream:
+    def GetTextstream(self) -> _text.ITextstream:
         return self._ts
 
 
@@ -206,8 +206,8 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         lexer may scan for user-defined tokens, using the regex engine implementation.
         """
         flags = self._hFlags
-        # txt_pos: _file.TextPosition = self._ts.GetTextPosition()
-        txt_pos: _file.TextPosition = self._ts._tp
+        # txt_pos: _text.TextPosition = self._ts.GetTextPosition()
+        txt_pos: _text.TextPosition = self._ts._tp
 
         # NOTE: In CPython it is faster to cache (only) this flag beforehand
         flag_return_space = flags.space is _flags.HFlag.HANDLE_AND_RETURN
@@ -234,13 +234,13 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                         token = _Token(
                             _predefs.space.id,
                             "",
-                            _file.TextPosition(
+                            _text.TextPosition(
                                 txt_pos.pos,
                                 txt_pos.col,
                                 txt_pos.ln
                             )
                         )
-                    _file.TextPosition.UpdateCol(txt_pos)
+                    _text.TextPosition.UpdateCol(txt_pos)
 
                 # NEWLINE character (UNIX)
                 elif (char == '\n'):
@@ -248,13 +248,13 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                         token = _Token(
                             _predefs.newline.id,
                             "",
-                            _file.TextPosition(
+                            _text.TextPosition(
                                 txt_pos.pos,
                                 txt_pos.col,
                                 txt_pos.ln
                             )
                         )
-                    _file.TextPosition.UpdateNl(txt_pos)
+                    _text.TextPosition.UpdateNl(txt_pos)
 
                 # NEWLINE character (WINDOWS)
                 # TODO?
@@ -265,13 +265,13 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                         token = _Token(
                             _predefs.tab.id,
                             "",
-                            _file.TextPosition(
+                            _text.TextPosition(
                                 txt_pos.pos,
                                 txt_pos.col,
                                 txt_pos.ln
                             )
                         )
-                    _file.TextPosition.UpdateCol(txt_pos)
+                    _text.TextPosition.UpdateCol(txt_pos)
 
                 # Else break to the main regex matching loop
                 else:
@@ -306,7 +306,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         the unknown token type.
         """
         # txt_pos = self._ts.GetTextPosition()
-        txt_pos: _file.TextPosition = self._ts._tp
+        txt_pos: _text.TextPosition = self._ts._tp
 
         # Match mainloop
         ruleset: _rule.ruleset_t = self._rulesets[-1]
@@ -317,7 +317,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
                 # Update positions
                 self._ts.Update(len(token.data))
-                _file.TextPosition.Update(txt_pos, token.data)
+                _text.TextPosition.Update(txt_pos, token.data)
 
                 # Throw ChunkSizeError whenever the token data length is equal to or
                 # exceeds the filestream's allocated chunk size.
@@ -358,7 +358,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
                         # Update positions
                         self._ts.Update(len(temp_token.data))
-                        _file.TextPosition.Update(txt_pos, temp_token.data)
+                        _text.TextPosition.Update(txt_pos, temp_token.data)
 
                         # Append the intermediate string data from the temporary comment
                         # token to the parent comment token (which is the token that will
@@ -426,7 +426,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         """
         # Store the start position before skipping any characters
         txt_pos = self._ts.GetTextPosition()
-        start_pos = _file.TextPosition(
+        start_pos = _text.TextPosition(
             txt_pos.pos,
             txt_pos.col,
             txt_pos.ln

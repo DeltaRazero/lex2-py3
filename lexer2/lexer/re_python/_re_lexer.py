@@ -13,7 +13,7 @@ from ._re_matcher import Re_Matcher as _Re_Matcher
 
 from .. import AbstractLexer as _AbstractLexer
 
-from ... import file as _file
+from ... import text as _text
 from ... import misc as _misc
 from ... import _rule
 from ... import _flags
@@ -37,7 +37,7 @@ class Re_Lexer (_AbstractLexer):
     def __init__(self,
                  ruleset: _rule.ruleset_t=[],
                  handleFlags: _flags.HFlags=_flags.HFlags(),
-                 textstream: _file.ITextstream=_file.Textstream()
+                 textstream: _text.ITextstream=_text.Textstream()
     ):
         """Re_Lexer object instance initializer.
 
@@ -90,7 +90,7 @@ class Re_Lexer (_AbstractLexer):
             token = _Token(
                 rule.id,
                 regex_match.group(),
-                _file.TextPosition(
+                _text.TextPosition(
                     txt_pos.pos,
                     txt_pos.col,
                     txt_pos.ln

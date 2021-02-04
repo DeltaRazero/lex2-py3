@@ -9,7 +9,7 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from . import file as _file
+from . import text as _text
 
 # ***************************************************************************************
 
@@ -43,13 +43,13 @@ class UnknownTokenError (Exception):
 
   # --- PROPERTIES --- #
 
-    pos  : _file.TextPosition
+    pos  : _text.TextPosition
     data : str
 
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, pos: _file.TextPosition, data: str):
+    def __init__(self, pos: _text.TextPosition, data: str):
 
         message = "Unidentified token at {}:\n\n    \"{}\"" \
                   .format(

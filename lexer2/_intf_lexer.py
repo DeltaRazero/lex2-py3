@@ -11,7 +11,7 @@ All rights reserved.
 
 import abc as _abc
 
-from . import file as _file
+from . import text as _text
 from ._token import Token     as _Token
 from ._rule  import ruleset_t as _ruleset_t
 from ._flags import HFlags    as _HFlags
@@ -69,7 +69,7 @@ class ILexer (metaclass=_abc.ABCMeta):
   # --- INTERFACE GETTERS --- #
 
     @_abc.abstractmethod
-    def GetTextstream(self) -> _file.ITextstream:
+    def GetTextstream(self) -> _text.ITextstream:
         """Gets the ITextstream-compatible object instance.
 
         Returns

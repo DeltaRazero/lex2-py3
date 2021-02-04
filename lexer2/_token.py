@@ -10,7 +10,7 @@ All rights reserved.
 # ***************************************************************************************
 
 from . import excs as _excs
-from . import file as _file
+from . import text as _text
 
 from ._rule import Rule as _Rule
 
@@ -36,7 +36,7 @@ class Token:
     id : str
 
     # Position in the textstream where the token occurs
-    position : _file.TextPosition
+    position : _text.TextPosition
 
     # String data of the identified token type
     data : str
@@ -44,7 +44,7 @@ class Token:
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, id: str, data: str, position: _file.TextPosition):
+    def __init__(self, id: str, data: str, position: _text.TextPosition):
         """Token object instance initializer.
 
         Parameters
