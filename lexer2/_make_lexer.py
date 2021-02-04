@@ -10,29 +10,23 @@ All rights reserved.
 # ***************************************************************************************
 
 from . import lexer as _lexer
-from . import file  as _file
+from . import text  as _text
 
-from ._interface_lexer import ILexer as _ILexer
+from ._intf_lexer import ILexer as _ILexer
 
 from ._rule  import ruleset_t as _ruleset_t
 from ._flags import HFlags    as _HFlags
 
-DEFAULT_VENDOR = _lexer.re_python.Re_Lexer.VENDOR_ID
-
 # ***************************************************************************************
 
-def MakeLexer(vendorId: str=DEFAULT_VENDOR,
-              ruleset: _ruleset_t=[],
+def MakeLexer(ruleset: _ruleset_t=[],
               handleFlags: _HFlags=_HFlags(),
-              textstream: _file.ITextstream=_file.Textstream()
+              textstream: _text.ITextstream=_text.Textstream()
 ) -> _ILexer:
-    """Creates an ILexer-compatible lexer implementation, specified by vendor ID.
+    """Creates an instance of the library's current default lexer implementation.
 
     Parameters
     ----------
-    vendorId : str, optional
-        Lexer implementation identifier string (a.k.a. 'vendor ID').
-        By default "RE_PYTHON_DEFAULT"
     ruleset : ruleset_t, optional
         Initial ruleset.
         By default []
@@ -47,16 +41,11 @@ def MakeLexer(vendorId: str=DEFAULT_VENDOR,
     -------
     ILexer
     """
-    lexer: _ILexer
-    # Select implementation by vendor ID
-    if(vendorId == DEFAULT_VENDOR):
-        lexer = _lexer.re_python.Re_Lexer(
-            ruleset=ruleset, handleFlags=handleFlags, textstream=textstream
-        )
-    # In case of an unknown vendor ID, return the default implementation
-    else:
-        lexer = MakeLexer(
-            ruleset=ruleset, handleFlags=handleFlags, textstream=textstream
-        )
+    DEFAULT_IMPLEMENTATION_CLASS = _lexer.re_python.Re_Lexer
 
+    lexer: _ILexer = DEFAULT_IMPLEMENTATION_CLASS(
+        ruleset=ruleset,
+        handleFlags=handleFlags,
+        textstream=textstream
+    )
     return lexer
