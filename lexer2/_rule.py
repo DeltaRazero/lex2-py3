@@ -24,7 +24,7 @@ class Rule:
     id : str
         The rule ID is the identifying string value of a token's type (e.g. "NUMBER",
         "WORD").
-    regexPattern : TextPosition
+    regexPattern : str
         The regex pattern string is used by a matcher to perform regex matching.
     """
 
