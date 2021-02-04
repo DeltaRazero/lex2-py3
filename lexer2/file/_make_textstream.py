@@ -9,9 +9,9 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from ._interface_textstream import ITextstream         as _ITextstream
-from ._textstream           import Textstream          as _Textstream
-from ._textstream_buffered  import BufferedTextstream  as _BufferedTextstream
+from ._intf_textstream     import ITextstream         as _ITextstream
+from ._textstream          import Textstream          as _Textstream
+from ._textstream_buffered import BufferedTextstream  as _BufferedTextstream
 
 # ***************************************************************************************
 

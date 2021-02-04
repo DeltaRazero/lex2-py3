@@ -14,8 +14,8 @@ import typing   as _t
 import pathlib  as _pl
 import warnings as _warnings
 
-from ._interface_textstream import ITextstream  as _ITextstream
-from ._textposition         import TextPosition as _TextPosition
+from ._intf_textstream import ITextstream  as _ITextstream
+from ._textposition    import TextPosition as _TextPosition
 
 # ***************************************************************************************
 

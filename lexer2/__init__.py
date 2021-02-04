@@ -26,8 +26,8 @@ from . import predefs
 
 from ._flags import HFlag, HFlags
 
-from ._interface_matcher import IMatcher
-from ._interface_lexer   import ILexer
+from ._intf_matcher import IMatcher
+from ._intf_lexer   import ILexer
 
 from . import lexer
 from ._make_lexer import MakeLexer

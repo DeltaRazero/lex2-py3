@@ -12,7 +12,7 @@ All rights reserved.
 import typing as _t
 
 from .misc import ptr_t as _ptr_t
-from ._interface_matcher import IMatcher as _IMatcher
+from ._intf_matcher import IMatcher as _IMatcher
 
 # ***************************************************************************************
 

@@ -9,7 +9,7 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from ._abstract_matcher import AbstractMatcher
-from ._abstract_lexer   import AbstractLexer
+from ._abst_matcher import AbstractMatcher
+from ._abst_lexer   import AbstractLexer
 
 from . import re_python
