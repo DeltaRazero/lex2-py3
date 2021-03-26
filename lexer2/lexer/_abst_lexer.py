@@ -14,7 +14,7 @@ import typing as _t
 import io     as _io
 
 from .. import excs    as _excs
-from .. import text    as _text
+from .. import textio  as _textio
 from .. import predefs as _predefs
 from .. import misc    as _misc
 from .. import _rule
@@ -26,7 +26,7 @@ from .. import Token    as _Token
 
 # ***************************************************************************************
 
-class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
+class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
     """Abstract base class of an ILexer implementation.
     """
 
@@ -37,8 +37,6 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
     _rulesets : _t.List[_rule.ruleset_t]
     _hFlags   : _flags.HFlags
 
-    _ts : _text.ITextstream
-
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
@@ -47,7 +45,6 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                  vendorId: str,
                  ruleset: _rule.ruleset_t=[],
                  handleFlags: _flags.HFlags=_flags.HFlags(),
-                 textstream: _text.ITextstream=_text.Textstream(),
     ):
         """AbstractLexer object instance initializer.
 
@@ -65,31 +62,26 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
             Specify a specific ITextstream implementation.
             By default Textstream()
         """
+        super().__init__()
+
         self._vendorId = vendorId
 
         self._rulesets = []
         if (len(ruleset)): self.PushRuleset(ruleset)
 
         self._hFlags = handleFlags
-        self._ts     = textstream
 
         return
 
 
     def __del__(self):
 
-        # Destructing a textstream object does not guarantee buffer close
-        self._ts.Close()
-        del self._ts
+        super().__del__()
 
         return
 
 
   # --- PUBLIC METHODS --- #
-
-    def GetTextstream(self) -> _text.ITextstream:
-        return self._ts
-
 
     def PushRuleset(self, ruleset: _rule.ruleset_t) -> None:
         # Before pushing the ruleset, we check if the pattern matchers (saved in the rule
@@ -98,9 +90,11 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         self._rulesets.append(ruleset)
         return
 
+
     def PopRuleset(self) -> None:
         self._rulesets.pop()
         return
+
 
     def ClearRulesets(self) -> None:
         self._rulesets.clear()
@@ -112,6 +106,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
 
     def GetNextToken(self) -> _Token:
+        # TODO: CHeck if stream open
         return self._GNT_P1_ScanChars()
 
 
@@ -205,10 +200,10 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         When a character other than the predefined ones is found, this signals that the
         lexer may scan for user-defined tokens, using the regex engine implementation.
         """
-        flags = self._hFlags
-        # txt_pos: _text.TextPosition = self._ts.GetTextPosition()
-        txt_pos: _text.TextPosition = self._ts._tp
+        txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
+        # txt_pos: _textio.TextPosition = self._ts._tp
 
+        flags = self._hFlags
         # NOTE: In CPython it is faster to cache (only) this flag beforehand
         flag_return_space = flags.space is _flags.HFlag.HANDLE_AND_RETURN
 
@@ -217,8 +212,8 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         while(1):
 
             # NOTE: --- METHOD 1 ---
-            # buf: str = self._ts.GetStrBuffer()[self._ts.GetStrBufferPosition():]
-            buf: str = self._ts._strBuffer[self._ts._strBufferPos:]
+            buf: str = self._ts.GetBufferString()[self._ts.GetBufferStringPosition():]
+            # buf: str = txt_stream._bufferString[txt_stream._bufferStringPos:] # TODO: test
             for c, char in enumerate(buf):
 
 
@@ -234,13 +229,13 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                         token = _Token(
                             _predefs.space.id,
                             "",
-                            _text.TextPosition(
+                            _textio.TextPosition(
                                 txt_pos.pos,
                                 txt_pos.col,
                                 txt_pos.ln
                             )
                         )
-                    _text.TextPosition.UpdateCol(txt_pos)
+                    _textio.TextPosition.UpdateCol(txt_pos)
 
                 # NEWLINE character (UNIX)
                 elif (char == '\n'):
@@ -248,16 +243,35 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                         token = _Token(
                             _predefs.newline.id,
                             "",
-                            _text.TextPosition(
+                            _textio.TextPosition(
                                 txt_pos.pos,
                                 txt_pos.col,
                                 txt_pos.ln
                             )
                         )
-                    _text.TextPosition.UpdateNl(txt_pos)
+                    _textio.TextPosition.UpdateNl(txt_pos)
 
                 # NEWLINE character (WINDOWS)
                 # TODO?
+                # elif (char == '\r'):
+                #     if (flags.newline == _flags.HFlag.HANDLE_AND_RETURN):
+                #         token = _Token(
+                #             _predefs.newline.id,
+                #             "",
+                #             _textio.TextPosition(
+                #                 txt_pos.pos,
+                #                 txt_pos.col,
+                #                 txt_pos.ln
+                #             )
+                #         )
+                #     _textio.TextPosition.UpdateCol(txt_pos)
+                #     self._ts.Update(1)
+                #
+                #     # Making the assumption here it is followed by a \n character
+                #     self.GetNextToken()
+                #
+                #     if (token):
+                #         return token
 
                 # TAB character
                 elif (char == '\t'):
@@ -265,13 +279,13 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                         token = _Token(
                             _predefs.tab.id,
                             "",
-                            _text.TextPosition(
+                            _textio.TextPosition(
                                 txt_pos.pos,
                                 txt_pos.col,
                                 txt_pos.ln
                             )
                         )
-                    _text.TextPosition.UpdateCol(txt_pos)
+                    _textio.TextPosition.UpdateCol(txt_pos)
 
                 # Else break to the main regex matching loop
                 else:
@@ -305,8 +319,8 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         When no regex match is made, then the lexer will jump to the method to handle
         the unknown token type.
         """
-        # txt_pos = self._ts.GetTextPosition()
-        txt_pos: _text.TextPosition = self._ts._tp
+        txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
+        # txt_pos: _textio.TextPosition = self._ts._tp
 
         # Match mainloop
         ruleset: _rule.ruleset_t = self._rulesets[-1]
@@ -317,13 +331,14 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
                 # Update positions
                 self._ts.Update(len(token.data))
-                _text.TextPosition.Update(txt_pos, token.data)
+                _textio.TextPosition.Update(txt_pos, token.data)
 
-                # Throw ChunkSizeError whenever the token data length is equal to or
+                # TODO: REMOVE?
+                # Throw ChunkSizeError whenever the token data length is equal to or  # TODO: update comment
                 # exceeds the filestream's allocated chunk size.
-                # if (token.data.__len__() >= self._ts.GetChunkSize()):
-                if (token.data.__len__() >= self._ts._chunkSize):
-                    raise _excs.ChunkSizeError(self._ts.GetChunkSize())
+                # if (token.data.__len__() >= self._ts.GetBufferStringSize()):
+                # if (token.data.__len__() >= self._ts._bufferStringSize):
+                    # raise _excs.ChunkSizeError(self._ts.GetBufferStringSize())  # TODO: update exception
 
                 # COMMENTs can easily span across multiple chunks, so it is not wise to
                 # create a single regex pattern defining the start and stop. Instead,
@@ -331,14 +346,14 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                 # end.
                 if (token.IsRule(_predefs.comment)):
                     # rule = static_cast<BaseComment*>(rule)->ruleEnd
-                    rule: _rule.Rule = rule.ruleEnd
+                    rule: _rule.Rule = rule.ruleEnd #type: ignore
                     temp_token: _Token
                     sstream: _io.StringIO
 
                     # If a comment token doesn't have to be returned, we can optimize a
                     # little by leaving out some string operations.
-                    doReturn = self._hFlags.comment==_flags.HFlag.HANDLE_AND_RETURN
-                    if (doReturn):
+                    do_return = self._hFlags.comment==_flags.HFlag.HANDLE_AND_RETURN
+                    if (do_return):
                         # sstream << token.data
                         sstream = _io.StringIO()
                         sstream.write(token.data)
@@ -353,26 +368,28 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                         temp_token = self._MatchRule(rule)
 
                         n1 = len(temp_token.data)
-                        # n2 = self._ts.GetChunkSize() - self._ts.GetStrBufferPosition()
-                        n2 = self._ts._chunkSize - self._ts._strBufferPos
+                        # n2 = txt_stream.GetChunkSize() - txt_stream.GetBufferedStringPosition()
+                        # n2 = txt_stream._chunkSize - txt_stream._bufferedStringPos
+                        n2 = self._ts.GetBufferStringSize() - self._ts.GetBufferStringPosition() # TODO: TEST
 
                         # Update positions
                         self._ts.Update(len(temp_token.data))
-                        _text.TextPosition.Update(txt_pos, temp_token.data)
+                        _textio.TextPosition.Update(txt_pos, temp_token.data)
 
                         # Append the intermediate string data from the temporary comment
                         # token to the parent comment token (which is the token that will
                         # be returned).
-                        if (doReturn):
+                        if (do_return):
                             # sstream << temp_token.data
                             sstream.write(temp_token.data)
                         del temp_token
 
-                        # The pattern defining the end will match ALL characters until
-                        # the characters denoting the end of a comment is found. By doing
-                        # this we know when the end is reached if the temporary token's
-                        # length is smaller than the readable string data in the chunk
-                        # (= chunkSize - strBufferPos).
+                        # The regex pattern object will continue to match ALL characters
+                        # until the sequence of characters that defines termination of
+                        # a comment is found.
+                        # In practice, this means that the while-loop can be stopped
+                        # whenever the currently loaded buffer string holds the comment
+                        # terminator sequence of characters.
                         if (n1 < n2):
                             break
 
@@ -383,7 +400,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
                             # TODO? UnterminatedCommentError
 
                     # Check HFlag value if the token should be ignored
-                    if (doReturn):
+                    if (do_return):
                         sstream.seek(0)  # Seek back to the beginning of the virtual file
                         comment_token = _Token(token.id, sstream.read(), token.position)
                         sstream.close()
@@ -424,9 +441,10 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         Depending on the HFlag value for 'unknownToken', either an error is raised about
         the unknown token, or it is skipped entirely.
         """
+        txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
+
         # Store the start position before skipping any characters
-        txt_pos = self._ts.GetTextPosition()
-        start_pos = _text.TextPosition(
+        start_pos = _textio.TextPosition(
             txt_pos.pos,
             txt_pos.col,
             txt_pos.ln
@@ -434,7 +452,7 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
 
         # Skip mainloop
         unknown_data = ""
-        buf = self._ts.GetStrBuffer()[self._ts.GetStrBufferPosition():]
+        buf = self._ts.GetBufferString()[self._ts.GetBufferStringPosition():]
         for c, char in enumerate(buf):
             # Store unknown characters until SPACE, TAB or NEWLINE character
             if (char in (' ', '\t', '\n') ):
@@ -449,9 +467,9 @@ class AbstractLexer (_ILexer, metaclass=_abc.ABCMeta):
         if (self._hFlags.unknownToken == _flags.HFlag.HANDLE_AND_IGNORE):
             return self.GetNextToken()
 
-        # Else (HANDLE_AND_RETURN), raise an UnknownTokenError with the data collected in
-        # the above procedures.
-        raise _excs.UnknownTokenError(
+        # Else (HANDLE_AND_RETURN), raise an UnidentifiedTokenError with the data collected
+        # in the above procedures.
+        raise _excs.UnidentifiedTokenError(
             start_pos,
             unknown_data
         )

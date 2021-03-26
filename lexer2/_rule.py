@@ -19,8 +19,8 @@ from ._intf_matcher import IMatcher as _IMatcher
 class Rule:
     """Class representing a rule, used as filter during lexical analysis.
 
-    Readonly Fields
-    ---------------
+    Readonly Properties
+    -------------------
     id : str
         The rule ID is the identifying string value of a token's type (e.g. "NUMBER",
         "WORD").
@@ -28,7 +28,7 @@ class Rule:
         The regex pattern string is used by a matcher to perform regex matching.
     """
 
-  # --- READONLY FIELDS --- #
+  # --- READONLY PROPERTIES --- #
 
     # Rule identifier string
     id : str
@@ -42,7 +42,7 @@ class Rule:
     _matcher : _ptr_t[_IMatcher]
 
 
-  # --- CONSTRUCTOR --- #
+  # --- CONSTRUCTOR & DESTRUCTOR --- #
 
     def __init__(self, id: str, regexPattern: str):
         """Rule object instance initializer.
@@ -78,7 +78,7 @@ class Rule:
   # --- GETTERS --- #
 
     def GetMatcher(self) -> _ptr_t[_IMatcher]:
-        """Gets the rule matcher object reference.
+        """Gets the IMatcher-compatible object instance.
 
         The rule matcher object is used by a lexer object to identify tokens during
         lexical analysis.
@@ -105,6 +105,6 @@ class Rule:
 
 # *****************************************************************************
 
+# SEE: https://github.com/python/mypy/issues/2984#issuecomment-285716826
 # ruleset_t = _t.List[Rule]
-# https://github.com/python/mypy/issues/2984#issuecomment-285716826
 ruleset_t = _t.Sequence[Rule]

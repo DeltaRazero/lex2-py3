@@ -25,7 +25,7 @@ class BaseComment (_Rule, metaclass=_abc.ABCMeta):
     RULE_ID = "COMMENT"
 
 
-  # --- PROPERTIES --- #
+  # --- READONLY PROPERTIES --- #
 
     ruleEnd : _Rule
 
@@ -96,10 +96,9 @@ class MultilineComment (BaseComment):
 def __MakeDummyRule(id: str) -> _Rule: return _Rule(id, r"a^")
 # __MakeDummyRule: _t.Callable[[str], _Rule] = lambda id: _Rule(id, r"a^")
 
-# These rule object instances are not meant to be used in rulesets, as they will not be
-# used / will not match anything.
-# Instead, they are used internally by a lexer to identify tokens (the rule ID property
-# is used for this).
+# These rule object instances are not meant to be actually used in rulesets as they won't
+# match anything.
+# Instead, they are used to label and identify tokens by using the the rule ID property.
 space        = __MakeDummyRule("SPACE")
 tab          = __MakeDummyRule("TAB")
 newline      = __MakeDummyRule("NEWLINE")

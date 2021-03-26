@@ -9,7 +9,7 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from . import text as _text
+from . import textio as _textio
 
 # ***************************************************************************************
 
@@ -21,35 +21,38 @@ class ChunkSizeError (Exception):
 
     def __init__(self, bufferSize: int):
 
-        message = "Chunk size of {} is too small!" \
-                  .format(bufferSize)
+        msg = f"Chunk size of {bufferSize} is too small!"
 
         # Call the base class constructor with the parameters it needs
-        super().__init__(message)
+        super().__init__(msg)
 
         return
 
 
-class UnknownTokenError (Exception):
+class UnidentifiedTokenError (Exception):
     """Raised whenever an unknown token type has been encountered.
 
-    Properties
-    ----------
+    Readonly Properties
+    -------------------
     pos : TextPosition
         Position in the textstream where the token occurs.
     data : str
         String data of the unknown token.
     """
 
-  # --- PROPERTIES --- #
+  # --- READONLY PROPERTIES --- #
 
-    pos  : _text.TextPosition
+    pos  : _textio.TextPosition
     data : str
 
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, pos: _text.TextPosition, data: str):
+    def __init__(self, pos: _textio.TextPosition, data: str):
+
+        # Positions are zero-based numbered. Since most, if not all, text editors are
+        # one-based numbered, offset line/column positions by one (1).
+        msg = f"Unidentified token at {pos.ln+1}:{pos.col+1}"
 
         message = "Unidentified token at {}:\n\n    \"{}\"" \
                   .format(

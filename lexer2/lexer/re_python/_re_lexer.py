@@ -13,7 +13,7 @@ from ._re_matcher import Re_Matcher as _Re_Matcher
 
 from .. import AbstractLexer as _AbstractLexer
 
-from ... import text as _text
+from ... import textio as _textio
 from ... import misc as _misc
 from ... import _rule
 from ... import _flags
@@ -37,7 +37,6 @@ class Re_Lexer (_AbstractLexer):
     def __init__(self,
                  ruleset: _rule.ruleset_t=[],
                  handleFlags: _flags.HFlags=_flags.HFlags(),
-                 textstream: _text.ITextstream=_text.Textstream()
     ):
         """Re_Lexer object instance initializer.
 
@@ -57,7 +56,6 @@ class Re_Lexer (_AbstractLexer):
             vendorId=self.VENDOR_ID,
             ruleset=ruleset,
             handleFlags=handleFlags,
-            textstream=textstream
         )
         return
 
@@ -72,25 +70,28 @@ class Re_Lexer (_AbstractLexer):
 
         token: _misc.ptr_t[_Token] = None
 
-        # NOTE: Inlined version
+        # matcher: _Re_Matcher = rule.GetMatcher()
+        # regex_match = matcher.GetPatternMatcher(
+        #   self._ts.GetBufferString(),         # Data input
+        #   self._ts.GetBufferStringPosition(), # Read STARTING AT position
+        #   self._ts.GetBufferStringSize(),     # Read UNTIL position
+        # )
+
         matcher: _Re_Matcher = rule._matcher
         regex_match = matcher._pattern.match(
-            # Data input
-            self._ts._strBuffer,
-            # Read STARTING AT position
-            self._ts._strBufferPos,
-            # Read UNTIL position
-            self._ts._strBufferSize
+            self._ts._bufferString,     # Data input
+            self._ts._bufferStringPos,  # Read STARTING AT position
+            self._ts._bufferStringSize, # Read UNTIL position
         )
 
         # Create token if a match was found
         if (regex_match):
-            # txt_pos = self._ts.GetTextPosition()
-            txt_pos = self._ts._tp
+            # txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
+            txt_pos: _textio.TextPosition = self._ts._tp
             token = _Token(
                 rule.id,
                 regex_match.group(),
-                _text.TextPosition(
+                _textio.TextPosition(
                     txt_pos.pos,
                     txt_pos.col,
                     txt_pos.ln

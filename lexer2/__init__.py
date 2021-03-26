@@ -18,7 +18,7 @@ __version__ = "0.9.2"
 
 from . import excs
 from . import misc
-from . import text
+from . import textio
 
 from ._token import Token
 from ._rule  import Rule, ruleset_t

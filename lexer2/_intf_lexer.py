@@ -11,14 +11,14 @@ All rights reserved.
 
 import abc as _abc
 
-from . import text as _text
+from . import textio as _textio
 from ._token import Token     as _Token
 from ._rule  import ruleset_t as _ruleset_t
 from ._flags import HFlags    as _HFlags
 
 # ***************************************************************************************
 
-class ILexer (metaclass=_abc.ABCMeta):
+class ILexer (_textio.ITextIO, metaclass=_abc.ABCMeta):
     """Common interface to a lexer object instance.
     """
 
@@ -67,17 +67,6 @@ class ILexer (metaclass=_abc.ABCMeta):
 
 
   # --- INTERFACE GETTERS --- #
-
-    @_abc.abstractmethod
-    def GetTextstream(self) -> _text.ITextstream:
-        """Gets the ITextstream-compatible object instance.
-
-        Returns
-        -------
-        ITextstream
-        """
-        pass
-
 
     @_abc.abstractmethod
     def GetHFlags(self) -> _HFlags:
