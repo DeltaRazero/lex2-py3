@@ -78,15 +78,16 @@ class MultilineComment (BaseComment):
         ----------
         identifyingStartRegex : str
             This regex pattern denotes the start of a multiline comment. For example:
-            r"/\*" (/*).
+            r"\/\*" (/*).
         identifyingEndRegex : str
             This regex pattern denotes the start of a multiline comment. For example:
-            r"\*/" (*/).
+            r"\*\/" (*/).
         """
         BaseComment.__init__(
             self,
             regexPatternStart=identifyingStartRegex,
-            regexPatternEnd  =r"[\s\S]*{}|[\s\S]*".format(identifyingEndRegex)
+            regexPatternEnd  =r"[\s\S]*?{}|[\s\S]*".format(identifyingEndRegex)
+            # regexPatternEnd  =r"([\s\S]*?)\*\/|([\s\S]*)"
         )
 
         return
