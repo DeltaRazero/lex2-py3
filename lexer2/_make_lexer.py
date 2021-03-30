@@ -10,17 +10,16 @@ All rights reserved.
 # ***************************************************************************************
 
 from . import lexer  as _lexer
-from . import textio as _textio
 
 from ._intf_lexer import ILexer as _ILexer
 
-from ._rule  import ruleset_t as _ruleset_t
-from ._flags import HFlags    as _HFlags
+from ._rule    import ruleset_t    as _ruleset_t
+from ._options import LexerOptions as _LexerOptions
 
 # ***************************************************************************************
 
 def MakeLexer(ruleset: _ruleset_t=[],
-              handleFlags: _HFlags=_HFlags(),
+              options: _LexerOptions=_LexerOptions(),
 ) -> _ILexer:
     """Creates an instance of the library's current default lexer implementation.
 
@@ -44,6 +43,6 @@ def MakeLexer(ruleset: _ruleset_t=[],
 
     lexer: _ILexer = DEFAULT_IMPLEMENTATION_CLASS(
         ruleset=ruleset,
-        handleFlags=handleFlags,
+        options=options,
     )
     return lexer

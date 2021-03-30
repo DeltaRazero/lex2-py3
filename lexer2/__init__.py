@@ -24,7 +24,7 @@ from ._token import Token
 from ._rule  import Rule, ruleset_t
 from . import predefs
 
-from ._flags import HFlag, HFlags
+from ._options import LexerOptions
 
 from ._intf_matcher import IMatcher
 from ._intf_lexer   import ILexer

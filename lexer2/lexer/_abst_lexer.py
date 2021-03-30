@@ -20,9 +20,10 @@ from .. import misc    as _misc
 from .. import _rule
 from .. import _flags
 
-from .. import ILexer   as _ILexer
-from .. import IMatcher as _IMatcher
-from .. import Token    as _Token
+from .. import ILexer       as _ILexer
+from .. import IMatcher     as _IMatcher
+from .. import Token        as _Token
+from .. import LexerOptions as _LexerOptions
 
 # ***************************************************************************************
 
@@ -35,7 +36,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
     _vendorId: str
 
     _rulesets : _t.List[_rule.ruleset_t]
-    _hFlags   : _flags.HFlags
+    _options  : _LexerOptions
 
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
@@ -44,7 +45,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
     def __init__(self,
                  vendorId: str,
                  ruleset: _rule.ruleset_t=[],
-                 handleFlags: _flags.HFlags=_flags.HFlags(),
+                 options: _LexerOptions=_LexerOptions(),
     ):
         """AbstractLexer object instance initializer.
 
@@ -69,7 +70,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
         self._rulesets = []
         if (len(ruleset)): self.PushRuleset(ruleset)
 
-        self._hFlags = handleFlags
+        self._options = options
 
         return
 
@@ -101,8 +102,8 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
         return
 
 
-    def GetHFlags(self) -> _flags.HFlags:
-        return self._hFlags
+    def GetOptions(self) -> _LexerOptions:
+        return self._options
 
 
     def GetNextToken(self) -> _Token:
@@ -203,9 +204,6 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
         txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
         # txt_pos: _textio.TextPosition = self._ts._tp
 
-        flags = self._hFlags
-        # NOTE: In CPython it is faster to cache (only) this flag beforehand
-        flag_return_space = flags.space is _flags.HFlag.HANDLE_AND_RETURN
 
         # Scan mainloop
         token: _misc.ptr_t[_Token] = None
@@ -225,7 +223,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
                 # SPACE character
                 if (char == ' '):
-                    if (flag_return_space):
+                    if (self._options.returnSpace):
                         token = _Token(
                             _predefs.space.id,
                             "",
@@ -239,7 +237,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
                 # NEWLINE character (UNIX)
                 elif (char == '\n'):
-                    if (flags.newline == _flags.HFlag.HANDLE_AND_RETURN):
+                    if (self._options.returnNewline):
                         token = _Token(
                             _predefs.newline.id,
                             "",
@@ -275,7 +273,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
                 # TAB character
                 elif (char == '\t'):
-                    if (flags.tab == _flags.HFlag.HANDLE_AND_RETURN):
+                    if (self._options.returnTab):
                         token = _Token(
                             _predefs.tab.id,
                             "",
@@ -352,7 +350,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
                     # If a comment token doesn't have to be returned, we can optimize a
                     # little by leaving out some string operations.
-                    do_return = self._hFlags.comment==_flags.HFlag.HANDLE_AND_RETURN
+                    do_return = self._options.returnComment
                     if (do_return):
                         # sstream << token.data
                         sstream = _io.StringIO()
@@ -399,7 +397,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
                             raise _excs.EndOfTextstream()
                             # TODO? UnterminatedCommentError
 
-                    # Check HFlag value if the token should be ignored
+                    # Return or ignore COMMENT token accordingly
                     if (do_return):
                         sstream.seek(0)  # Seek back to the beginning of the virtual file
                         comment_token = _Token(token.id, sstream.read(), token.position)
@@ -410,15 +408,14 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
                         del token
                         return self.GetNextToken()
 
-                # Continue here if it wasn't a COMMENT
+                # Continue here if it isn't a COMMENT token
 
-                # Check user-defined HFlag values if the token should be returned or ignored
-                for rule in self._hFlags.userFlags:
-                    if (token.IsRule(rule)):
-                        if (self._hFlags.userFlags[rule] == _flags.HFlag.HANDLE_AND_IGNORE):  ## token.GetId() == flag_key
-                            del token
-                            return self.GetNextToken()
-                        break
+                # Check user-defined flag values if the token should be returned or
+                # ignored. If no key-pair can be found, default to False
+                ignore_token = self._options.returnRule.get(token.id, False)
+                if (ignore_token):
+                    del token
+                    return self.GetNextToken()
 
                 # Else return the token as normally intended
                 return token
@@ -464,8 +461,8 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
         # If the HFlag value HANDLE_AND_IGNORE is set for 'unknownToken', the unknown
         # data is ignored and the lexer will (try to) return the next token.
-        if (self._hFlags.unknownToken == _flags.HFlag.HANDLE_AND_IGNORE):
-            return self.GetNextToken()
+        # if (not self._options.returnUnknownToken):
+            # return self.GetNextToken()
 
         # Else (HANDLE_AND_RETURN), raise an UnidentifiedTokenError with the data collected
         # in the above procedures.

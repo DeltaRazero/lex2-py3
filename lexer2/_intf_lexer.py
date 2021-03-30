@@ -12,9 +12,9 @@ All rights reserved.
 import abc as _abc
 
 from . import textio as _textio
-from ._token import Token     as _Token
-from ._rule  import ruleset_t as _ruleset_t
-from ._flags import HFlags    as _HFlags
+from ._token   import Token        as _Token
+from ._rule    import ruleset_t    as _ruleset_t
+from ._options import LexerOptions as _LexerOptions
 
 # ***************************************************************************************
 
@@ -69,11 +69,11 @@ class ILexer (_textio.ITextIO, metaclass=_abc.ABCMeta):
   # --- INTERFACE GETTERS --- #
 
     @_abc.abstractmethod
-    def GetHFlags(self) -> _HFlags:
-        """Gets the HFlags (HandlerFlags) object instance.
+    def GetOptions(self) -> _LexerOptions:
+        """Gets the LexerOptions object instance to define processing options of the lexer.
 
         Returns
         -------
-        HFlags
+        LexerOptions
         """
         pass

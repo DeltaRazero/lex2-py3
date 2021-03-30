@@ -103,5 +103,5 @@ def __MakeDummyRule(id: str) -> _Rule: return _Rule(id, r"a^")
 space        = __MakeDummyRule("SPACE")
 tab          = __MakeDummyRule("TAB")
 newline      = __MakeDummyRule("NEWLINE")
-unknownToken = __MakeDummyRule("UNKNOWN_TOKEN")
+
 comment      = __MakeDummyRule(BaseComment.RULE_ID)

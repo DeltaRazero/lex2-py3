@@ -16,10 +16,10 @@ from .. import AbstractLexer as _AbstractLexer
 from ... import textio as _textio
 from ... import misc as _misc
 from ... import _rule
-from ... import _flags
 
-from ... import IMatcher as _IMatcher
-from ... import Token    as _Token
+from ... import IMatcher     as _IMatcher
+from ... import Token        as _Token
+from ... import LexerOptions as _LexerOptions
 
 # ***************************************************************************************
 
@@ -36,7 +36,7 @@ class Re_Lexer (_AbstractLexer):
 
     def __init__(self,
                  ruleset: _rule.ruleset_t=[],
-                 handleFlags: _flags.HFlags=_flags.HFlags(),
+                 options: _LexerOptions=_LexerOptions(),
     ):
         """Re_Lexer object instance initializer.
 
@@ -55,7 +55,7 @@ class Re_Lexer (_AbstractLexer):
         super().__init__(
             vendorId=self.VENDOR_ID,
             ruleset=ruleset,
-            handleFlags=handleFlags,
+            options=options,
         )
         return
 
