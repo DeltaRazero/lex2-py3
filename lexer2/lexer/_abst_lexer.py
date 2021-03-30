@@ -201,25 +201,18 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
         When a character other than the predefined ones is found, this signals that the
         lexer may scan for user-defined tokens, using the regex engine implementation.
         """
-        txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
-        # txt_pos: _textio.TextPosition = self._ts._tp
-
+        # txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
+        txt_pos: _textio.TextPosition = self._ts._tp
 
         # Scan mainloop
         token: _misc.ptr_t[_Token] = None
         while(1):
 
-            # NOTE: --- METHOD 1 ---
-            buf: str = self._ts.GetBufferString()[self._ts.GetBufferStringPosition():]
-            # buf: str = txt_stream._bufferString[txt_stream._bufferStringPos:] # TODO: test
-            for c, char in enumerate(buf):
-
-
-            # NOTE: --- METHOD 2 ---
-            # c = 0
-            # for i in range(self._ts._strBufferPos, self._ts._strBufferSize):
-            #     char = self._ts._strBuffer[i]
-
+            chars_read = 0
+            # for i in range(self._ts.GetBufferStringPosition(), self._ts.GetBufferStringSize()):
+            for c in range(self._ts._bufferStringPos, self._ts._bufferStringSize):
+                # char: str = self._ts.GetBufferString()[i]
+                char: str = self._ts._bufferString[c]
 
                 # SPACE character
                 if (char == ' '):
@@ -287,17 +280,16 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
                 # Else break to the main regex matching loop
                 else:
-                    self._ts.Update(c)
+                    self._ts.Update(chars_read)
                     return self._GNT_P2_MatchRegexes()
 
                 # If we didn't break AND we HFlag.HANDLE_AND_RETURN set for one of the above
                 # characters
                 if (token):
-                    self._ts.Update(c+1)
+                    self._ts.Update(chars_read+1)
                     return token
 
-                # NOTE: --- METHOD 2 ---
-                # c += 1
+                chars_read += 1
 
             # In case the current chunk is entirely exhausted, refill the whole string
             # buffer (in most cases the textstream reached the end of data though, so
@@ -317,8 +309,8 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
         When no regex match is made, then the lexer will jump to the method to handle
         the unknown token type.
         """
-        txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
-        # txt_pos: _textio.TextPosition = self._ts._tp
+        # txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
+        txt_pos: _textio.TextPosition = self._ts._tp
 
         # Match mainloop
         ruleset: _rule.ruleset_t = self._rulesets[-1]
