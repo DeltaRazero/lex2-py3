@@ -10,8 +10,10 @@ All rights reserved.
 # ***************************************************************************************
 
 import pathlib as _pl
-import typing  as _t
-import sys     as _sys
+import pathlib  as _pl
+import typing   as _t
+import sys      as _sys
+import warnings as _warnings
 
 from ._intf_textstream     import ITextstream as _ITextstream
 from ._textstream_abstract import AbstractTextstream as _AbstractTextstream
@@ -67,10 +69,12 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
         # TODO? Because a dual buffer is needed, divide this number?
         # bufferSize = bufferSize // 2
 
-        # Enforce minimum buffer size of 128
+        # Enforce minimum buffer size
         if (bufferSize<256):
-            # TODO: Raise warnings to stdout
             bufferSize=256
+            _warnings.warn(category=RuntimeWarning, message=
+                f"Set the buffer size to {bufferSize} as that is the minimum required size to functionally operate."
+            )
 
         self._bufferSize = bufferSize // 2 * 2
         self._buffer = bytes()
@@ -165,7 +169,7 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
         self._bufferStringSplit = self._bufferStringSize // 2
 
         # NOTE: For debugging purposes
-        print(self._BinaryStringLength(self._bufferString))
+        # print(self._BinaryStringLength(self._bufferString))
 
         return
 
@@ -174,7 +178,7 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
 
         nBytes -= self._undecodedBytesSize
         if (nBytes < 0):
-            raise Exception("lower than 0, buffer size too small!")  # TODO: Cleanup
+            raise RuntimeError("Cannot read negative amount of bytes: buffer size is probably too small.")
 
         temp = self._f.read(nBytes)
 
