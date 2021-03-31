@@ -107,7 +107,8 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
 
     def GetNextToken(self) -> _Token:
-        # TODO: CHeck if stream open
+        if (not self._ts):
+            raise RuntimeError("No open textstream to read data from")
         return self._GNT_P1_ScanChars()
 
 
