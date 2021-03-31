@@ -20,6 +20,8 @@ class AbstractTextstream (_ITextstream):
 
     _tp : _TextPosition
 
+    _isEof : bool
+
     _bufferString : str
     _bufferStringSize : int
     _bufferStringPos  : int
@@ -31,6 +33,8 @@ class AbstractTextstream (_ITextstream):
 
         self._tp = _TextPosition()
 
+        self._isEof = False
+
         self._bufferString = ""
         self._bufferStringSize = 0
         self._bufferStringPos  = 0
@@ -41,13 +45,7 @@ class AbstractTextstream (_ITextstream):
   # --- INTERFACE METHODS --- #
 
     def IsEOF(self) -> bool:
-
-        # NOTE: In C++ you would just do:
-        #
-        #     return _bufferedString.empty()
-        #
-        # return not self._bufferedString
-        return not self._bufferStringSize
+        return self._isEof
 
 
   # --- INTERFACE GETTERS --- #

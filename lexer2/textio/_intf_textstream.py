@@ -41,13 +41,6 @@ class ITextstream (metaclass=_abc.ABCMeta):
 
 
     @_abc.abstractmethod
-    def UpdateW(self) -> None:
-        """Reads data and updates the whole textstream's buffer.
-        """
-        pass
-
-
-    @_abc.abstractmethod
     def IsEOF(self) -> bool:
         """Evaluates whether the textstream has reached the end of data.
         """
@@ -61,13 +54,6 @@ class ITextstream (metaclass=_abc.ABCMeta):
         """Gets the TextPosition object instance.
         """
         pass
-
-
-    # @_abc.abstractmethod
-    # def GetChunkSize(self) -> int:
-    #     """Gets the chunk size (maximum size of a chunk in bytes).
-    #     """
-    #     pass
 
 
     @_abc.abstractmethod

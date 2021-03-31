@@ -61,15 +61,11 @@ class Textstream_Memory (_AbstractTextstream, _ITextstream):
 
     def Update(self, n: int) -> None:
 
+        # TODO?: Read buffer and internally update textposition
+
         self._bufferStringPos += n
 
-        return
-
-
-    def UpdateW(self) -> None:
-
-        self._bufferString = ""
-        self._bufferStringPos  = self._bufferStringSize
-        self._bufferStringSize = 0
+        if (self._bufferStringPos >= self._bufferStringSize):
+            self._isEof = True
 
         return

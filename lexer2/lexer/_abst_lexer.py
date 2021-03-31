@@ -291,11 +291,10 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
                 chars_read += 1
 
-            # In case the current chunk is entirely exhausted, refill the whole string
-            # buffer (in most cases the textstream reached the end of data though, so
-            # nothing will be read).
-            self._ts.UpdateW()
-            # If the textstream has reached the end of data
+            # In case the current buffer is entirely exhausted, refill the whole buffer.
+            # In most cases this actually means the textstream has reached the end of
+            # data, so after this call to Update(), IsEOF() will be return true.
+            self._ts.Update(chars_read)
             if (self._ts.IsEOF()):
                 raise _excs.EndOfTextstream()
 

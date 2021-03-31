@@ -84,7 +84,8 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
         self._f = open(fp, "rb")
         self._buffer = bytes()
 
-        self.UpdateW()
+        self._Read(self._bufferSize)
+        self._RefreshBufferStringMeta()
 
         return
 
@@ -122,7 +123,7 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
 
         if (self._reachedEOF):
             if (self._bufferStringPos >= self._bufferStringSize):
-                self._bufferString = ""
+                self._isEof = True
 
         elif (self._bufferStringPos > self._bufferStringSplit):
 
@@ -139,13 +140,6 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
         return
 
 
-    def UpdateW(self) -> None:
-
-        self._Read(self._bufferSize)
-
-        self._RefreshBufferStringMeta()
-
-        return
 
 
   # --- PRIVATE METHODS --- #
@@ -172,11 +166,6 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
         nBytes -= self._undecodedBytesSize
         if (nBytes < 0):
             raise Exception("lower than 0, buffer size too small!")  # TODO: Cleanup
-
-        # Return nothing directly if EOF determined
-        if (self._reachedEOF):
-            self._bufferString = ""
-            return self._bufferString
 
         temp = self._f.read(nBytes)
 
