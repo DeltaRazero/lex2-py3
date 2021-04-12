@@ -9,7 +9,7 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from ._intf_textstream     import ITextstream  as _ITextstream
+from ._intf_textstream     import ITextstream as _ITextstream
 from ._textstream_abstract import AbstractTextstream as _AbstractTextstream
 
 # ***************************************************************************************
@@ -20,25 +20,26 @@ class Textstream_Memory (_AbstractTextstream, _ITextstream):
 
     def __init__(self,
                  strData: str,
-                 convertLineEndings: bool=True
+                 convertLineEndings: bool
     ) -> None:
         """TextPosition object instance initializer.
 
         Parameters
         ----------
-        chunkSize : int, optional
-            Size of a single string buffer chunk (in characters). Note that this number
-            will be floored to the nearest even number.
-
-            By default 512.
+        strData : str
+            String data to directly load. Note that encoding depends on the system-wide
+            encoding.
+        convertLineEndings : bool
+            Convert line-endings from Windows style to UNIX style.
         """
         super().__init__()
 
-        if (convertLineEndings):  # Convert all line-endings to POSIX format ('\n')
+        # Convert all line-endings to POSIX format ('\n')
+        if (convertLineEndings):
             strData = strData.replace("\r\n", "\n")
 
         self._bufferString = strData
-        self._bufferStringSize = strData.__len__()
+        self._bufferStringSize = len(strData)
 
         return
 
@@ -61,10 +62,21 @@ class Textstream_Memory (_AbstractTextstream, _ITextstream):
 
     def Update(self, n: int) -> None:
 
-        # TODO?: Read buffer and internally update textposition
-
+        old_pos = self._bufferStringPos
         self._bufferStringPos += n
 
+        # Update textposition
+        _tp = self._tp  # NOTE: It's faster to lookup/cache the variable in Python like this
+        for char in self._bufferString[ old_pos : self._bufferStringPos ]:
+
+            _tp.pos += 1
+            _tp.col += 1
+
+            if (char == '\n'):
+                _tp.ln += 1
+                _tp.col = 0
+
+        # If current position Signal EOF
         if (self._bufferStringPos >= self._bufferStringSize):
             self._isEof = True
 

@@ -9,7 +9,6 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import pathlib as _pl
 import pathlib  as _pl
 import typing   as _t
 import sys      as _sys
@@ -55,11 +54,17 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
 
         Parameters
         ----------
-        chunkSize : int, optional
-            Size of a single string buffer chunk (in characters). Note that this number
-            will be floored to the nearest even number.
-
-            By default 512.
+        fp : Union[str, Path]
+            String or Path object of a textfile to open.
+        bufferSize : int
+            Size of the buffer used to split a file into segments. Keep in mind that in
+            order to completely capture a token, it must be smaller or equal to the size
+            allocated to the buffer by this argument. NOTE: this number will be floored
+            to the nearest even number.
+        encoding : str
+            Encoding of text in the file.
+        convertLineEndings : bool
+            Convert line-endings from Windows style to UNIX style.
         """
         super().__init__()
 
@@ -112,17 +117,29 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
 
     def Update(self, n: int) -> None:
 
-        self._bufferStringPos += n
-
-        # TODO?: Read buffer and internally update textposition
-
+        # TODO?: Technically an exception should be thrown if a program tries to read a
+        # negative amount of data, but it a takes an unnecessary performance hit when
+        # using the CPython interpreter, so I'd rather not...
         if (n < 1):
-            # raise Exception("Read at least one")
             return
 
         # Can't be possible to read more than the allocated buffer size
         if (n > self._bufferStringSize):
             raise MemoryError("Requested update size is bigger than the allocated buffer string size!")
+
+        old_pos = self._bufferStringPos
+        self._bufferStringPos += n
+
+        # Update textposition
+        _tp = self._tp  # NOTE: It's faster to lookup/cache the variable in Python like this
+        for char in self._bufferString[ old_pos : self._bufferStringPos ]:
+
+            _tp.pos += 1
+            _tp.col += 1
+
+            if (char == '\n'):
+                _tp.ln += 1
+                _tp.col = 0
 
         if (self._f_isEof):
             if (self._bufferStringPos >= self._bufferStringSize):
@@ -192,10 +209,7 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
         # read files at the beginning of the buffer. That way multi-byte encoded
         # characters can be fully decoded.
         if (self._undecodedBytes):
-
-            self._buffer =\
-                self._undecodedBytes + temp
-
+            self._buffer = self._undecodedBytes + temp
         # Else just move the already read bytes to the buffer
         else:
             self._buffer = temp
