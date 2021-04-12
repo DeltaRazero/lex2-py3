@@ -18,13 +18,12 @@ __version__ = "0.9.2"
 
 from . import excs
 from . import misc
+from . import opts
 from . import textio
 
 from ._token import Token
 from ._rule  import Rule, ruleset_t
 from . import predefs
-
-from ._options import LexerOptions
 
 from ._intf_matcher import IMatcher
 from ._intf_lexer   import ILexer
