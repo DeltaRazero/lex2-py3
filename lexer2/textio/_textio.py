@@ -13,25 +13,19 @@ import abc     as _abc
 import pathlib as _pl
 import typing  as _t
 
-from ._textposition    import TextPosition as _TextPosition
 from ._intf_textstream import ITextstream  as _ITextstream
 
 from ._textstream_disk   import Textstream_Disk   as _Textstream_Disk
 from ._textstream_memory import Textstream_Memory as _Textstream_Memory
 
-from .. import misc as _misc
-
 # ***************************************************************************************
 
-# DEFAULT_BUFFER_SIZE = 2**19  # 524288
-DEFAULT_BUFFER_SIZE = 0
+DEFAULT_BUFFER_SIZE = 512
 
 # ***************************************************************************************
-
-# TODO: ALL docstrings in this sourcefile
 
 class ITextIO (metaclass=_abc.ABCMeta):
-    """Common interface to a TextStream object instance.
+    """Interface to a class implementing TextIO functionality.
     """
 
   # --- INTERFACE METHODS --- #
@@ -47,31 +41,40 @@ class ITextIO (metaclass=_abc.ABCMeta):
 
         Parameters
         ----------
-        fp : Union[str, Path]
-            String or Path object of a filepath.
+        fp : str | Path
+            String or Path object of a text file to open.
+        bufferSize : int, optional
+            Size of the buffer in kilobytes (kB). A size of zero (0) allocates the whole
+            file into memory.
+            Keep in mind that in order to completely capture a token, it must be smaller
+            or equal to the size allocated to the buffer by this argument. Note that the
+            buffer size will be floored to the nearest even number.
         encoding : str, optional
-            Encoding of textfile. By default "UTF-8".
+            Encoding of the text file.
+        convertLineEndings : bool, optional
+            Convert line-endings from Windows style to UNIX style.
         """
         pass
 
 
     @_abc.abstractmethod
-    def Load(self, strData: str) -> None:
-        """Directly loads string data into the textstream object.
+    def Load(self, strData: str, convertLineEndings: bool=False) -> None:
+        """Load string data directly.
 
         Parameters
         ----------
         strData : str
-            String data. Note that encoding depends on the system-wide encoding.
+            String data to directly load. Note that encoding depends on the system-wide
+            encoding.
         convertLineEndings : bool, optional
-            Convert line-endings from Windows style to UNIX style. By default 'True'.
+            Convert line-endings from Windows style to UNIX style.
         """
         pass
 
 
     @_abc.abstractmethod
     def Close(self) -> None:
-        """Closes and deletes the textstream.
+        """Closes and deletes textstream resources.
         """
         pass
 
@@ -82,15 +85,12 @@ class TextIO (ITextIO):
 
   # --- PROTECTED FIELDS --- #
 
-    # _ts : _misc.ptr_t[_ITextstream]
     _ts : _ITextstream
 
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
     def __init__(self) -> None:
-        """TODO:"""
-
         self._ts = None
         return
 
@@ -111,22 +111,21 @@ class TextIO (ITextIO):
 
         self.Close()
 
-        if (bufferSize < 1):
+        # Buffersize is in units of kilobytes (kB)
+        bufferSize *= 1000
 
-            data: str
+        if (bufferSize < 0):
+            raise ValueError("buffer size cannot be a negative value")
+
+        elif (bufferSize == 0):
+
             with open(fp, "r", encoding=encoding) as f:
-                data = f.read()
-
-            self._ts = _Textstream_Memory(
-                strData=data,
-                convertLineEndings=convertLineEndings,
-            )
+                self._ts = _Textstream_Memory(
+                    strData=f.read(),
+                    convertLineEndings=convertLineEndings,
+                )
 
         else:
-
-            # Enforce minimum
-            if (bufferSize < 128): bufferSize = 128
-
             self._ts = _Textstream_Disk(
                 fp=fp,
                 bufferSize=bufferSize,
@@ -134,14 +133,12 @@ class TextIO (ITextIO):
                 convertLineEndings=convertLineEndings,
             )
 
-            # raise NotImplementedError("Buffered textstream")
-
         return
 
 
     def Load(self,
              strData: str,
-             convertLineEndings: bool=True
+             convertLineEndings: bool=False
     ) -> None:
 
         self.Close()

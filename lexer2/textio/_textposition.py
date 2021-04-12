@@ -86,7 +86,7 @@ class TextPosition:
     def UpdateNl(textPosition: 'TextPosition') -> None:
 
         textPosition.pos += 1
-        textPosition.ln += 1
+        textPosition.ln  += 1
         textPosition.col = 0
 
         return

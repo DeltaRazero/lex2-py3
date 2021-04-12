@@ -12,9 +12,9 @@ All rights reserved.
 import abc as _abc
 
 from . import textio as _textio
-from ._token   import Token        as _Token
-from ._rule    import ruleset_t    as _ruleset_t
-from ._options import LexerOptions as _LexerOptions
+from .opts   import LexerOptions as _LexerOptions
+from ._token import Token        as _Token
+from ._rule  import ruleset_t    as _ruleset_t
 
 # ***************************************************************************************
 

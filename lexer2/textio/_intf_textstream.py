@@ -23,14 +23,14 @@ class ITextstream (metaclass=_abc.ABCMeta):
 
     @_abc.abstractmethod
     def Close(self) -> None:
-        """Closes and deletes the textstream's (buffer) data.
+        """Closes and deletes textstream resources.
         """
         pass
 
 
     @_abc.abstractmethod
     def Update(self, n: int) -> None:
-        """Reads data and updates the textstream's buffer.
+        """Updates the textstream's buffer.
 
         Parameters
         ----------

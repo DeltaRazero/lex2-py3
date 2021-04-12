@@ -13,8 +13,8 @@ from . import lexer  as _lexer
 
 from ._intf_lexer import ILexer as _ILexer
 
-from ._rule    import ruleset_t    as _ruleset_t
-from ._options import LexerOptions as _LexerOptions
+from .opts  import LexerOptions as _LexerOptions
+from ._rule import ruleset_t    as _ruleset_t
 
 # ***************************************************************************************
 
