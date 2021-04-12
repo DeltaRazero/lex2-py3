@@ -13,17 +13,17 @@ import abc    as _abc
 import typing as _t
 import io     as _io
 
+
 from .. import excs    as _excs
+from .. import opts    as _opts
 from .. import textio  as _textio
 from .. import predefs as _predefs
 from .. import misc    as _misc
 from .. import _rule
-from .. import _flags
 
 from .. import ILexer       as _ILexer
 from .. import IMatcher     as _IMatcher
 from .. import Token        as _Token
-from .. import LexerOptions as _LexerOptions
 
 # ***************************************************************************************
 
@@ -36,7 +36,9 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
     _vendorId: str
 
     _rulesets : _t.List[_rule.ruleset_t]
-    _options  : _LexerOptions
+    _active_ruleset : _rule.ruleset_t
+
+    _options  : _opts.LexerOptions
 
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
@@ -45,7 +47,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
     def __init__(self,
                  vendorId: str,
                  ruleset: _rule.ruleset_t=[],
-                 options: _LexerOptions=_LexerOptions(),
+                 options: _opts.LexerOptions=_opts.LexerOptions(),
     ):
         """AbstractLexer object instance initializer.
 
@@ -89,11 +91,13 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
         # objects) are compiled for the specific lexer implementation this function is called from.
         self._CompileRuleset(ruleset)
         self._rulesets.append(ruleset)
+        self._active_ruleset = self._rulesets[-1]
         return
 
 
     def PopRuleset(self) -> None:
         self._rulesets.pop()
+        self._active_ruleset = self._rulesets[-1]
         return
 
 
@@ -102,14 +106,14 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
         return
 
 
-    def GetOptions(self) -> _LexerOptions:
+    def GetOptions(self) -> _opts.LexerOptions:
         return self._options
 
 
     def GetNextToken(self) -> _Token:
         if (not self._ts):
             raise RuntimeError("No open textstream to read data from")
-        return self._GNT_P1_ScanChars()
+        return self._GNT_SplitBySeperatators()
 
 
   # --- PROTECTED METHODS --- #
@@ -133,8 +137,8 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
     def _MatchRule(self, rule: _rule.Rule) -> _misc.ptr_t[_Token]:
         """Requests implemented lexer to match a rule.
 
-        The implementation calls the GetMatcher() method from a Rule object to match
-        a regex pattern.
+        The implementation calls the GetMatcher() method from a Rule object to match a
+        regex pattern.
         The right (compiled) types of regex matcher objects are already ensured whenever
         a ruleset is pushed.
 
@@ -153,21 +157,6 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
   # --- PRIVATE METHODS --- #
 
-    def _NeedsCompilation(self, rule: _rule.Rule) -> bool:
-        """Check if the regex pattern matcher in a rule object needs to be compiled.
-        """
-        needs_compilation = False
-        matcher = rule.GetMatcher()
-        # If a Matcher object already compiled and stored, check its vendor ID
-        if (matcher):
-            needs_compilation = matcher.GetVendorId() != self._vendorId
-        # If no object Matcher object stored at all
-        else:
-            needs_compilation = True
-
-        return needs_compilation
-
-
     def _CompileRuleset(self, ruleset: _rule.ruleset_t) -> None:
         """Checks and compiles rules within a newly pushed ruleset.
 
@@ -184,166 +173,212 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
             # Comment rules also have an addition rule to be compiled
             if (rule.id == _predefs.comment.id):
-                # rule = static_cast<BaseComment*>(rule)->ruleEnd
-                rule: _rule.Rule = rule.ruleEnd
+                # rule = static_cast<BaseComment*>(rule)->terminatorRule
+                rule: _rule.Rule = rule.terminatorRule
                 if (self._NeedsCompilation(rule)):
                     rule.SetMatcher(self._CompileRule(rule))
 
         return
 
 
-    def _GNT_P1_ScanChars(self) -> _Token:
-        """GetNextToken() -- Part 1 --
-
-        This part of the GetNextMethod() method set scans for single characters that are
-        usually skipped (SPACE, TAB, NEWLINE). These are predefined rules in the library
-        and are scanned independent of a regex engine implementation.
-
-        When a character other than the predefined ones is found, this signals that the
-        lexer may scan for user-defined tokens, using the regex engine implementation.
+    def _NeedsCompilation(self, rule: _rule.Rule) -> bool:
+        """Check if the regex pattern matcher in a rule object needs to be compiled.
         """
+        needs_compilation = False
+        matcher = rule.GetMatcher()
+        # If a Matcher object already compiled and stored, check its vendor ID
+        if (matcher):
+            needs_compilation = matcher.GetVendorId() != self._vendorId
+        # If no object Matcher object stored at all
+        else:
+            needs_compilation = True
+
+        return needs_compilation
+
+
+    def _CountOccurrences(self, matchingChar: str) -> int:
+        """Counts the amount of continuous occurrences of a given character at the current position.
+        """
+
+        # NOTE: For in CPython, it is faster to cache these variables in order to prevent
+        # dictionary lookup every time the variable is accessed.
+        buf: str         = self._ts._bufferString
+        buf_size: int    = self._ts._bufferStringSize
+        current_pos: int = self._ts._bufferStringPos
+
+        # NOTE: Since this method assumes the character at the current position has
+        # already been, skip that position
+        i = current_pos + 1
+        while (i < buf_size):
+
+            char: str = buf[i]
+            if (char != matchingChar):
+                break
+
+            i += 1
+
+        return i - current_pos
+
+
+    def _GNT_SplitBySeperatators(self) -> _Token:
+        """
+        This method serves as scanner for the special seperator characters (SPACE, TAB,
+        NEWLINE); these characters are usually skipped. Scanning for these characters
+        are implemented independent of a regex engine implementation.
+
+        When a character other than the predefined ones is found, the lexer may scan
+        for user-defined rules, using the regex engine implementation.
+        """
+
+        # Precaching some variables to avoid constant lookups in CPython
+        opts = self._options
         # txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
         txt_pos: _textio.TextPosition = self._ts._tp
+
+        token: _misc.ptr_t[_Token] = None
+        char: str
+        goto_matcher: bool
 
         # Scan mainloop
-        token: _misc.ptr_t[_Token] = None
-        while(1):
+        while (not self._ts.IsEOF()):
 
-            chars_read = 0
-            # for i in range(self._ts.GetBufferStringPosition(), self._ts.GetBufferStringSize()):
-            for c in range(self._ts._bufferStringPos, self._ts._bufferStringSize):
-                # char: str = self._ts.GetBufferString()[i]
-                char: str = self._ts._bufferString[c]
+            # char = self._ts.GetBufferString()[ self._ts.GetBufferStringPosition() ]
+            char = self._ts._bufferString[ self._ts._bufferStringPos ]
+            goto_matcher = False
 
-                # SPACE character
-                if (char == ' '):
-                    if (self._options.returnSpace):
-                        token = _Token(
-                            _predefs.space.id,
-                            "",
-                            _textio.TextPosition(
-                                txt_pos.pos,
-                                txt_pos.col,
-                                txt_pos.ln
-                            )
-                        )
-                    _textio.TextPosition.UpdateCol(txt_pos)
+        # SPACE character
+            if (char == ' '):
 
-                # NEWLINE character (UNIX)
-                elif (char == '\n'):
-                    if (self._options.returnNewline):
-                        token = _Token(
-                            _predefs.newline.id,
-                            "",
-                            _textio.TextPosition(
-                                txt_pos.pos,
-                                txt_pos.col,
-                                txt_pos.ln
-                            )
-                        )
-                    _textio.TextPosition.UpdateNl(txt_pos)
+                opt = opts.space
+                n = self._CountOccurrences(' ')
 
-                # NEWLINE character (WINDOWS)
-                # TODO?
-                # elif (char == '\r'):
-                #     if (flags.newline == _flags.HFlag.HANDLE_AND_RETURN):
-                #         token = _Token(
-                #             _predefs.newline.id,
-                #             "",
-                #             _textio.TextPosition(
-                #                 txt_pos.pos,
-                #                 txt_pos.col,
-                #                 txt_pos.ln
-                #             )
-                #         )
-                #     _textio.TextPosition.UpdateCol(txt_pos)
-                #     self._ts.Update(1)
-                #
-                #     # Making the assumption here it is followed by a \n character
-                #     self.GetNextToken()
-                #
-                #     if (token):
-                #         return token
-
-                # TAB character
-                elif (char == '\t'):
-                    if (self._options.returnTab):
-                        token = _Token(
-                            _predefs.tab.id,
-                            "",
-                            _textio.TextPosition(
-                                txt_pos.pos,
-                                txt_pos.col,
-                                txt_pos.ln
-                            )
-                        )
-                    _textio.TextPosition.UpdateCol(txt_pos)
-
-                # Else break to the main regex matching loop
+                if (opt.ignores): goto_matcher = True
                 else:
-                    self._ts.Update(chars_read)
-                    return self._GNT_P2_MatchRegexes()
+                    if (opt.returns): token = _Token(
+                        _predefs.space.id,
+                        " "*n,
+                        _textio.TextPosition(
+                            txt_pos.pos,
+                            txt_pos.col,
+                            txt_pos.ln
+                        )
+                    )
+                    self._ts.Update(n)
 
-                # If we didn't break AND we HFlag.HANDLE_AND_RETURN set for one of the above
-                # characters
-                if (token):
-                    self._ts.Update(chars_read+1)
-                    return token
+        # NEWLINE character (UNIX)
+            elif (char == '\n'):
 
-                chars_read += 1
+                opt = opts.newline
 
-            # In case the current buffer is entirely exhausted, refill the whole buffer.
-            # In most cases this actually means the textstream has reached the end of
-            # data, so after this call to Update(), IsEOF() will be return true.
-            self._ts.Update(chars_read)
-            if (self._ts.IsEOF()):
-                raise _excs.EndOfTextstream()
+                if (opt.ignores): goto_matcher = True
+                else:
+                    if (opt.returns): token = _Token(
+                        _predefs.newline.id,
+                        "\n",
+                        _textio.TextPosition(
+                            txt_pos.pos,
+                            txt_pos.col,
+                            txt_pos.ln
+                        )
+                    )
+                    self._ts.Update(1)
+
+        # NEWLINE character (WINDOWS)
+            elif (char == '\r'):
+
+                # NOTE: I honestly don't think this library will ever be used to process
+                # files using the Macintosh NEWLINE style (just a single '\r' character
+                # by itself). Therefore, the assumption is made that encountered such
+                # a character will always be followed by a '\n' character.
+
+                opt = opts.newline
+
+                if (opt.ignores): goto_matcher = True
+                else:
+                    if (opt.returns): token = _Token(
+                        _predefs.newline.id,
+                        "\n",
+                        _textio.TextPosition(
+                            txt_pos.pos,
+                            txt_pos.col,
+                            txt_pos.ln
+                        )
+                    )
+                    self._ts.Update(2)
+
+        # TAB character
+            elif (char == '\t'):
+
+                opt = opts.tab
+                n = self._CountOccurrences('\t')
+
+                if (opt.ignores): goto_matcher = True
+                else:
+                    if (opt.returns): token = _Token(
+                        _predefs.tab.id,
+                        "\t"*n,
+                        _textio.TextPosition(
+                            txt_pos.pos,
+                            txt_pos.col,
+                            txt_pos.ln
+                        )
+                    )
+                    self._ts.Update(n)
+
+        # Not a special character
+            else:
+                goto_matcher = True
+
+            if (goto_matcher):
+                return self._GNT_MatchRegexes(self._active_ruleset)
+
+            if (token):
+                return token
+
+        # If EOF is reached
+        raise _excs.EndOfData()
 
 
-    def _GNT_P2_MatchRegexes(self) -> _Token:
-        """GetNextToken() -- Part 2 --
-
-        This part of the GetNextMethod() method set scans for tokens using the rules as
-        defined by the user.
-
-        When no regex match is made, then the lexer will jump to the method to handle
-        the unknown token type.
+    def _GNT_MatchRegexes(self, ruleset: _rule.ruleset_t) -> _Token:
         """
-        # txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
-        txt_pos: _textio.TextPosition = self._ts._tp
+        This method scans for tokens using the rules (as defined by the user) in a given
+        ruleset.
+
+        If no rule (regex pattern) matches, then the lexer will proceed to throw an
+        UnidentifiedTokenError, signaling this back to the caller program.
+        """
 
         # Match mainloop
-        ruleset: _rule.ruleset_t = self._rulesets[-1]
         for rule in ruleset:
+
             # A token is returned if the (implemented) regex pattern matcher found a match.
             token: _misc.ptr_t[_Token] = self._MatchRule(rule)
             if (token):
 
-                # Update positions
+                # Update new data into buffer
                 self._ts.Update(len(token.data))
-                _textio.TextPosition.Update(txt_pos, token.data)
 
-                # TODO: REMOVE?
-                # Throw ChunkSizeError whenever the token data length is equal to or  # TODO: update comment
-                # exceeds the filestream's allocated chunk size.
-                # if (token.data.__len__() >= self._ts.GetBufferStringSize()):
-                # if (token.data.__len__() >= self._ts._bufferStringSize):
-                    # raise _excs.ChunkSizeError(self._ts.GetBufferStringSize())  # TODO: update exception
+                # TODO?: Buffer size warning if len(token.data) >= self._ts.GetBufferStringSize()
+
+                # return_token = self._options.idReturns.get(rule.id, rule.returns)
+                return_token = self._options.idReturns.get(rule.id, rule.returns)
 
                 # COMMENTs can easily span across multiple chunks, so it is not wise to
                 # create a single regex pattern defining the start and stop. Instead,
                 # there is a regex pattern for defining the begin and one defining the
                 # end.
+
+                # Since COMMENT tokens are likely to span across multiple buffers, special
+                # functionally is created
                 if (token.IsRule(_predefs.comment)):
-                    # rule = static_cast<BaseComment*>(rule)->ruleEnd
-                    rule: _rule.Rule = rule.ruleEnd #type: ignore
+                    # rule = static_cast<BaseComment*>(rule)->terminatorRule
+                    rule: _rule.Rule = rule.terminatorRule  #type: ignore
                     temp_token: _Token
                     sstream: _io.StringIO
 
                     # If a comment token doesn't have to be returned, we can optimize a
                     # little by leaving out some string operations.
-                    do_return = self._options.returnComment
-                    if (do_return):
+                    if (return_token):
                         # sstream << token.data
                         sstream = _io.StringIO()
                         sstream.write(token.data)
@@ -358,18 +393,16 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
                         temp_token = self._MatchRule(rule)
 
                         n1 = len(temp_token.data)
-                        # n2 = txt_stream.GetChunkSize() - txt_stream.GetBufferedStringPosition()
-                        # n2 = txt_stream._chunkSize - txt_stream._bufferedStringPos
-                        n2 = self._ts.GetBufferStringSize() - self._ts.GetBufferStringPosition() # TODO: TEST
+                        # n2 = self._ts.GetBufferStringSize() - self._ts.GetBufferStringPosition()
+                        n2 = self._ts._bufferStringSize - self._ts._bufferStringPos
 
                         # Update positions
-                        self._ts.Update(len(temp_token.data))
-                        _textio.TextPosition.Update(txt_pos, temp_token.data)
+                        self._ts.Update(n1)
 
                         # Append the intermediate string data from the temporary comment
                         # token to the parent comment token (which is the token that will
                         # be returned).
-                        if (do_return):
+                        if (return_token):
                             # sstream << temp_token.data
                             sstream.write(temp_token.data)
                         del temp_token
@@ -386,12 +419,12 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
                         # If the textstream has reached the end of data
                         if (self._ts.IsEOF()):
                             del token
-                            raise _excs.EndOfTextstream()
+                            raise _excs.EndOfData()
                             # TODO? UnterminatedCommentError
 
                     # Return or ignore COMMENT token accordingly
-                    if (do_return):
-                        sstream.seek(0)  # Seek back to the beginning of the virtual file
+                    if (return_token):
+                        sstream.seek(0)  # Seek back to the beginning of the virtual stream
                         comment_token = _Token(token.id, sstream.read(), token.position)
                         sstream.close()
                         del token
@@ -400,65 +433,54 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
                         del token
                         return self.GetNextToken()
 
+                #
                 # Continue here if it isn't a COMMENT token
+                #
 
-                # Check user-defined flag values if the token should be returned or
-                # ignored. If no key-pair can be found, default to False
-                ignore_token = self._options.returnRule.get(token.id, False)
-                if (ignore_token):
+                # Return token accordingly
+                if (not return_token):
                     del token
                     return self.GetNextToken()
-
-                # Else return the token as normally intended
                 return token
 
             # Else no match
             del token
 
-        # If no matches were found at all (no regex pattern matched), the lexer has
-        # identified an unknown token.
-        # Either an error is raised about the unknown token or it is skipped entirely.
-        self._GNT_P3_HandleUnknownToken()
+        # If no matches were found at all (i.e. no regex pattern was matched), then the
+        # lexer has found an unidentified token type.
+        self._GNT_RaiseUnidentifiedTokenError()
 
 
-    def _GNT_P3_HandleUnknownToken(self) -> _Token:
-        """GetNextToken() -- Part 3 --
-
-        This part of the GetNextMethod() method set handles tokens that had no regex
-        match; they are seen as unknown tokens.
-
-        Depending on the HFlag value for 'unknownToken', either an error is raised about
-        the unknown token, or it is skipped entirely.
+    def _GNT_RaiseUnidentifiedTokenError(self) -> None:
         """
+        This method handles raising an exception whenever an unidentified token type has
+        been determined (i.e. no regex pattern was matched).
+        """
+
         txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
 
         # Store the start position before skipping any characters
-        start_pos = _textio.TextPosition(
+        pos = _textio.TextPosition(
             txt_pos.pos,
             txt_pos.col,
             txt_pos.ln
         )
 
-        # Skip mainloop
-        unknown_data = ""
-        buf = self._ts.GetBufferString()[self._ts.GetBufferStringPosition():]
-        for c, char in enumerate(buf):
-            # Store unknown characters until SPACE, TAB or NEWLINE character
-            if (char in (' ', '\t', '\n') ):
-                unknown_data = buf[:c]
-                break
-        # If the entire buffer is exhausted
-        if (not unknown_data):
-            unknown_data = buf
+        # Include all characters until SPACE, TAB or NEWLINE
+        unidentified_data = ""
+        while(1):
 
-        # If the HFlag value HANDLE_AND_IGNORE is set for 'unknownToken', the unknown
-        # data is ignored and the lexer will (try to) return the next token.
-        # if (not self._options.returnUnknownToken):
-            # return self.GetNextToken()
+            n_chars_read: int = 0
+            buf = self._ts.GetBufferString()[self._ts.GetBufferStringPosition():]
 
-        # Else (HANDLE_AND_RETURN), raise an UnidentifiedTokenError with the data collected
-        # in the above procedures.
-        raise _excs.UnidentifiedTokenError(
-            start_pos,
-            unknown_data
-        )
+            for n_chars_read, char in enumerate(buf):
+
+                # Store data and throw exception
+                if (char in (' ', '\t', '\n')):
+                    unidentified_data += buf[:n_chars_read]
+                    raise _excs.UnidentifiedTokenError(pos, unidentified_data)
+
+            # If the buffer is exhausted, meaning the unidentified data is continued in
+            # the following buffer
+            unidentified_data += buf
+            self._ts.Update(n_chars_read)

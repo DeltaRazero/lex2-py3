@@ -15,11 +15,11 @@ from .. import AbstractLexer as _AbstractLexer
 
 from ... import textio as _textio
 from ... import misc as _misc
+from ... import opts as _opts
 from ... import _rule
 
 from ... import IMatcher     as _IMatcher
 from ... import Token        as _Token
-from ... import LexerOptions as _LexerOptions
 
 # ***************************************************************************************
 
@@ -36,7 +36,7 @@ class Re_Lexer (_AbstractLexer):
 
     def __init__(self,
                  ruleset: _rule.ruleset_t=[],
-                 options: _LexerOptions=_LexerOptions(),
+                 options: _opts.LexerOptions=_opts.LexerOptions(),
     ):
         """Re_Lexer object instance initializer.
 
@@ -70,6 +70,10 @@ class Re_Lexer (_AbstractLexer):
 
         token: _misc.ptr_t[_Token] = None
 
+        # NOTE: It's faster to cache this variable in CPython to prevent unnecessary
+        # lookups to 'self'.
+        _ts = self._ts
+
         # matcher: _Re_Matcher = rule.GetMatcher()
         # regex_match = matcher.GetPatternMatcher(
         #   self._ts.GetBufferString(),         # Data input
@@ -79,15 +83,15 @@ class Re_Lexer (_AbstractLexer):
 
         matcher: _Re_Matcher = rule._matcher
         regex_match = matcher._pattern.match(
-            self._ts._bufferString,     # Data input
-            self._ts._bufferStringPos,  # Read STARTING AT position
-            self._ts._bufferStringSize, # Read UNTIL position
+            _ts._bufferString,     # Data input
+            _ts._bufferStringPos,  # Read STARTING AT position
+            _ts._bufferStringSize, # Read UNTIL position
         )
 
         # Create token if a match was found
         if (regex_match):
             # txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
-            txt_pos: _textio.TextPosition = self._ts._tp
+            txt_pos: _textio.TextPosition = _ts._tp
             token = _Token(
                 rule.id,
                 regex_match.group(),
@@ -97,5 +101,6 @@ class Re_Lexer (_AbstractLexer):
                     txt_pos.ln
                 )
             )
+            del regex_match
 
         return token
