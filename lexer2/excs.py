@@ -13,24 +13,8 @@ from . import textio as _textio
 
 # ***************************************************************************************
 
-class ChunkSizeError (Exception):
-    """Raised whenever the chunk size of a filestream is too small.
-    """
-
-  # --- CONSTRUCTOR --- #
-
-    def __init__(self, bufferSize: int):
-
-        msg = f"Chunk size of {bufferSize} is too small!"
-
-        # Call the base class constructor with the parameters it needs
-        super().__init__(msg)
-
-        return
-
-
-class UnidentifiedTokenError (Exception):
-    """Raised whenever an unknown token type has been encountered.
+class TokenError (Exception):
+    """Base class for token errors.
 
     Readonly Properties
     -------------------
@@ -48,20 +32,13 @@ class UnidentifiedTokenError (Exception):
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, pos: _textio.TextPosition, data: str):
+    def __init__(self, pos: _textio.TextPosition, data: str, message: str):
 
         # Positions are zero-based numbered. Since most, if not all, text editors are
         # one-based numbered, offset line/column positions by one (1).
-        msg = f"Unidentified token at {pos.ln+1}:{pos.col+1}"
 
-        message = "Unidentified token at {}:\n\n    \"{}\"" \
-                  .format(
-                      # Internally, the positions start at 0-based indexes,
-                      # however most, if not all, text editors start at 1-based
-                      # indexes.
-                      "ln: {} col: {}".format(pos.ln+1, pos.col+1),
-                      data
-                  )
+        message =\
+            f"{message} at ln:{pos.ln+1}|col:{pos.col+1}" + "\n" + f'"{data}"'
 
         # Call the base class constructor with the parameters it needs
         super().__init__(message)
@@ -71,8 +48,56 @@ class UnidentifiedTokenError (Exception):
         return
 
 
-class EndOfTextstream (Exception):
-    """Raised whenever a lexer has reached the end of a textstream.
+class UnidentifiedTokenError (TokenError):
+    """Raised whenever an unidentified token type has been encountered.
+
+    Readonly Properties
+    -------------------
+    pos : TextPosition
+        Position in the textstream where the token occurs.
+    data : str
+        String data of the unknown token.
+    """
+
+  # --- CONSTRUCTOR --- #
+
+    def __init__(self, pos: _textio.TextPosition, data: str):
+
+        # Call the base class constructor with the parameters it needs
+        super().__init__(
+            pos=pos, data=data,
+            message="Unidentified token type"
+        )
+
+        return
+
+
+class UnexpectedTokenError (TokenError):
+    """Raised whenever an unexpected token type has been encountered.
+
+    Readonly Properties
+    -------------------
+    pos : TextPosition
+        Position in the textstream where the token occurs.
+    data : str
+        String data of the unknown token.
+    """
+
+  # --- CONSTRUCTOR --- #
+
+    def __init__(self, pos: _textio.TextPosition, data: str, id: str):
+
+        # Call the base class constructor with the parameters it needs
+        super().__init__(
+            pos=pos, data=data,
+            message=f'Unexpected token type \"{id}\"'
+        )
+
+        return
+
+
+class EndOfData (Exception):
+    """Raised whenever a lexer has reached the end of input data.
     """
 
     def __init__(self):

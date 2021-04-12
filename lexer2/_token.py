@@ -9,6 +9,8 @@ All rights reserved.
 
 # ***************************************************************************************
 
+import typing as _t
+
 from . import excs   as _excs
 from . import textio as _textio
 
@@ -94,5 +96,5 @@ class Token:
             When the token's identifier does not match that of a given rule.
         """
         if (not self.IsRule(expectedRule)):
-            raise _excs.UnidentifiedTokenError(self.position, self.data)
+            raise _excs.UnexpectedTokenError(self.position, self.data, self.id)
         return
