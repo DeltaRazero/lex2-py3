@@ -26,6 +26,8 @@ class Rule:
         "WORD").
     regexPattern : str
         The regex pattern string is used by a matcher to perform regex matching.
+    returns: bool
+        Whether tokens matched by this rule should be returned when scanning for tokens.
     """
 
   # --- READONLY PROPERTIES --- #
@@ -36,6 +38,9 @@ class Rule:
     # The regex pattern string is used by a matcher to perform regex matching.
     regexPattern : str
 
+    # Whether tokens matched by this rule should be returned when scanning for tokens.
+    returns : bool
+
 
   # --- FIELDS --- #
 
@@ -44,7 +49,7 @@ class Rule:
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
-    def __init__(self, id: str, regexPattern: str):
+    def __init__(self, id: str, regexPattern: str, returns: bool=True):
         """Rule object instance initializer.
 
         Parameters
@@ -53,9 +58,16 @@ class Rule:
             The identifying string of a resulting token's type (e.g. "NUMBER", "WORD").
         regexPattern : str
             Regex pattern used by a lexer to identify tokens during lexical analysis.
+        returns : bool, optional
+            Specify whether tokens matched by this rule should be returned when scanning
+            for tokens.
+            By default True
         """
         self.id = id
         self.regexPattern = regexPattern
+
+        self.returns = returns
+
         self._matcher = None
 
         return
