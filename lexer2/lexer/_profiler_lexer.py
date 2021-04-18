@@ -22,7 +22,7 @@ from .. import Token     as _Token
 
 # ***************************************************************************************
 
-class RuleProfile:
+class _RuleProfile:
 
   # --- FIELDS --- #
 
@@ -79,7 +79,7 @@ class ProfilerLexer (_ILexer):
     _lexer : _ILexer
 
     _ruleOccurrences : _t.Dict[str, int]
-    _ruleProfiles    : _t.Dict[str, RuleProfile]
+    _ruleProfiles    : _t.Dict[str, _RuleProfile]
 
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
@@ -133,7 +133,7 @@ class ProfilerLexer (_ILexer):
 
         if (not (token.id in self._ruleOccurrences)):
             self._ruleOccurrences[token.id] = 0
-            self._ruleProfiles   [token.id] = RuleProfile()
+            self._ruleProfiles   [token.id] = _RuleProfile()
 
         self._ruleOccurrences[token.id] += 1
         self._ruleProfiles   [token.id].AddToken(token)
