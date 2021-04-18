@@ -363,79 +363,8 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
                 # return_token = self._options.idReturns.get(rule.id, rule.returns)
                 return_token = self._options.idReturns.get(rule.id, rule.returns)
 
-                # COMMENTs can easily span across multiple chunks, so it is not wise to
-                # create a single regex pattern defining the start and stop. Instead,
-                # there is a regex pattern for defining the begin and one defining the
-                # end.
-
-                # Since COMMENT tokens are likely to span across multiple buffers, special
-                # functionally is created
                 if (token.IsRule(_predefs.comment)):
-                    # rule = static_cast<BaseComment*>(rule)->terminatorRule
-                    rule: _rule.Rule = rule.terminatorRule  #type: ignore
-                    temp_token: _Token
-                    sstream: _io.StringIO
-
-                    # If a comment token doesn't have to be returned, we can optimize a
-                    # little by leaving out some string operations.
-                    if (return_token):
-                        # sstream << token.data
-                        sstream = _io.StringIO()
-                        sstream.write(token.data)
-
-                    # Comment handling mainloop
-                    while(1):
-
-                        # Using the end regex matcher (stored in a comment rule object),
-                        # ALL characters are matched until a NEWLINE character (for
-                        # singleline comments) or the characters defining the end of a
-                        # multiline comment are found.
-                        temp_token = self._MatchRule(rule)
-
-                        n1 = len(temp_token.data)
-                        # n2 = self._ts.GetBufferStringSize() - self._ts.GetBufferStringPosition()
-                        n2 = self._ts._bufferStringSize - self._ts._bufferStringPos
-
-                        # Update positions
-                        self._ts.Update(n1)
-
-                        # Append the intermediate string data from the temporary comment
-                        # token to the parent comment token (which is the token that will
-                        # be returned).
-                        if (return_token):
-                            # sstream << temp_token.data
-                            sstream.write(temp_token.data)
-                        del temp_token
-
-                        # The regex pattern object will continue to match ALL characters
-                        # until the sequence of characters that defines termination of
-                        # a comment is found.
-                        # In practice, this means that the while-loop can be stopped
-                        # whenever the currently loaded buffer string holds the comment
-                        # terminator sequence of characters.
-                        if (n1 < n2):
-                            break
-
-                        # If the textstream has reached the end of data
-                        if (self._ts.IsEOF()):
-                            del token
-                            raise _excs.EndOfData()
-                            # TODO? UnterminatedCommentError
-
-                    # Return or ignore COMMENT token accordingly
-                    if (return_token):
-                        sstream.seek(0)  # Seek back to the beginning of the virtual stream
-                        comment_token = _Token(token.id, sstream.read(), token.position)
-                        sstream.close()
-                        del token
-                        return comment_token
-                    else:
-                        del token
-                        return self.GetNextToken()
-
-                #
-                # Continue here if it isn't a COMMENT token
-                #
+                    return self._GNT_HandleComment(rule, token, return_token)
 
                 # Return token accordingly
                 if (not return_token):
@@ -449,6 +378,66 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
         # If no matches were found at all (i.e. no regex pattern was matched), then the
         # lexer has found an unidentified token type.
         self._GNT_RaiseUnidentifiedTokenError()
+
+
+    def _GNT_HandleComment(self, rule: _Rule, token: _Token, returnToken: bool) -> _Token:
+        """
+        This method handles processing of a COMMENT token.
+
+        Comments can easily span across multiple buffers, so it is not wise to create a
+        single regex pattern defining the start and stop. Instead, there is a separate
+        rule for defining them. This method handles that special functionality.
+        """
+
+        temp_token: _Token
+
+        # t_rule = static_cast<BaseComment*>(rule)->endRule
+        t_rule: _Rule = rule.endRule
+
+        # Comment handling mainloop
+        while(1):
+
+            # Using the end regex matcher (stored in a comment rule object),
+            # ALL characters are matched until a NEWLINE character (for
+            # singleline comments) or the characters defining the end of a
+            # multiline comment are found.
+            temp_token = self._MatchRule(t_rule)
+
+            n1 = len(temp_token.data)
+            # n2 = self._ts.GetBufferStringSize() - self._ts.GetBufferStringPosition()
+            n2 = self._ts._bufferStringSize - self._ts._bufferStringPos
+
+            # Update positions
+            self._ts.Update(n1)
+
+            # Append the intermediate string data from the temporary comment
+            # token to the parent comment token (which is the token that will
+            # be returned).
+            if (returnToken):
+                token.data += temp_token.data
+            del temp_token
+
+            # The regex pattern object will continue to match ALL characters
+            # until the sequence of characters that defines termination of
+            # a comment is found.
+            # In practice, this means that the while-loop can be stopped
+            # whenever the currently loaded buffer string holds the comment
+            # terminator sequence of characters.
+            if (n1 < n2):
+                break
+
+            # If the textstream has reached the end of data
+            if (self._ts.IsEOF()):
+                del token
+                raise _excs.EndOfData()
+                # TODO? UnterminatedCommentError
+
+        # Return or ignore COMMENT token accordingly
+        if (returnToken):
+            return token
+        else:
+            del token
+            return self.GetNextToken()
 
 
     def _GNT_RaiseUnidentifiedTokenError(self) -> None:
