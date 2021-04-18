@@ -111,6 +111,14 @@ class TextIO (ITextIO):
 
         self.Close()
 
+        # Cast fp to pathlib.Path if a string
+        if (type(fp) is str):
+            fp = _pl.Path(fp)
+
+        # Check if path exists and is file
+        if (not fp.is_file()):
+            raise FileNotFoundError(f'Not an existing file or is a directory: "{str(fp)}"')
+
         # Buffersize is in units of kilobytes (kB)
         bufferSize *= 1000
 
