@@ -16,10 +16,12 @@ from .. import AbstractLexer as _AbstractLexer
 from ... import textio as _textio
 from ... import misc as _misc
 from ... import opts as _opts
-from ... import _rule
 
-from ... import IMatcher     as _IMatcher
-from ... import Token        as _Token
+from ... import ruleset_t as _ruleset_t
+from ... import Rule      as _Rule
+
+from ... import IMatcher as _IMatcher
+from ... import Token    as _Token
 
 # ***************************************************************************************
 
@@ -35,7 +37,7 @@ class Re_Lexer (_AbstractLexer):
   # --- CONSTRUCTOR --- #
 
     def __init__(self,
-                 ruleset: _rule.ruleset_t=[],
+                 ruleset: _ruleset_t=[],
                  options: _opts.LexerOptions=_opts.LexerOptions(),
     ):
         """Re_Lexer object instance initializer.
@@ -45,12 +47,9 @@ class Re_Lexer (_AbstractLexer):
         ruleset : ruleset_t, optional
             Initial ruleset.
             By default []
-        handleFlags : HFlags, optional
-            Initial handleFlags struct.
-            By default HFlags()
-        textstream : ITextstream, optional
-            Specify a specific ITextstream implementation.
-            By default Textstream()
+        options : LexerOptions, optional
+            Struct specifying processing options of the lexer.
+            By default LexerOptions()
         """
         super().__init__(
             vendorId=self.VENDOR_ID,
@@ -62,11 +61,11 @@ class Re_Lexer (_AbstractLexer):
 
   # --- PROTECTED METHODS --- #
 
-    def _CompileRule(self, rule: _rule.Rule) -> _IMatcher:
+    def _CompileRule(self, rule: _Rule) -> _IMatcher:
         return _Re_Matcher(self.VENDOR_ID, rule.regexPattern)
 
 
-    def _MatchRule(self, rule: _rule.Rule) -> _misc.ptr_t[_Token]:
+    def _MatchRule(self, rule: _Rule) -> _misc.ptr_t[_Token]:
 
         token: _misc.ptr_t[_Token] = None
 

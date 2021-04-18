@@ -19,4 +19,4 @@ ptr_t = _t.Union[T, None]
 
 # Typedef to simulate void*
 # voidptr_t = _t.Any
-voidptr_t = ptr_t[T]
+voidptr_t = _t.Any

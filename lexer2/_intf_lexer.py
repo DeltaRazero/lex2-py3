@@ -57,11 +57,10 @@ class ILexer (_textio.ITextIO, metaclass=_abc.ABCMeta):
 
         Raises
         ------
-        UnknownTokenError
-            If a token with an unknown rule pattern is encountered AND the HandlerFlag
-            value for 'unknownToken' has been set to HANDLE_AND_RETURN.
-        EndOfTextstream
-            If the lexer reaches the end of the textstream data.
+        UnidentifiedTokenError
+            If an unexpected token type has been encountered.
+        EndOfData
+            If the lexer has reached the end of input data.
         """
         pass
 

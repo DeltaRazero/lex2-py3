@@ -27,7 +27,7 @@ class BaseComment (_Rule, metaclass=_abc.ABCMeta):
 
   # --- READONLY PROPERTIES --- #
 
-    terminatorRule : _Rule
+    endRule : _Rule
 
 
   # --- CONSTRUCTOR --- #
@@ -37,7 +37,7 @@ class BaseComment (_Rule, metaclass=_abc.ABCMeta):
         """
         """
         _Rule.__init__(self, self.RULE_ID, regexPatternStart, returns=False)
-        self.terminatorRule = _Rule(self.RULE_ID, regexPatternEnd)
+        self.endRule = _Rule(self.RULE_ID, regexPatternEnd)
         return
 
 

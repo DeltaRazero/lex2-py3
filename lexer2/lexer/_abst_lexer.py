@@ -11,19 +11,18 @@ All rights reserved.
 
 import abc    as _abc
 import typing as _t
-import io     as _io
-
 
 from .. import excs    as _excs
 from .. import opts    as _opts
 from .. import textio  as _textio
 from .. import predefs as _predefs
 from .. import misc    as _misc
-from .. import _rule
 
-from .. import ILexer       as _ILexer
-from .. import IMatcher     as _IMatcher
-from .. import Token        as _Token
+from .. import ruleset_t as _ruleset_t
+from .. import Rule      as _Rule
+from .. import Token     as _Token
+from .. import ILexer    as _ILexer
+from .. import IMatcher  as _IMatcher
 
 # ***************************************************************************************
 
@@ -35,8 +34,8 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
     _vendorId: str
 
-    _rulesets : _t.List[_rule.ruleset_t]
-    _active_ruleset : _rule.ruleset_t
+    _rulesets : _t.List[_ruleset_t]
+    _active_ruleset : _ruleset_t
 
     _options  : _opts.LexerOptions
 
@@ -46,7 +45,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
     @_abc.abstractmethod
     def __init__(self,
                  vendorId: str,
-                 ruleset: _rule.ruleset_t=[],
+                 ruleset: _ruleset_t=[],
                  options: _opts.LexerOptions=_opts.LexerOptions(),
     ):
         """AbstractLexer object instance initializer.
@@ -58,12 +57,9 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
         ruleset : ruleset_t, optional
             Initial ruleset.
             By default []
-        handleFlags : HFlags, optional
-            Initial handleFlags struct.
-            By default HFlags()
-        textstream : ITextstream, optional
-            Specify a specific ITextstream implementation.
-            By default Textstream()
+        options : LexerOptions, optional
+            Struct specifying processing options of the lexer.
+            By default LexerOptions()
         """
         super().__init__()
 
@@ -78,15 +74,13 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
 
     def __del__(self):
-
         super().__del__()
-
         return
 
 
   # --- PUBLIC METHODS --- #
 
-    def PushRuleset(self, ruleset: _rule.ruleset_t) -> None:
+    def PushRuleset(self, ruleset: _ruleset_t) -> None:
         # Before pushing the ruleset, we check if the pattern matchers (saved in the rule
         # objects) are compiled for the specific lexer implementation this function is called from.
         self._CompileRuleset(ruleset)
@@ -119,7 +113,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
   # --- PROTECTED METHODS --- #
 
     @_abc.abstractmethod
-    def _CompileRule(self, rule: _rule.Rule) -> _IMatcher:
+    def _CompileRule(self, rule: _Rule) -> _IMatcher:
         """Requests implemented lexer to compile a regex matcher object.
 
         Parameters
@@ -134,7 +128,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
 
     @_abc.abstractmethod
-    def _MatchRule(self, rule: _rule.Rule) -> _misc.ptr_t[_Token]:
+    def _MatchRule(self, rule: _Rule) -> _misc.ptr_t[_Token]:
         """Requests implemented lexer to match a rule.
 
         The implementation calls the GetMatcher() method from a Rule object to match a
@@ -157,7 +151,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
 
   # --- PRIVATE METHODS --- #
 
-    def _CompileRuleset(self, ruleset: _rule.ruleset_t) -> None:
+    def _CompileRuleset(self, ruleset: _ruleset_t) -> None:
         """Checks and compiles rules within a newly pushed ruleset.
 
         Whenever a ruleset is pushed, this method will check if all rules have their
@@ -171,17 +165,17 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
             if (self._NeedsCompilation(rule)):
                 rule.SetMatcher(self._CompileRule(rule))
 
-            # Comment rules also have an addition rule to be compiled
+            # Comment rules have an addition rule to be compiled
             if (rule.id == _predefs.comment.id):
-                # rule = static_cast<BaseComment*>(rule)->terminatorRule
-                rule: _rule.Rule = rule.terminatorRule
+                # rule = static_cast<BaseComment*>(rule)->endRule
+                rule: _Rule = rule.endRule
                 if (self._NeedsCompilation(rule)):
                     rule.SetMatcher(self._CompileRule(rule))
 
         return
 
 
-    def _NeedsCompilation(self, rule: _rule.Rule) -> bool:
+    def _NeedsCompilation(self, rule: _Rule) -> bool:
         """Check if the regex pattern matcher in a rule object needs to be compiled.
         """
         needs_compilation = False
@@ -339,7 +333,7 @@ class AbstractLexer (_textio.TextIO, _ILexer, metaclass=_abc.ABCMeta):
         raise _excs.EndOfData()
 
 
-    def _GNT_MatchRegexes(self, ruleset: _rule.ruleset_t) -> _Token:
+    def _GNT_MatchRegexes(self, ruleset: _ruleset_t) -> _Token:
         """
         This method scans for tokens using the rules (as defined by the user) in a given
         ruleset.

@@ -21,19 +21,16 @@ from ._rule import ruleset_t    as _ruleset_t
 def MakeLexer(ruleset: _ruleset_t=[],
               options: _LexerOptions=_LexerOptions(),
 ) -> _ILexer:
-    """Creates an instance of the library's current default lexer implementation.
+    """Creates an instance of the library's default lexer implementation.
 
     Parameters
     ----------
     ruleset : ruleset_t, optional
         Initial ruleset.
-        By default ``[]``
-    handleFlags : HFlags, optional
-        Initial handleFlags struct.
-        By default ``HFlags()``
-    textstream : ITextstream, optional
-        Specify a specific ITextstream implementation.
-        By default ``Textstream()``
+        By default []
+    options : LexerOptions, optional
+        Struct specifying processing options of the lexer.
+        By default LexerOptions()
 
     Returns
     -------

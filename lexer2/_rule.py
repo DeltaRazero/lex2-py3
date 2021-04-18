@@ -26,6 +26,9 @@ class Rule:
         "WORD").
     regexPattern : str
         The regex pattern string is used by a matcher to perform regex matching.
+
+    Properties
+    ----------
     returns: bool
         Whether tokens matched by this rule should be returned when scanning for tokens.
     """
@@ -37,6 +40,9 @@ class Rule:
 
     # The regex pattern string is used by a matcher to perform regex matching.
     regexPattern : str
+
+
+  # --- PROPERTIES --- #
 
     # Whether tokens matched by this rule should be returned when scanning for tokens.
     returns : bool
