@@ -13,3 +13,5 @@ from ._abst_matcher import AbstractMatcher
 from ._abst_lexer   import AbstractLexer
 
 from . import re_python
+
+from ._profiler_lexer import ProfilerLexer
