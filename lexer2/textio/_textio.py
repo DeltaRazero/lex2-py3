@@ -80,8 +80,9 @@ class ITextIO (metaclass=_abc.ABCMeta):
 
 # ***************************************************************************************
 
-class TextIO (ITextIO):
-    """TODO:"""
+class TextIO (ITextIO, metaclass=_abc.ABCMeta):
+    """A base class implementing ITextIO providing TextIO functionality.
+    """
 
   # --- PROTECTED FIELDS --- #
 
@@ -90,6 +91,7 @@ class TextIO (ITextIO):
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
+    @_abc.abstractmethod
     def __init__(self) -> None:
         self._ts = None
         return
