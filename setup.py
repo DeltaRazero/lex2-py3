@@ -18,7 +18,7 @@ def ReadTxt(fName: str):
 import lex2
 
 setuptools.setup(
-    name="liblex2-py3",
+    name="lex2",
     version=lex2.__version__,
 
     packages=setuptools.find_packages(),
@@ -35,16 +35,16 @@ setuptools.setup(
     keywords="lexer tokenizer sphinx",
     classifiers=[
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3 :: Only"
+        "Programming Language :: Python :: 3 :: Only",
         "Operating System :: OS Independent",
 
         "License :: OSI Approved :: zlib/libpng License",
 
         "Development Status :: 4 - Beta",
 
-        "Intended Audience :: Developers"
-        "Topic :: Scientific/Engineering :: Information Analysis"
+        "Intended Audience :: Developers",
+        "Topic :: Scientific/Engineering :: Information Analysis",
         "Topic :: Software Development :: Compilers",
-        "Topic :: Text Processing"
+        "Topic :: Text Processing",
     ],
 )
