@@ -1,8 +1,7 @@
-"""<library> lexer2
+"""<library> lex2
 
-lexer2 is a library for lexical analysis (often called tokenization). lexer2 is rule-based
-in conjunction with regular expressions (regex) and allows for context-based tokenization
-through the (optional) use of a ruleset stack.
+"lex2" is a library to perform lexical analysis (often called tokenization), using
+regular expressions (regex).
 """
 
 '''
@@ -12,7 +11,7 @@ zlib License
 All rights reserved.
 '''
 
-__version__ = "0.9.2"
+__version__ = "0.9.3-beta"
 
 # ***************************************************************************************
 
