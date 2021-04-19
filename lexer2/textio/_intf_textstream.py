@@ -3,7 +3,7 @@
 '''
 zlib License
 
-(C) 2020 DeltaRazero
+(C) 2020-2021 DeltaRazero
 All rights reserved.
 '''
 
