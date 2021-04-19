@@ -14,7 +14,7 @@ import typing   as _t
 import sys      as _sys
 import warnings as _warnings
 
-from ._intf_textstream     import ITextstream as _ITextstream
+from ._intf_textstream     import ITextstream        as _ITextstream
 from ._textstream_abstract import AbstractTextstream as _AbstractTextstream
 
 # ***************************************************************************************

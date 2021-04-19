@@ -23,6 +23,8 @@ from .. import Token     as _Token
 # ***************************************************************************************
 
 class _RuleProfile:
+    """Keeps track of the most common values of a rule.
+    """
 
   # --- FIELDS --- #
 

@@ -16,7 +16,7 @@ from ._textposition import TextPosition as _TextPosition
 # ***************************************************************************************
 
 class ITextstream (metaclass=_abc.ABCMeta):
-    """Common interface to a TextStream object instance.
+    """Common interface to a Textstream object instance.
     """
 
   # --- INTERFACE METHODS --- #

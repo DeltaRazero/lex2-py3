@@ -81,7 +81,7 @@ class ITextIO (metaclass=_abc.ABCMeta):
 # ***************************************************************************************
 
 class TextIO (ITextIO, metaclass=_abc.ABCMeta):
-    """A base class implementing ITextIO providing TextIO functionality.
+    """A base class implementing ITextIO, providing TextIO functionality.
     """
 
   # --- PROTECTED FIELDS --- #
