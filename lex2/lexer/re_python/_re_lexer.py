@@ -9,23 +9,26 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from ._re_matcher import Re_Matcher as _Re_Matcher
+class _:
+    '<imports>'
 
-from .. import AbstractLexer as _AbstractLexer
+    from ._re_matcher import Re_Matcher
 
-from ... import textio as _textio
-from ... import misc as _misc
-from ... import opts as _opts
+    from .. import AbstractLexer
 
-from ... import ruleset_t as _ruleset_t
-from ... import Rule      as _Rule
+    from ... import textio
+    from ... import misc
+    from ... import opts
 
-from ... import IMatcher as _IMatcher
-from ... import Token    as _Token
+    from ... import ruleset_t
+    from ... import Rule
+
+    from ... import IMatcher
+    from ... import Token
 
 # ***************************************************************************************
 
-class Re_Lexer (_AbstractLexer):
+class Re_Lexer (_.AbstractLexer):
     """An implementation of ILexer using Python's builtin `re` module, using AbstractLexer as base.
     """
 
@@ -37,8 +40,8 @@ class Re_Lexer (_AbstractLexer):
   # --- CONSTRUCTOR --- #
 
     def __init__(self,
-                 ruleset: _ruleset_t=[],
-                 options: _opts.LexerOptions=_opts.LexerOptions(),
+                 ruleset: _.ruleset_t=[],
+                 options: _.opts.LexerOptions=_.opts.LexerOptions(),
     ):
         """Re_Lexer object instance initializer.
 
@@ -61,13 +64,13 @@ class Re_Lexer (_AbstractLexer):
 
   # --- PROTECTED METHODS --- #
 
-    def _CompileRule(self, rule: _Rule) -> _IMatcher:
-        return _Re_Matcher(self.VENDOR_ID, rule.regexPattern)
+    def _CompileRule(self, rule: _.Rule) -> _.IMatcher:
+        return _.Re_Matcher(self.VENDOR_ID, rule.regexPattern)
 
 
-    def _MatchRule(self, rule: _Rule) -> _misc.ptr_t[_Token]:
+    def _MatchRule(self, rule: _.Rule) -> _.misc.ptr_t[_.Token]:
 
-        token: _misc.ptr_t[_Token] = None
+        token: _.misc.ptr_t[_.Token] = None
 
         # NOTE: It's faster to cache this variable in CPython to prevent unnecessary
         # lookups to 'self'.
@@ -80,7 +83,7 @@ class Re_Lexer (_AbstractLexer):
         #   self._ts.GetBufferStringSize(),     # Read UNTIL position
         # )
 
-        matcher: _Re_Matcher = rule._matcher
+        matcher: _.Re_Matcher = rule._matcher
         regex_match = matcher._pattern.match(
             _ts._bufferString,     # Data input
             _ts._bufferStringPos,  # Read STARTING AT position
@@ -90,11 +93,11 @@ class Re_Lexer (_AbstractLexer):
         # Create token if a match was found
         if (regex_match):
             # txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
-            txt_pos: _textio.TextPosition = _ts._tp
-            token = _Token(
+            txt_pos: _.textio.TextPosition = _ts._tp
+            token = _.Token(
                 rule.id,
                 regex_match.group(),
-                _textio.TextPosition(
+                _.textio.TextPosition(
                     txt_pos.pos,
                     txt_pos.col,
                     txt_pos.ln

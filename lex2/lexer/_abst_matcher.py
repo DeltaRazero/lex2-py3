@@ -9,14 +9,17 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import abc as _abc
+class _:
+    '<imports>'
 
-from .. import misc as _misc
-from .. import IMatcher as _IMatcher
+    import abc
+
+    from .. import misc
+    from .. import IMatcher
 
 # ***************************************************************************************
 
-class AbstractMatcher (_IMatcher, metaclass=_abc.ABCMeta):
+class AbstractMatcher (_.IMatcher, metaclass=_.abc.ABCMeta):
     """Abstract base class of an IMatcher implementation.
     """
 
@@ -34,7 +37,7 @@ class AbstractMatcher (_IMatcher, metaclass=_abc.ABCMeta):
 
   # --- CONSTRUCTOR --- #
 
-    @_abc.abstractmethod
+    @_.abc.abstractmethod
     def __init__(self, vendorId: str, regexPattern: str) -> None:
         """AbstractMatcher object instance initializer.
 
@@ -55,7 +58,7 @@ class AbstractMatcher (_IMatcher, metaclass=_abc.ABCMeta):
 
   # --- PROTECTED METHODS --- #
 
-    @_abc.abstractmethod
+    @_.abc.abstractmethod
     def _CompilePattern(self) -> None:
         """Compiles regex pattern to implementation-specific regex matcher object.
         """
@@ -67,6 +70,6 @@ class AbstractMatcher (_IMatcher, metaclass=_abc.ABCMeta):
     def GetVendorId(self) -> str:
         return self._vendorId
 
-    @_abc.abstractmethod
-    def GetPatternMatcher(self) -> _misc.voidptr_t:
+    @_.abc.abstractmethod
+    def GetPatternMatcher(self) -> _.misc.voidptr_t:
         pass

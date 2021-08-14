@@ -9,10 +9,13 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import typing as _t
+class _:
+    '<imports>'
 
-from .misc import ptr_t as _ptr_t
-from ._intf_matcher import IMatcher as _IMatcher
+    import typing as t
+
+    from .misc import ptr_t
+    from ._intf_matcher import IMatcher
 
 # ***************************************************************************************
 
@@ -50,7 +53,7 @@ class Rule:
 
   # --- FIELDS --- #
 
-    _matcher : _ptr_t[_IMatcher]
+    _matcher : _.ptr_t[_.IMatcher]
 
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
@@ -95,7 +98,7 @@ class Rule:
 
   # --- GETTERS --- #
 
-    def GetMatcher(self) -> _ptr_t[_IMatcher]:
+    def GetMatcher(self) -> _.ptr_t[_.IMatcher]:
         """Gets the IMatcher-compatible object instance.
 
         The rule matcher object is used by a lexer object to identify tokens during
@@ -110,7 +113,7 @@ class Rule:
 
   # --- SETTERS --- #
 
-    def SetMatcher(self, matcher: _IMatcher) -> None:
+    def SetMatcher(self, matcher: _.IMatcher) -> None:
         """Sets the rule matcher object reference.
 
         Parameters
@@ -125,4 +128,4 @@ class Rule:
 
 # SEE: https://github.com/python/mypy/issues/2984#issuecomment-285716826
 # ruleset_t = _t.List[Rule]
-ruleset_t = _t.Sequence[Rule]
+ruleset_t = _.t.Sequence[Rule]

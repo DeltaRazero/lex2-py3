@@ -9,26 +9,31 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import typing   as _t
-import operator as _operator
-import pathlib  as _pl
+class _:
+    '<imports>'
 
-from .. import opts    as _opts
-from .. import textio  as _textio
+    import typing  as t
+    import pathlib as pl
+    import operator
 
-from .. import ruleset_t as _ruleset_t
-from .. import ILexer    as _ILexer
-from .. import Token     as _Token
+    from .. import (
+        opts,
+        textio,
+
+        ruleset_t,
+        ILexer,
+        Token,
+    )
 
 # ***************************************************************************************
 
-class _RuleProfile:
+class _RuleValueProfiler:
     """Keeps track of the most common values of a rule.
     """
 
   # --- FIELDS --- #
 
-    _valueOccurrences : _t.Dict[str, int]
+    _valueOccurrences : _.t.Dict[str, int]
 
 
   # --- CONSTRUCTOR --- #
@@ -42,7 +47,7 @@ class _RuleProfile:
 
   # --- PUBLIC METHODS --- #
 
-    def AddToken(self, token: _Token) -> None:
+    def AddToken(self, token: _.Token) -> None:
 
         if (token.data in self._valueOccurrences):
             self._valueOccurrences[token.data] += 1
@@ -52,18 +57,18 @@ class _RuleProfile:
         return
 
 
-    def TopOccurrences(self, threshold: int=10) -> _t.Dict[str, int]:
+    def TopOccurrences(self, threshold: int=10) -> _.t.Dict[str, int]:
 
         # First sort by map values
         self._valueOccurrences = dict(
             sorted(
                 self._valueOccurrences.items(),
-                key=_operator.itemgetter(1),
+                key=_.operator.itemgetter(1),
                 reverse=True
             )
         )
 
-        to_return: _t.Dict[str, int] = {}
+        to_return: _.t.Dict[str, int] = {}
         for key in self._valueOccurrences:
             value = self._valueOccurrences[key]
             if (value >= threshold): to_return[key] = self._valueOccurrences[key]
@@ -72,21 +77,21 @@ class _RuleProfile:
 
 # ***************************************************************************************
 
-class ProfilerLexer (_ILexer):
+class ProfilerLexer (_.ILexer):
     """A wrapper around an existing implementation to provide profiling functionality.
     """
 
   # --- FIELDS --- #
 
-    _lexer : _ILexer
+    _lexer : _.ILexer
 
-    _ruleOccurrences : _t.Dict[str, int]
-    _ruleProfiles    : _t.Dict[str, _RuleProfile]
+    _ruleOccurrences : _.t.Dict[str, int]
+    _ruleProfiles    : _.t.Dict[str, _RuleValueProfiler]
 
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
-    def __init__(self, lexer: _ILexer) -> None:
+    def __init__(self, lexer: _.ILexer) -> None:
         """ProfilerLexer object instance initializer.
 
         Parameters
@@ -110,7 +115,7 @@ class ProfilerLexer (_ILexer):
 
   # --- INTERFACE METHODS (ILexer) --- #
 
-    def PushRuleset(self, ruleset: _ruleset_t) -> None:
+    def PushRuleset(self, ruleset: _.ruleset_t) -> None:
         self._lexer.PushRuleset(ruleset)
         return
 
@@ -125,17 +130,17 @@ class ProfilerLexer (_ILexer):
         return
 
 
-    def GetOptions(self) -> _opts.LexerOptions:
+    def GetOptions(self) -> _.opts.LexerOptions:
         return self._lexer.GetOptions()
 
 
-    def GetNextToken(self) -> _Token:
+    def GetNextToken(self) -> _.Token:
 
         token = self._lexer.GetNextToken()
 
         if (not (token.id in self._ruleOccurrences)):
             self._ruleOccurrences[token.id] = 0
-            self._ruleProfiles   [token.id] = _RuleProfile()
+            self._ruleProfiles   [token.id] = _RuleValueProfiler()
 
         self._ruleOccurrences[token.id] += 1
         self._ruleProfiles   [token.id].AddToken(token)
@@ -146,8 +151,8 @@ class ProfilerLexer (_ILexer):
   # --- INTERFACE METHODS (ITextIO) --- #
 
     def Open(self,
-             fp: _t.Union[str, _pl.Path],
-             bufferSize: int=_textio.DEFAULT_BUFFER_SIZE,
+             fp: _.t.Union[str, _.pl.Path],
+             bufferSize: int=_.textio.DEFAULT_BUFFER_SIZE,
              encoding: str="UTF-8",
              convertLineEndings: bool=True,
     ) -> None:
@@ -199,7 +204,7 @@ class ProfilerLexer (_ILexer):
         self._ruleOccurrences = dict(
             sorted(
                 self._ruleOccurrences.items(),
-                key=_operator.itemgetter(1),
+                key=_.operator.itemgetter(1),
                 reverse=True
             )
         )

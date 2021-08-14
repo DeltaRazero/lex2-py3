@@ -15,17 +15,19 @@ __version__ = "0.9.3"
 
 # ***************************************************************************************
 
-from . import excs
-from . import misc
-from . import opts
-from . import textio
+from . import (
+    excs,
+    misc,
+    opts,
+    textio,
+)
 
-from ._token import Token
-from ._rule  import Rule, ruleset_t
+from ._token import *
+from ._rule  import *
 from . import predefs
 
-from ._intf_matcher import IMatcher
-from ._intf_lexer   import ILexer
+from ._intf_lexer   import *
+from ._intf_matcher import *
 
 from . import lexer
-from ._make_lexer import MakeLexer
+from ._make_lexer import *

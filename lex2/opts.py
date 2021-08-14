@@ -9,7 +9,10 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import typing as _t
+class _:
+    '<imports>'
+
+    import typing as t
 
 # ***************************************************************************************
 
@@ -66,7 +69,7 @@ class LexerOptions:
     # Key should be the identifier string value of a Rule object. To check whether a
     # token should be returned or ignored, the map gets checked for existence of the
     # token's identifier string as key value.
-    idReturns : _t.Dict[str, bool]
+    idReturns : _.t.Dict[str, bool]
 
 
   # --- CONSTRUCTOR --- #

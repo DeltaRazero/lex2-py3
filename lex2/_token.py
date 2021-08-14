@@ -9,12 +9,15 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import typing as _t
+class _:
+    '<imports>'
 
-from . import excs   as _excs
-from . import textio as _textio
+    import typing as t
 
-from ._rule import Rule as _Rule
+    from . import excs
+    from . import textio
+
+    from ._rule import Rule
 
 # ***************************************************************************************
 
@@ -38,7 +41,7 @@ class Token:
     id : str
 
     # Position in the textstream where the token occurs
-    position : _textio.TextPosition
+    position : _.textio.TextPosition
 
     # String data of the identified token type
     data : str
@@ -46,7 +49,7 @@ class Token:
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, id: str, data: str, position: _textio.TextPosition):
+    def __init__(self, id: str, data: str, position: _.textio.TextPosition):
         """Token object instance initializer.
 
         Parameters
@@ -67,7 +70,7 @@ class Token:
 
   # --- PUBLIC METHODS --- #
 
-    def IsRule(self, expectedRule: _Rule) -> bool:
+    def IsRule(self, expectedRule: _.Rule) -> bool:
         """Evaluates if the token's identifier matches that of a given rule.
 
         Parameters
@@ -82,7 +85,7 @@ class Token:
         return self.id == expectedRule.id
 
 
-    def ValidateRule(self, expectedRule: _Rule) -> None:
+    def ValidateRule(self, expectedRule: _.Rule) -> None:
         """Validates that the token's identifier matches that of a given rule.
 
         Parameters
@@ -96,5 +99,5 @@ class Token:
             When the token's identifier does not match that of a given rule.
         """
         if (not self.IsRule(expectedRule)):
-            raise _excs.UnexpectedTokenError(self.position, self.data, self.id)
+            raise _.excs.UnexpectedTokenError(self.position, self.data, self.id)
         return

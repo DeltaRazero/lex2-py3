@@ -9,12 +9,15 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from ._intf_textstream     import ITextstream        as _ITextstream
-from ._textstream_abstract import AbstractTextstream as _AbstractTextstream
+class _:
+    '<imports>'
+
+    from ._intf_textstream     import ITextstream
+    from ._textstream_abstract import AbstractTextstream
 
 # ***************************************************************************************
 
-class Textstream_Memory (_AbstractTextstream, _ITextstream):
+class Textstream_Memory (_.AbstractTextstream, _.ITextstream):
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 

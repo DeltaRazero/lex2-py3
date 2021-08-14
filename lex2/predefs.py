@@ -9,14 +9,17 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import abc    as _abc
-import typing as _t
+class _:
+    '<imports>'
 
-from ._rule import Rule as _Rule
+    import abc
+    import typing as t
+
+    from ._rule import Rule
 
 # ***************************************************************************************
 
-class BaseComment (_Rule, metaclass=_abc.ABCMeta):
+class BaseComment (_.Rule, metaclass=_.abc.ABCMeta):
     """Base class for a rule filtering comments.
     """
 
@@ -27,17 +30,17 @@ class BaseComment (_Rule, metaclass=_abc.ABCMeta):
 
   # --- READONLY PROPERTIES --- #
 
-    endRule : _Rule
+    endRule : _.Rule
 
 
   # --- CONSTRUCTOR --- #
 
-    @_abc.abstractmethod
+    @_.abc.abstractmethod
     def __init__(self, regexPatternStart: str, regexPatternEnd: str):
         """
         """
-        _Rule.__init__(self, self.RULE_ID, regexPatternStart, returns=False)
-        self.endRule = _Rule(self.RULE_ID, regexPatternEnd)
+        _.Rule.__init__(self, self.RULE_ID, regexPatternStart, returns=False)
+        self.endRule = _.Rule(self.RULE_ID, regexPatternEnd)
         return
 
 
@@ -94,7 +97,7 @@ class MultilineComment (BaseComment):
 
 # ***************************************************************************************
 
-def __MakeDummyRule(id: str) -> _Rule: return _Rule(id, r"a^")
+def __MakeDummyRule(id: str) -> _.Rule: return _.Rule(id, r"a^")
 # __MakeDummyRule: _t.Callable[[str], _Rule] = lambda id: _Rule(id, r"a^")
 
 # These rule object instances are not meant to be actually used in rulesets as they won't

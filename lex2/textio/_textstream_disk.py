@@ -9,27 +9,30 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import pathlib  as _pl
-import typing   as _t
-import sys      as _sys
-import warnings as _warnings
+class _:
+    '<imports>'
 
-from ._intf_textstream     import ITextstream        as _ITextstream
-from ._textstream_abstract import AbstractTextstream as _AbstractTextstream
+    import pathlib  as pl
+    import typing   as t
+    import sys
+    import warnings
+
+    from ._intf_textstream     import ITextstream
+    from ._textstream_abstract import AbstractTextstream
 
 # ***************************************************************************************
 
-_SYSTEM_ENCODING = _sys.stdin.encoding
+_SYSTEM_ENCODING = _.sys.stdin.encoding
 
 # ***************************************************************************************
 
-class Textstream_Disk (_AbstractTextstream, _ITextstream):
+class Textstream_Disk (_.AbstractTextstream, _.ITextstream):
 
   # --- FIELDS --- #
 
     _encoding : str
     _f_isEof  : bool
-    _f : _t.IO[bytes]
+    _f : _.t.IO[bytes]
 
     # NOTE: To clarify, _bufferSize is the the amount of bytes, while _bufferStringSize
     # is be the amount of decoded characters, i.e. character codepoints.
@@ -45,7 +48,7 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
     def __init__(self,
-                 fp: _t.Union[str, _pl.Path],
+                 fp: _.t.Union[str, _.pl.Path],
                  bufferSize: int,
                  encoding: str,
                  convertLineEndings: bool,
@@ -77,7 +80,7 @@ class Textstream_Disk (_AbstractTextstream, _ITextstream):
         # Enforce minimum buffer size
         if (bufferSize<256):
             bufferSize=256
-            _warnings.warn(category=RuntimeWarning, message=
+            _.warnings.warn(category=RuntimeWarning, message=
                 f"Set the buffer size to {bufferSize} as that is the minimum required size to functionally operate."
             )
 

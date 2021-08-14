@@ -9,7 +9,7 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from ._textposition import TextPosition
+from ._textposition import *
 
-from ._intf_textstream import ITextstream
-from ._textio          import ITextIO, TextIO, DEFAULT_BUFFER_SIZE
+from ._intf_textstream import *
+from ._textio          import *

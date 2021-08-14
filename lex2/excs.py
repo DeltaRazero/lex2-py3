@@ -9,7 +9,10 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from . import textio as _textio
+class _:
+    '<imports>'
+
+    from . import textio
 
 # ***************************************************************************************
 
@@ -26,13 +29,13 @@ class TokenError (Exception):
 
   # --- READONLY PROPERTIES --- #
 
-    pos  : _textio.TextPosition
+    pos  : _.textio.TextPosition
     data : str
 
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, pos: _textio.TextPosition, data: str, message: str):
+    def __init__(self, pos: _.textio.TextPosition, data: str, message: str):
 
         # Positions are zero-based numbered. Since most, if not all, text editors are
         # one-based numbered, offset line/column positions by one (1).
@@ -61,7 +64,7 @@ class UnidentifiedTokenError (TokenError):
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, pos: _textio.TextPosition, data: str):
+    def __init__(self, pos: _.textio.TextPosition, data: str):
 
         # Call the base class constructor with the parameters it needs
         super().__init__(
@@ -85,7 +88,7 @@ class UnexpectedTokenError (TokenError):
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, pos: _textio.TextPosition, data: str, id: str):
+    def __init__(self, pos: _.textio.TextPosition, data: str, id: str):
 
         # Call the base class constructor with the parameters it needs
         super().__init__(

@@ -9,14 +9,17 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import abc     as _abc
-import pathlib as _pl
-import typing  as _t
+class _:
+    '<imports>'
 
-from ._intf_textstream import ITextstream  as _ITextstream
+    import abc
+    import pathlib as pl
+    import typing  as t
 
-from ._textstream_disk   import Textstream_Disk   as _Textstream_Disk
-from ._textstream_memory import Textstream_Memory as _Textstream_Memory
+    from ._intf_textstream import ITextstream
+
+    from ._textstream_disk   import Textstream_Disk
+    from ._textstream_memory import Textstream_Memory
 
 # ***************************************************************************************
 
@@ -24,15 +27,15 @@ DEFAULT_BUFFER_SIZE = 512
 
 # ***************************************************************************************
 
-class ITextIO (metaclass=_abc.ABCMeta):
+class ITextIO (metaclass=_.abc.ABCMeta):
     """Interface to a class implementing TextIO functionality.
     """
 
   # --- INTERFACE METHODS --- #
 
-    @_abc.abstractmethod
+    @_.abc.abstractmethod
     def Open(self,
-             fp: _t.Union[str, _pl.Path],
+             fp: _.t.Union[str, _.pl.Path],
              bufferSize: int=DEFAULT_BUFFER_SIZE,
              encoding: str="UTF-8",
              convertLineEndings: bool=True
@@ -57,7 +60,7 @@ class ITextIO (metaclass=_abc.ABCMeta):
         pass
 
 
-    @_abc.abstractmethod
+    @_.abc.abstractmethod
     def Load(self, strData: str, convertLineEndings: bool=False) -> None:
         """Load string data directly.
 
@@ -72,7 +75,7 @@ class ITextIO (metaclass=_abc.ABCMeta):
         pass
 
 
-    @_abc.abstractmethod
+    @_.abc.abstractmethod
     def Close(self) -> None:
         """Closes and deletes textstream resources.
         """
@@ -80,18 +83,18 @@ class ITextIO (metaclass=_abc.ABCMeta):
 
 # ***************************************************************************************
 
-class TextIO (ITextIO, metaclass=_abc.ABCMeta):
+class TextIO (ITextIO, metaclass=_.abc.ABCMeta):
     """A base class implementing ITextIO, providing TextIO functionality.
     """
 
   # --- PROTECTED FIELDS --- #
 
-    _ts : _ITextstream
+    _ts : _.ITextstream
 
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
-    @_abc.abstractmethod
+    @_.abc.abstractmethod
     def __init__(self) -> None:
         self._ts = None
         return
@@ -105,7 +108,7 @@ class TextIO (ITextIO, metaclass=_abc.ABCMeta):
   # --- INTERFACE METHODS --- #
 
     def Open(self,
-             fp: _t.Union[str, _pl.Path],
+             fp: _.t.Union[str, _.pl.Path],
              bufferSize: int=DEFAULT_BUFFER_SIZE,
              encoding: str="UTF-8",
              convertLineEndings: bool=True,
@@ -115,7 +118,7 @@ class TextIO (ITextIO, metaclass=_abc.ABCMeta):
 
         # Cast fp to pathlib.Path if a string
         if (type(fp) is str):
-            fp = _pl.Path(fp)
+            fp = _.pl.Path(fp)
 
         # Check if path exists and is file
         if (not fp.is_file()):
@@ -130,13 +133,13 @@ class TextIO (ITextIO, metaclass=_abc.ABCMeta):
         elif (bufferSize == 0):
 
             with open(fp, "r", encoding=encoding) as f:
-                self._ts = _Textstream_Memory(
+                self._ts = _.Textstream_Memory(
                     strData=f.read(),
                     convertLineEndings=convertLineEndings,
                 )
 
         else:
-            self._ts = _Textstream_Disk(
+            self._ts = _.Textstream_Disk(
                 fp=fp,
                 bufferSize=bufferSize,
                 encoding=encoding,
@@ -152,7 +155,7 @@ class TextIO (ITextIO, metaclass=_abc.ABCMeta):
     ) -> None:
 
         self.Close()
-        self._ts = _Textstream_Memory(
+        self._ts = _.Textstream_Memory(
             strData=strData,
             convertLineEndings=convertLineEndings,
         )

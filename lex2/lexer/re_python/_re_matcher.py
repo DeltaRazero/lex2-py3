@@ -9,14 +9,17 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import typing as _t
-import re     as _re
+class _:
+    '<imports>'
 
-from .. import AbstractMatcher as _AbstractMatcher
+    import typing as t
+    import re
+
+    from .. import AbstractMatcher
 
 # ***************************************************************************************
 
-class Re_Matcher (_AbstractMatcher):
+class Re_Matcher (_.AbstractMatcher):
     """An implementation of IMatcher using Python's builtin `re` module, using AbstractMatcher as base.
     """
 
@@ -24,7 +27,7 @@ class Re_Matcher (_AbstractMatcher):
 
     # t.Pattern is an object instance of a compiled regex pattern, by Python's builtin
     # `re` module.
-    _pattern : _t.Pattern[str]
+    _pattern : _.t.Pattern[str]
 
 
   # --- CONSTRUCTOR --- #
@@ -47,12 +50,12 @@ class Re_Matcher (_AbstractMatcher):
 
     # NOTE: Called from abstract base class' constructor
     def _CompilePattern(self) -> None:
-        self._pattern = _re.compile(self._regexPattern)
+        self._pattern = _.re.compile(self._regexPattern)
         return
 
 
   # --- GETTERS --- #
 
-    def GetPatternMatcher(self) -> _t.Pattern[str]:
+    def GetPatternMatcher(self) -> _.t.Pattern[str]:
         # NOTE: Should actually be type-casted to (void*)
         return self._pattern

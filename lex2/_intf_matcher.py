@@ -9,19 +9,22 @@ All rights reserved.
 
 # ***************************************************************************************
 
-import abc as _abc
+class _:
+    '<imports>'
 
-from .misc import voidptr_t as _voidptr_t
+    import abc
+
+    from .misc import voidptr_t
 
 # ***************************************************************************************
 
-class IMatcher (metaclass=_abc.ABCMeta):
+class IMatcher (metaclass=_.abc.ABCMeta):
     """Common interface to a rule matcher object instance.
     """
 
   # --- INTERFACE GETTERS --- #
 
-    @_abc.abstractmethod
+    @_.abc.abstractmethod
     def GetVendorId(self) -> str:
         """Gets the lexer implementation identifier string (a.k.a. 'vendor ID').
 
@@ -32,8 +35,8 @@ class IMatcher (metaclass=_abc.ABCMeta):
         pass
 
 
-    @_abc.abstractmethod
-    def GetPatternMatcher(self) -> _voidptr_t:
+    @_.abc.abstractmethod
+    def GetPatternMatcher(self) -> _.voidptr_t:
         """Gets the compiled regex pattern matcher object reference.
 
         Returns

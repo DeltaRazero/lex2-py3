@@ -9,18 +9,20 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from . import lexer  as _lexer
+class _:
+    '<imports>'
 
-from ._intf_lexer import ILexer as _ILexer
+    from . import lexer
 
-from .opts  import LexerOptions as _LexerOptions
-from ._rule import ruleset_t    as _ruleset_t
+    from ._intf_lexer import ILexer
+    from ._rule       import ruleset_t
+    from .opts        import LexerOptions
 
 # ***************************************************************************************
 
-def MakeLexer(ruleset: _ruleset_t=[],
-              options: _LexerOptions=_LexerOptions(),
-) -> _ILexer:
+def MakeLexer(ruleset: _.ruleset_t=[],
+              options: _.LexerOptions=_.LexerOptions(),
+) -> _.ILexer:
     """Creates an instance of the library's default lexer implementation.
 
     Parameters
@@ -36,9 +38,9 @@ def MakeLexer(ruleset: _ruleset_t=[],
     -------
     ILexer
     """
-    DEFAULT_IMPLEMENTATION_CLASS = _lexer.re_python.Re_Lexer
+    DEFAULT_IMPLEMENTATION_CLASS = _.lexer.re_python.Re_Lexer
 
-    lexer: _ILexer = DEFAULT_IMPLEMENTATION_CLASS(
+    lexer: _.ILexer = DEFAULT_IMPLEMENTATION_CLASS(
         ruleset=ruleset,
         options=options,
     )

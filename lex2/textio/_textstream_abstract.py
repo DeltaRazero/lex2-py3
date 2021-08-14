@@ -9,16 +9,19 @@ All rights reserved.
 
 # ***************************************************************************************
 
-from ._intf_textstream import ITextstream  as _ITextstream
-from ._textposition    import TextPosition as _TextPosition
+class _:
+    '<imports>'
+
+    from ._intf_textstream import ITextstream
+    from ._textposition    import TextPosition
 
 # ***************************************************************************************
 
-class AbstractTextstream (_ITextstream):
+class AbstractTextstream (_.ITextstream):
 
   # --- FIELDS --- #
 
-    _tp : _TextPosition
+    _tp : _.TextPosition
 
     _isEof : bool
 
@@ -31,7 +34,7 @@ class AbstractTextstream (_ITextstream):
 
     def __init__(self) -> None:
 
-        self._tp = _TextPosition()
+        self._tp = _.TextPosition()
 
         self._isEof = False
 
@@ -50,7 +53,7 @@ class AbstractTextstream (_ITextstream):
 
   # --- INTERFACE GETTERS --- #
 
-    def GetTextPosition(self) -> _TextPosition:
+    def GetTextPosition(self) -> _.TextPosition:
         return self._tp
 
 
