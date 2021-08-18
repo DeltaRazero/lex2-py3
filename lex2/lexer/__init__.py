@@ -12,6 +12,6 @@ All rights reserved.
 from ._abst_matcher import *
 from ._abst_lexer   import *
 
-from . import re_python
+from ._implementations import *
 
 from ._profiler_lexer import *

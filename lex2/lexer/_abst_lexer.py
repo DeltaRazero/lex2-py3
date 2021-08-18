@@ -132,28 +132,6 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
         pass
 
 
-    @_.abc.abstractmethod
-    def _MatchRule(self, rule: _.Rule) -> _.misc.ptr_t[_.Token]:
-        """Requests implemented lexer to match a rule.
-
-        The implementation calls the GetMatcher() method from a Rule object to match a
-        regex pattern.
-        The right (compiled) types of regex matcher objects are already ensured whenever
-        a ruleset is pushed.
-
-        Parameters
-        ----------
-        rule : Rule
-
-        Returns
-        -------
-        ptr_t[Token]
-            A regex matcher should not return anything whenever no regex match was found.
-            Therefore the return type is a pointer/reference of Token (i.e. Token*).
-        """
-        pass
-
-
   # --- PRIVATE METHODS --- #
 
     def _CompileRuleset(self, ruleset: _.ruleset_t) -> None:
@@ -195,7 +173,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
         return needs_compilation
 
 
-    def _CountOccurrences(self, matchingChar: str) -> int:
+    def _CountCharOccurrences(self, matchingChar: str) -> int:
         """Counts the amount of continuous occurrences of a given character at the current position.
         """
 
@@ -249,7 +227,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
             if (char == ' '):
 
                 opt = opts.space
-                n = self._CountOccurrences(' ')
+                n = self._CountCharOccurrences(' ')
 
                 if (opt.ignores): goto_matcher = True
                 else:
@@ -309,7 +287,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
             elif (char == '\t'):
 
                 opt = opts.tab
-                n = self._CountOccurrences('\t')
+                n = self._CountCharOccurrences('\t')
 
                 if (opt.ignores): goto_matcher = True
                 else:
@@ -324,7 +302,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
                     )
                     self._ts.Update(n)
 
-        # Not a special character
+        # Not a special character, i.e. a regular character
             else:
                 goto_matcher = True
 
@@ -351,35 +329,51 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
         for rule in ruleset:
 
             # A token is returned if the (implemented) regex pattern matcher found a match.
-            token: _.misc.ptr_t[_.Token] = self._MatchRule(rule)
-            if (token):
+
+            # A non-empty string is returned if the (implemented) regex pattern matcher
+            # found a match.
+            match: _.misc.ptr_t[str] = rule._matcher.Match(self._ts)
+            if (match):
+
+                # Store if the token type should be returned to the user
+                returns = self._options.idReturns.get(rule.id, rule.returns)
+
+                # Create a token object
+                # tp: _.textio.TextPosition = self._ts.GetTextPosition()
+                tp: _.textio.TextPosition = self._ts._tp
+                token = _.Token(
+                    rule.id,
+                    match,
+                    _.textio.TextPosition(
+                        tp.pos,
+                        tp.col,
+                        tp.ln
+                    )
+                )
 
                 # Update new data into buffer
-                self._ts.Update(len(token.data))
+                self._ts.Update(len(match))
 
                 # TODO?: Buffer size warning if len(token.data) >= self._ts.GetBufferStringSize()
 
-                # return_token = self._options.idReturns.get(rule.id, rule.returns)
-                return_token = self._options.idReturns.get(rule.id, rule.returns)
-
                 if (token.IsRule(_.predefs.comment)):
-                    return self._GNT_HandleComment(rule, token, return_token)
+                    self._GNT_HandleComment(rule, token, returns)
 
                 # Return token accordingly
-                if (not return_token):
-                    del token
-                    return self.GetNextToken()
-                return token
+                if (returns):
+                    return token
+                del token
+                return self.GetNextToken()
 
             # Else no match
-            del token
+            del match
 
         # If no matches were found at all (i.e. no regex pattern was matched), then the
         # lexer has found an unidentified token type.
         self._GNT_RaiseUnidentifiedTokenError()
 
 
-    def _GNT_HandleComment(self, rule: _.Rule, token: _.Token, returnToken: bool) -> _.Token:
+    def _GNT_HandleComment(self, rule: _.Rule, token: _.Token, returns: bool) -> None:
         """
         This method handles processing of a COMMENT token.
 
@@ -388,10 +382,8 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
         rule for defining them. This method handles that special functionality.
         """
 
-        temp_token: _.Token
-
-        # t_rule = static_cast<BaseComment*>(rule)->endRule
-        t_rule: _.Rule = rule.endRule
+        # rule = static_cast<BaseComment*>(rule)->endRule
+        rule = _.t.cast(_.predefs.BaseComment, rule).endRule
 
         # Comment handling mainloop
         while(1):
@@ -400,21 +392,20 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
             # ALL characters are matched until a NEWLINE character (for
             # singleline comments) or the characters defining the end of a
             # multiline comment are found.
-            temp_token = self._MatchRule(t_rule)
+            # match: _.misc.ptr_t[str] = rule.GetMatcher().Match(self._ts)
+            match: _.misc.ptr_t[str] = rule._matcher.Match(self._ts)
 
-            n1 = len(temp_token.data)
+            n1 = len(match)
             # n2 = self._ts.GetBufferStringSize() - self._ts.GetBufferStringPosition()
             n2 = self._ts._bufferStringSize - self._ts._bufferStringPos
 
             # Update positions
             self._ts.Update(n1)
 
-            # Append the intermediate string data from the temporary comment
-            # token to the parent comment token (which is the token that will
-            # be returned).
-            if (returnToken):
-                token.data += temp_token.data
-            del temp_token
+            # Append the string data to the comment token if it should be
+            # returned to the user.
+            if (returns):
+                token.data += match
 
             # The regex pattern object will continue to match ALL characters
             # until the sequence of characters that defines termination of
@@ -431,12 +422,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
                 raise _.excs.EndOfData()
                 # TODO? UnterminatedCommentError
 
-        # Return or ignore COMMENT token accordingly
-        if (returnToken):
-            return token
-        else:
-            del token
-            return self.GetNextToken()
+        return
 
 
     def _GNT_RaiseUnidentifiedTokenError(self) -> None:

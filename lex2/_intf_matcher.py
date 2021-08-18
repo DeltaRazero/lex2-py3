@@ -14,7 +14,8 @@ class _:
 
     import abc
 
-    from .misc import voidptr_t
+    from . import textio
+    from .misc import ptr_t
 
 # ***************************************************************************************
 
@@ -36,14 +37,13 @@ class IMatcher (metaclass=_.abc.ABCMeta):
 
 
     @_.abc.abstractmethod
-    def GetPatternMatcher(self) -> _.voidptr_t:
-        """Gets the compiled regex pattern matcher object reference.
+    def Match(self, ts: _.textio.ITextstream) -> _.ptr_t[str]:
+        """Looks for a pattern match and returns string data in case of a match.
 
         Returns
         -------
-        voidptr_t
-            Reference to an implemented regex pattern matcher object. The return type is
-            void* (t.Any) by design, as in a statically typed environment the developer
-            of a lexer implementation should cast the object to the appropriate type.
+        ptr_t[str]
+            Nullable string object. Contains string data in case of a match, otherwise
+            NULL/None.
         """
         pass
