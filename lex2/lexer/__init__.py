@@ -14,4 +14,4 @@ from ._abst_lexer   import *
 
 from ._implementations import *
 
-from ._profiler_lexer import *
+from ._profiler import *

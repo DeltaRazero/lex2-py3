@@ -7,6 +7,9 @@ zlib License
 All rights reserved.
 '''
 
+# TODO: The profiler is currently pretty bland and limited. I would like to expand it
+# some more in the future.
+
 # ***************************************************************************************
 
 class _:
@@ -27,7 +30,7 @@ class _:
 
 # ***************************************************************************************
 
-class _RuleValueProfiler:
+class _RuleValueProfile:
     """Keeps track of the most common values of a rule.
     """
 
@@ -78,7 +81,7 @@ class _RuleValueProfiler:
 # ***************************************************************************************
 
 class ProfilerLexer (_.ILexer):
-    """A wrapper around an existing implementation to provide profiling functionality.
+    """A wrapper around a lexer implementation to provide profiling functionality.
     """
 
   # --- FIELDS --- #
@@ -86,7 +89,7 @@ class ProfilerLexer (_.ILexer):
     _lexer : _.ILexer
 
     _ruleOccurrences : _.t.Dict[str, int]
-    _ruleProfiles    : _.t.Dict[str, _RuleValueProfiler]
+    _ruleProfiles    : _.t.Dict[str, _RuleValueProfile]
 
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
@@ -140,7 +143,7 @@ class ProfilerLexer (_.ILexer):
 
         if (not (token.id in self._ruleOccurrences)):
             self._ruleOccurrences[token.id] = 0
-            self._ruleProfiles   [token.id] = _RuleValueProfiler()
+            self._ruleProfiles   [token.id] = _RuleValueProfile()
 
         self._ruleOccurrences[token.id] += 1
         self._ruleProfiles   [token.id].AddToken(token)
