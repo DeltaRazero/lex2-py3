@@ -20,7 +20,6 @@ class _:
         opts,
         textio,
         predefs,
-        misc,
 
         ruleset_t,
         Rule,
@@ -28,6 +27,8 @@ class _:
         ILexer,
         IMatcher,
     )
+
+    from ..misc import ptr_t
 
 # ***************************************************************************************
 
@@ -212,7 +213,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
         # txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
         txt_pos: _.textio.TextPosition = self._ts._tp
 
-        token: _.misc.ptr_t[_.Token] = None
+        token: _.ptr_t[_.Token] = None
         char: str
         goto_matcher: bool
 
@@ -332,7 +333,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
 
             # A non-empty string is returned if the (implemented) regex pattern matcher
             # found a match.
-            match: _.misc.ptr_t[str] = rule._matcher.Match(self._ts)
+            match: _.ptr_t[str] = rule._matcher.Match(self._ts)
             if (match):
 
                 # Store if the token type should be returned to the user
@@ -392,8 +393,8 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
             # ALL characters are matched until a NEWLINE character (for
             # singleline comments) or the characters defining the end of a
             # multiline comment are found.
-            # match: _.misc.ptr_t[str] = rule.GetMatcher().Match(self._ts)
-            match: _.misc.ptr_t[str] = rule._matcher.Match(self._ts)
+            # match: _.ptr_t[str] = rule.GetMatcher().Match(self._ts)
+            match: _.ptr_t[str] = rule._matcher.Match(self._ts)
 
             n1 = len(match)
             # n2 = self._ts.GetBufferStringSize() - self._ts.GetBufferStringPosition()

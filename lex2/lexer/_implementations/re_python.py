@@ -20,13 +20,14 @@ class _:
 
     from ... import (
         textio,
-        misc,
         opts,
 
         ruleset_t,
         Rule,
         IMatcher,
     )
+
+    from ...misc import ptr_t
 
 # ***************************************************************************************
 
@@ -67,7 +68,7 @@ class Re_Matcher (_.AbstractMatcher):
 
   # --- GETTERS --- #
 
-    def Match(self, ts: _.textio.ITextstream) -> _.misc.ptr_t[str]:
+    def Match(self, ts: _.textio.ITextstream) -> _.ptr_t[str]:
 
         regex_match = self._pattern.match(
             ts._bufferString,     # Data input

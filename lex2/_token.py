@@ -12,10 +12,10 @@ All rights reserved.
 class _:
     '<imports>'
 
-    import typing as t
-
-    from . import excs
-    from . import textio
+    from . import (
+        excs,
+        textio,
+    )
 
     from ._rule import Rule
 
