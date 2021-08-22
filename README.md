@@ -1,31 +1,15 @@
 
-<!-- HEADER -->
-<div align="center">
-    <!--
-        Title
-    --->
-    <h1>
-        <img src="https://github.com/DeltaRazero/liblex2-py3/blob/master/.rsrc/lex2_logo.svg"
-        height="60"><br>
-        liblex2-py3
-    </h1>
-    <!--
-        One-line summary
-    --->
-    <p><b>
-        Simple tokenizer using regex.
-    </p></b>
-</div>
+# lex2-py3
 
+<img align="right" width=5% src="https://upload.wikimedia.org/wikipedia/commons/c/c3/Python-logo-notext.svg">
 
 <!-- BADGES -->
-<div align="center">
+<div align="left">
     <!--
-        License
+        Python3 version
     --->
-    <a href="https://choosealicense.com/licenses/zlib/">
-        <img src="https://img.shields.io/badge/license-zlib-informational.svg?labelColor=363d45"
-        alt="zlib license"/></a>
+    <img src="https://img.shields.io/badge/python-3.6+-informational.svg?labelColor=363d45&logo=python&logoColor=white"
+    alt="Python 3.6+"/>
     <!--
         Library tag version
     --->
@@ -39,14 +23,16 @@
         <img src="https://img.shields.io/github/issues/deltarazero/liblex2-py3?labelColor=363d45&logo=github&logoColor=white"
         alt="GitHub issues open"/></a>
     <!--
-        Python3 version
+        License
     --->
-    <img src="https://img.shields.io/badge/python-3.6+-informational.svg?labelColor=363d45&logo=python&logoColor=white"
-    alt="Python 3.6+"/>
+    <a href="https://choosealicense.com/licenses/zlib/">
+        <img src="https://img.shields.io/github/license/DeltaRazero/liblex2-py3?labelColor=363d45&color=informational"
+        alt="zlib license"/></a>
 </div>
 
+
 <!-- BUTTON LINKS -->
-<div align="center">
+<div align="left">
     <!--
         Documentation
     --->
@@ -56,41 +42,27 @@
         height="24"
         alt="[Documentation]"/></a>
     --->
-    <!--
-        Changelog
-    --->
-    <!--
-    <a href="https://github.com/DeltaRazero/liblex2-py3/blob/master/CHANGELOG.md">
-        <img src="https://img.shields.io/badge/-Changelog_»-informational"
-        height="24"
-        alt="[Changelog]"/></a>
-    --->
 </div>
 
-<div align="center">
-    <br/>
-    <b>NOTE:</b> Documentation coming soon.
-</div>
+<div align="justify"><br/>
+
+_Simple tokenizer using regex._
+
+lex2 is a library intended for [lexical analysis](https://en.wikipedia.org/wiki/Lexical_analysis) (also called [tokenization](https://en.wikipedia.org/wiki/Lexical_analysis)). String analysis is performed using [regular expressions (regex)](https://en.wikipedia.org/wiki/Regular_expression), as specified in user-defined rules. Mechanisms, such as a dynamic ruleset-stack, provide flexibility to some degree at runtime.
+
+The library is written in platform independent, pure Python3, and is portable (i.e.  no usage of language-specific features) so that it is straightforward to port the library to other programming languages. Furthermore, the library is designed to enable the end-user to easily use any external regex engine of their choice, while maintaining to offer a simple to use unified interface.
 
 
+## Getting Started
 
-## About
-
-"lex2" is a library to perform **lexical analysis** (often called **tokenization**). Rulesets are defined and scanned using **regular expressions (regex)**. Mechanisms such as the ruleset-stack and setting processing options provide flexibility to some degree at runtime.
-
-The library is written as platform independent, pure Python3. Customization for adding a different regex engine implementation is very effortless whilst remaining to have a simple to use, unified interface for implementation-independent usage.
-
-
-
-## Quickstart
-
-Recommended is to install the library from the Python Package Index (PyPI) through Python's package manager ``pip``:
+It is recommended to install the library from the Python Package Index (PyPI) through Python's package manager ``pip``:
 ```console
 pip install lex2
 ```
-However, you can also choose to manually install the library by download a release on GitHub and copying the ``lex2`` folder to your project's includes/libraries directory.
 
-Usage of lex2 is relatively simple, as demonstrated by the short example below. Nonetheless, it it still encouraged to read the documentation for more in-depth examples.
+However, you can also choose to manually include the library in your project by downloading a release on GitHub and copying the ``lex2`` folder to your project's includes/libraries folder.
+
+Usage of lex2 is relatively simple, as demonstrated by the short example below. For more in-depth examples and using external regex engines of your choice, see the documentation.
 
 ```python
 import lex2
@@ -109,7 +81,7 @@ lexer.Open(r"C:/path/to/file.txt")
 # Or by directly passing a string
 lexer.Load("The quick, brown fox jumps over 2 lazy dogs. \nMr. Jock, TV quiz PhD, bags few lynx.")
 
-# Main lexing loop
+# Main tokenization loop
 token: lex2.Token
 while(1):
 
@@ -156,24 +128,22 @@ lexer.Close()
 ```
 
 
-
 ## Contributing
 
-The repository is hosted at [deltarazero/liblex2-py3](https://github.com/deltarazero/liblex2-py3) on GitHub. Contribution is always welcome; you can contribute by doing one of the following:
+The repository is hosted at [deltarazero/liblex2-py3](https://github.com/deltarazero/liblex2-py3) on GitHub. Contribution is always welcome; you can contribute by satisfying one of the following points of action:
 
-* __Submitting a pull request:__ to contribute your own changes to the repository. See ["About pull requests"](https://help.github.com/articles/about-pull-requests) for more information on pull requests on GitHub. Please follow the guidelines below:
+* __Submitting a pull request:__ to contribute your own changes to the repository. See ["Proposing changes to your work with pull requests"](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests) for more information on pull requests using GitHub. Furthermore, please follow the guidelines below:
 
     1. File an issue to notify the maintainers about what you're working on.
-    2. Fork the repo, develop and test your code changes, add docs (if applicable).
+    2. Fork the repo, develop and test your code changes, add docs/unit tests (if applicable).
     3. Make sure that your commit messages clearly describe the changes.
-    4. Send a pull request.
+    4. Send a pull request, using the available template.
 
-    For changes that address core functionality or would require breaking changes (e.g. a major release), it's best to open an issue to discuss your proposal first.
+    For changes that address core functionality or would require breaking changes (i.e. for a major release), it's best to open an issue to discuss your proposal beforehand.
 
-    Furthermore, maintaining your own fork of the repository is discouraged. Please submit pull requests instead, as this will make it less confusing for users to know which repository is the most up-to-date.
+    _Maintaining your own fork of the repository is discouraged. Instead, please submit pull requests and delete your fork afterwards (if applicable). This will make it less confusing for end-users to know which repository is the most up-to-date._
 
-* __Submitting an issue:__ to report problems with the library, request a new feature, or to discuss potential changes before a pull request is created.
-
+* __Submitting an issue:__ to report a problem with the library, request a new feature, or to discuss potential changes before a pull request is created. Ensure the issue was not already reported. Furthermore, please use one of the available issue templates if possible.
 
 
 ## License
@@ -182,3 +152,5 @@ The repository is hosted at [deltarazero/liblex2-py3](https://github.com/deltara
 All rights reserved.
 
 All included scripts, modules, etc. are licensed under the terms of the [zlib license](https://github.com/deltarazero/liblex2-py3/LICENSE), unless stated otherwise in the respective files.
+
+</div>
