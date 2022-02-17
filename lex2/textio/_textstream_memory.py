@@ -3,21 +3,23 @@
 '''
 zlib License
 
-(C) 2020-2021 DeltaRazero
+(C) 2020-2022 DeltaRazero
 All rights reserved.
 '''
 
 # ***************************************************************************************
 
-class _:
+class __:
     '<imports>'
 
-    from ._intf_textstream     import ITextstream
-    from ._textstream_abstract import AbstractTextstream
+    from ._textstream_core import (
+        ITextstream,
+        AbstractTextstream,
+    )
 
 # ***************************************************************************************
 
-class Textstream_Memory (_.AbstractTextstream, _.ITextstream):
+class Textstream_Memory (__.AbstractTextstream, __.ITextstream):
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
@@ -42,7 +44,7 @@ class Textstream_Memory (_.AbstractTextstream, _.ITextstream):
             strData = strData.replace("\r\n", "\n")
 
         self._bufferString = strData
-        self._bufferStringSize = len(strData)
+        self._bufferStringSize = len(strData)  # TODO: Make this StringBufferSize --> size is binary/chars/bytes, length for amount of code points
 
         return
 
@@ -65,19 +67,7 @@ class Textstream_Memory (_.AbstractTextstream, _.ITextstream):
 
     def Update(self, n: int) -> None:
 
-        old_pos = self._bufferStringPos
-        self._bufferStringPos += n
-
-        # Update textposition
-        _tp = self._tp  # NOTE: It's faster to lookup/cache the variable in Python like this
-        for char in self._bufferString[ old_pos : self._bufferStringPos ]:
-
-            _tp.pos += 1
-            _tp.col += 1
-
-            if (char == '\n'):
-                _tp.ln += 1
-                _tp.col = 0
+        self._UpdatePosition(n)
 
         # If current position Signal EOF
         if (self._bufferStringPos >= self._bufferStringSize):

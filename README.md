@@ -148,7 +148,7 @@ The repository is hosted at [deltarazero/liblex2-py3](https://github.com/deltara
 
 ## License
 
-© 2020-2021 DeltaRazero.
+© 2020-2022 DeltaRazero.
 All rights reserved.
 
 All included scripts, modules, etc. are licensed under the terms of the [zlib license](https://github.com/deltarazero/liblex2-py3/LICENSE), unless stated otherwise in the respective files.

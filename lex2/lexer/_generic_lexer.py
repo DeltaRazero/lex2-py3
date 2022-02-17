@@ -3,78 +3,47 @@
 '''
 zlib License
 
-(C) 2020-2021 DeltaRazero
+(C) 2020-2022 DeltaRazero
 All rights reserved.
 '''
 
 # ***************************************************************************************
 
-class _:
+class __:
     '<imports>'
 
     import abc
     import typing as t
 
-    from .. import (
+    from ._base_lexer import BaseLexer
+
+    from lex2 import (
         excs,
-        opts,
         textio,
         predefs,
-
+    )
+    from lex2 import (
         ruleset_t,
         Rule,
         Token,
-        ILexer,
-        IMatcher,
     )
-
-    from ..misc import ptr_t
+    from lex2._util.types import (
+        ptr_t
+    )
 
 # ***************************************************************************************
 
-class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
-    """Abstract base class of an ILexer implementation.
+class GenericLexer (__.BaseLexer):
+    """An generic implementation of ILexer.
     """
-
-  # --- FIELDS --- #
-
-    _vendorId: str
-
-    _rulesets : _.t.List[_.ruleset_t]
-    _active_ruleset : _.ruleset_t
-
-    _options  : _.opts.LexerOptions
-
 
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
-    @_.abc.abstractmethod
-    def __init__(self,
-                 vendorId: str,
-                 ruleset: _.ruleset_t=[],
-                 options: _.opts.LexerOptions=_.opts.LexerOptions(),
-    ):
+    @__.abc.abstractmethod
+    def __init__(self):
         """AbstractLexer object instance initializer.
-
-        Parameters
-        ----------
-        vendorId : str
-            Lexer implementation identifier string (a.k.a. 'vendor ID').
-        ruleset : ruleset_t, optional
-            Initial ruleset.
-            By default []
-        options : LexerOptions, optional
-            Struct specifying processing options of the lexer.
-            By default LexerOptions()
         """
         super().__init__()
-
-        self._vendorId = vendorId
-
-        self._rulesets = []
-        if (len(ruleset)): self.PushRuleset(ruleset)
-
-        self._options = options
 
         return
 
@@ -86,93 +55,13 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
 
   # --- PUBLIC METHODS --- #
 
-    def PushRuleset(self, ruleset: _.ruleset_t) -> None:
-        # Before pushing the ruleset, we check if the pattern matchers (saved in the rule
-        # objects) are compiled for the specific lexer implementation this function is called from.
-        self._CompileRuleset(ruleset)
-        self._rulesets.append(ruleset)
-        self._active_ruleset = self._rulesets[-1]
-        return
-
-
-    def PopRuleset(self) -> None:
-        self._rulesets.pop()
-        self._active_ruleset = self._rulesets[-1]
-        return
-
-
-    def ClearRulesets(self) -> None:
-        self._rulesets.clear()
-        return
-
-
-    def GetOptions(self) -> _.opts.LexerOptions:
-        return self._options
-
-
-    def GetNextToken(self) -> _.Token:
+    def GetNextToken(self) -> __.Token:
         if (not self._ts):
             raise RuntimeError("No open textstream to read data from")
-        return self._GNT_SplitBySeperatators()
-
-
-  # --- PROTECTED METHODS --- #
-
-    @_.abc.abstractmethod
-    def _CompileRule(self, rule: _.Rule) -> _.IMatcher:
-        """Requests implemented lexer to compile a regex matcher object.
-
-        Parameters
-        ----------
-        rule : Rule
-
-        Returns
-        -------
-        IMatcher
-        """
-        pass
+        return self._split_by_separators()
 
 
   # --- PRIVATE METHODS --- #
-
-    def _CompileRuleset(self, ruleset: _.ruleset_t) -> None:
-        """Checks and compiles rules within a newly pushed ruleset.
-
-        Whenever a ruleset is pushed, this method will check if all rules have their
-        corresponding IMatcher-compatible object set to the matcher type, used by
-        a specific lexer/matcher implementation, and compiles if necessary.
-        """
-        for rule in ruleset:
-
-            # Call the specific lexer implementation's CompileRule() method for regex
-            # pattern matcher compilation
-            if (self._NeedsCompilation(rule)):
-                rule.SetMatcher(self._CompileRule(rule))
-
-            # Comment rules have an addition rule to be compiled
-            if (rule.id == _.predefs.comment.id):
-                # rule = static_cast<BaseComment*>(rule)->endRule
-                rule: _.Rule = rule.endRule
-                if (self._NeedsCompilation(rule)):
-                    rule.SetMatcher(self._CompileRule(rule))
-
-        return
-
-
-    def _NeedsCompilation(self, rule: _.Rule) -> bool:
-        """Check if the regex pattern matcher in a rule object needs to be compiled.
-        """
-        needs_compilation = False
-        matcher = rule.GetMatcher()
-        # If a Matcher object already compiled and stored, check its vendor ID
-        if (matcher):
-            needs_compilation = matcher.GetVendorId() != self._vendorId
-        # If no object Matcher object stored at all
-        else:
-            needs_compilation = True
-
-        return needs_compilation
-
 
     def _CountCharOccurrences(self, matchingChar: str) -> int:
         """Counts the amount of continuous occurrences of a given character at the current position.
@@ -198,7 +87,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
         return i - current_pos
 
 
-    def _GNT_SplitBySeperatators(self) -> _.Token:
+    def _split_by_separators(self) -> __.Token:
         """
         This method serves as scanner for the special seperator characters (SPACE, TAB,
         NEWLINE); these characters are usually skipped. Scanning for these characters
@@ -211,9 +100,9 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
         # Precaching some variables to avoid constant lookups in CPython
         opts = self._options
         # txt_pos: _textio.TextPosition = self._ts.GetTextPosition()
-        txt_pos: _.textio.TextPosition = self._ts._tp
+        txt_pos: __.textio.TextPosition = self._ts._tp
 
-        token: _.ptr_t[_.Token] = None
+        token: __.ptr_t[__.Token] = None
         char: str
         goto_matcher: bool
 
@@ -224,7 +113,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
             char = self._ts._bufferString[ self._ts._bufferStringPos ]
             goto_matcher = False
 
-        # SPACE character
+            # SPACE character
             if (char == ' '):
 
                 opt = opts.space
@@ -232,10 +121,10 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
 
                 if (opt.ignores): goto_matcher = True
                 else:
-                    if (opt.returns): token = _.Token(
-                        _.predefs.space.id,
+                    if (opt.returns): token = __.Token(
+                        __.predefs.space.id,
                         " "*n,
-                        _.textio.TextPosition(
+                        __.textio.TextPosition(
                             txt_pos.pos,
                             txt_pos.col,
                             txt_pos.ln
@@ -243,17 +132,17 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
                     )
                     self._ts.Update(n)
 
-        # NEWLINE character (UNIX)
+            # NEWLINE character (UNIX)
             elif (char == '\n'):
 
                 opt = opts.newline
 
                 if (opt.ignores): goto_matcher = True
                 else:
-                    if (opt.returns): token = _.Token(
-                        _.predefs.newline.id,
+                    if (opt.returns): token = __.Token(
+                        __.predefs.newline.id,
                         "\n",
-                        _.textio.TextPosition(
+                        __.textio.TextPosition(
                             txt_pos.pos,
                             txt_pos.col,
                             txt_pos.ln
@@ -261,7 +150,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
                     )
                     self._ts.Update(1)
 
-        # NEWLINE character (WINDOWS)
+            # NEWLINE character (WINDOWS)
             elif (char == '\r'):
 
                 # NOTE: I honestly don't think this library will ever be used to process
@@ -273,10 +162,10 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
 
                 if (opt.ignores): goto_matcher = True
                 else:
-                    if (opt.returns): token = _.Token(
-                        _.predefs.newline.id,
+                    if (opt.returns): token = __.Token(
+                        __.predefs.newline.id,
                         "\n",
-                        _.textio.TextPosition(
+                        __.textio.TextPosition(
                             txt_pos.pos,
                             txt_pos.col,
                             txt_pos.ln
@@ -284,7 +173,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
                     )
                     self._ts.Update(2)
 
-        # TAB character
+            # TAB character
             elif (char == '\t'):
 
                 opt = opts.tab
@@ -292,10 +181,10 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
 
                 if (opt.ignores): goto_matcher = True
                 else:
-                    if (opt.returns): token = _.Token(
-                        _.predefs.tab.id,
+                    if (opt.returns): token = __.Token(
+                        __.predefs.tab.id,
                         "\t"*n,
-                        _.textio.TextPosition(
+                        __.textio.TextPosition(
                             txt_pos.pos,
                             txt_pos.col,
                             txt_pos.ln
@@ -303,21 +192,21 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
                     )
                     self._ts.Update(n)
 
-        # Not a special character, i.e. a regular character
+            # Not a special character, i.e. a regular character
             else:
                 goto_matcher = True
 
             if (goto_matcher):
-                return self._GNT_MatchRegexes(self._active_ruleset)
+                return self._match_rules()
 
             if (token):
                 return token
 
         # If EOF is reached
-        raise _.excs.EndOfData()
+        raise __.excs.EndOfData()
 
 
-    def _GNT_MatchRegexes(self, ruleset: _.ruleset_t) -> _.Token:
+    def _match_rules(self) -> __.Token:
         """
         This method scans for tokens using the rules (as defined by the user) in a given
         ruleset.
@@ -327,25 +216,29 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
         """
 
         # Match mainloop
-        for rule in ruleset:
+        for rule in self._active_ruleset:
 
             # A token is returned if the (implemented) regex pattern matcher found a match.
 
             # A non-empty string is returned if the (implemented) regex pattern matcher
             # found a match.
-            match: _.ptr_t[str] = rule._matcher.Match(self._ts)
+            # NOTE: Because of the checks performed during pushing a ruleset, it is
+            # guaranteed that a rule's GetMatcher() method returns a Matcher instance and
+            # not a null reference.
+            # match: __.ptr_t[str] = rule.GetMatcher().Match(self._ts)
+            match: __.ptr_t[str] = rule._matcher.Match(self._ts)
             if (match):
 
                 # Store if the token type should be returned to the user
                 returns = self._options.idReturns.get(rule.id, rule.returns)
 
                 # Create a token object
-                # tp: _.textio.TextPosition = self._ts.GetTextPosition()
-                tp: _.textio.TextPosition = self._ts._tp
-                token = _.Token(
+                # tp: __.textio.TextPosition = self._ts.GetTextPosition()
+                tp: __.textio.TextPosition = self._ts._tp
+                token = __.Token(
                     rule.id,
                     match,
-                    _.textio.TextPosition(
+                    __.textio.TextPosition(
                         tp.pos,
                         tp.col,
                         tp.ln
@@ -357,8 +250,8 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
 
                 # TODO?: Buffer size warning if len(token.data) >= self._ts.GetBufferStringSize()
 
-                if (token.IsRule(_.predefs.comment)):
-                    self._GNT_HandleComment(rule, token, returns)
+                # if (token.IsRule(__.predefs.comment)):
+                #     self._GNT_HandleComment(rule, token, returns) # TODO: TO REMOVE
 
                 # Return token accordingly
                 if (returns):
@@ -373,8 +266,8 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
         # lexer has found an unidentified token type.
         self._GNT_RaiseUnidentifiedTokenError()
 
-
-    def _GNT_HandleComment(self, rule: _.Rule, token: _.Token, returns: bool) -> None:
+    '''
+    def _GNT_HandleComment(self, rule: __.Rule, token: __.Token, returns: bool) -> None:
         """
         This method handles processing of a COMMENT token.
 
@@ -384,7 +277,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
         """
 
         # rule = static_cast<BaseComment*>(rule)->endRule
-        rule = _.t.cast(_.predefs.BaseComment, rule).endRule
+        rule = __.t.cast(__.predefs.BaseComment, rule).endRule
 
         # Comment handling mainloop
         while(1):
@@ -393,9 +286,10 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
             # ALL characters are matched until a NEWLINE character (for
             # singleline comments) or the characters defining the end of a
             # multiline comment are found.
-            # match: _.ptr_t[str] = rule.GetMatcher().Match(self._ts)
-            match: _.ptr_t[str] = rule._matcher.Match(self._ts)
+            # match: __.ptr_t[str] = rule.GetMatcher().Match(self._ts)
+            match: __.ptr_t[str] = rule._matcher.Match(self._ts)
 
+            # NOTE: It is guaranteed that a match here will not be a null reference.
             n1 = len(match)
             # n2 = self._ts.GetBufferStringSize() - self._ts.GetBufferStringPosition()
             n2 = self._ts._bufferStringSize - self._ts._bufferStringPos
@@ -420,11 +314,11 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
             # If the textstream has reached the end of data
             if (self._ts.IsEOF()):
                 del token
-                raise _.excs.EndOfData()
+                raise __.excs.EndOfData()
                 # TODO? UnterminatedCommentError
 
         return
-
+    '''
 
     def _GNT_RaiseUnidentifiedTokenError(self) -> None:
         """
@@ -432,10 +326,10 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
         been determined (i.e. no regex pattern was matched).
         """
 
-        txt_pos: _.textio.TextPosition = self._ts.GetTextPosition()
+        txt_pos: __.textio.TextPosition = self._ts.GetTextPosition()
 
         # Store the start position before skipping any characters
-        pos = _.textio.TextPosition(
+        pos = __.textio.TextPosition(
             txt_pos.pos,
             txt_pos.col,
             txt_pos.ln
@@ -453,7 +347,7 @@ class AbstractLexer (_.textio.TextIO, _.ILexer, metaclass=_.abc.ABCMeta):
                 # Store data and throw exception
                 if (char in (' ', '\t', '\n')):
                     unidentified_data += buf[:n_chars_read]
-                    raise _.excs.UnidentifiedTokenError(pos, unidentified_data)
+                    raise __.excs.UnidentifiedTokenError(pos, unidentified_data)
 
             # If the buffer is exhausted, meaning the unidentified data is continued in
             # the following buffer

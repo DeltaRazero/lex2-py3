@@ -3,21 +3,23 @@
 '''
 zlib License
 
-(C) 2020-2021 DeltaRazero
+(C) 2020-2022 DeltaRazero
 All rights reserved.
 '''
 
 # ***************************************************************************************
 
-class _:
+class __:
     '<imports>'
 
-    from . import (
+    from lex2 import (
         excs,
         textio,
     )
 
-    from ._rule import Rule
+    from lex2 import (
+        Rule,
+    )
 
 # ***************************************************************************************
 
@@ -29,10 +31,10 @@ class Token:
     id : str
         The rule ID is the identifying string value of a token's type (e.g. "NUMBER",
         "WORD").
-    position : TextPosition
-        Position in the textstream where a token occurs.
     data : str
         String data of an identified token type.
+    pos : TextPosition
+        Position in the textstream where a token occurs.
     """
 
   # --- READONLY PROPERTIES --- #
@@ -40,16 +42,16 @@ class Token:
     # Identifying string of the token's type (e.g. "NUMBER", "WORD") -- rule ID
     id : str
 
-    # Position in the textstream where the token occurs
-    position : _.textio.TextPosition
-
     # String data of the identified token type
     data : str
+
+    # Position in the textstream where the token occurs
+    pos : __.textio.TextPosition
 
 
   # --- CONSTRUCTOR --- #
 
-    def __init__(self, id: str, data: str, position: _.textio.TextPosition):
+    def __init__(self, id: str, data: str, pos: __.textio.TextPosition):
         """Token object instance initializer.
 
         Parameters
@@ -61,16 +63,16 @@ class Token:
         position : TextPosition
             Position in the textstream where the token occurs.
         """
-        self.id  = id
+        self.id   = id
         self.data = data
-        self.position = position
+        self.pos  = pos
 
         return
 
 
   # --- PUBLIC METHODS --- #
 
-    def IsRule(self, expectedRule: _.Rule) -> bool:
+    def IsRule(self, expectedRule: __.Rule) -> bool:
         """Evaluates if the token's identifier matches that of a given rule.
 
         Parameters
@@ -85,7 +87,7 @@ class Token:
         return self.id == expectedRule.id
 
 
-    def ValidateRule(self, expectedRule: _.Rule) -> None:
+    def ValidateRule(self, expectedRule: __.Rule) -> None:
         """Validates that the token's identifier matches that of a given rule.
 
         Parameters
@@ -99,5 +101,5 @@ class Token:
             When the token's identifier does not match that of a given rule.
         """
         if (not self.IsRule(expectedRule)):
-            raise _.excs.UnexpectedTokenError(self.position, self.data, self.id)
+            raise __.excs.UnexpectedTokenError(self.pos, self.data, self.id)
         return

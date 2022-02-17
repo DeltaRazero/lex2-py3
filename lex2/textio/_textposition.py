@@ -3,7 +3,7 @@
 '''
 zlib License
 
-(C) 2020-2021 DeltaRazero
+(C) 2020-2022 DeltaRazero
 All rights reserved.
 '''
 
@@ -58,6 +58,8 @@ class TextPosition:
 
   # --- PUBLIC METHODS --- #
 
+    # TODO?: Remove
+    """
     @staticmethod
     def Update(textPosition: 'TextPosition', strData: str) -> None:
 
@@ -100,3 +102,4 @@ class TextPosition:
         textPosition.ln  = 0
 
         return
+    """

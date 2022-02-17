@@ -1,24 +1,21 @@
-"""Miscellanous components."""
+"""Dependency checking."""
 
 '''
 zlib License
 
-(C) 2020-2021 DeltaRazero
+(C) 2020-2022 DeltaRazero
 All rights reserved.
 '''
 
 # ***************************************************************************************
 
-class _:
+class __:
     '<imports>'
 
-    import typing as t
-    T = t.TypeVar('T')
+    import importlib.util
 
 # ***************************************************************************************
 
-# Typedef to simulate pointer type
-ptr_t = _.t.Optional
-
-# Typedef to simulate void*
-voidptr_t = _.t.Any
+def ModuleInstalled(module_name: str) -> bool:
+    module = __.importlib.util.find_spec(module_name)
+    return module is not None

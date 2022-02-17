@@ -3,36 +3,40 @@
 '''
 zlib License
 
-(C) 2020-2021 DeltaRazero
+(C) 2020-2022 DeltaRazero
 All rights reserved.
 '''
 
 # ***************************************************************************************
 
-class _:
+class __:
     '<imports>'
 
-    import pathlib  as pl
-    import typing   as t
+    import pathlib as pl
+    import typing  as t
     import sys
     import warnings
 
-    from ._intf_textstream     import ITextstream
-    from ._textstream_abstract import AbstractTextstream
+    from ._textstream_core import (
+        ITextstream,
+        AbstractTextstream,
+    )
 
 # ***************************************************************************************
 
-_SYSTEM_ENCODING = _.sys.stdin.encoding
+_SYSTEM_ENCODING = __.sys.stdin.encoding
 
 # ***************************************************************************************
 
-class Textstream_Disk (_.AbstractTextstream, _.ITextstream):
+class Textstream_Disk (__.AbstractTextstream, __.ITextstream):
+    """Abstract base class of an ITextstream implementation.
+    """
 
   # --- FIELDS --- #
 
     _encoding : str
     _f_isEof  : bool
-    _f : _.t.IO[bytes]
+    _f : __.t.IO[bytes]
 
     # NOTE: To clarify, _bufferSize is the the amount of bytes, while _bufferStringSize
     # is be the amount of decoded characters, i.e. character codepoints.
@@ -48,7 +52,7 @@ class Textstream_Disk (_.AbstractTextstream, _.ITextstream):
   # --- CONSTRUCTOR & DESTRUCTOR --- #
 
     def __init__(self,
-                 fp: _.t.Union[str, _.pl.Path],
+                 fp: __.t.Union[str, __.pl.Path],
                  bufferSize: int,
                  encoding: str,
                  convertLineEndings: bool,
@@ -74,24 +78,21 @@ class Textstream_Disk (_.AbstractTextstream, _.ITextstream):
         self._encoding   = encoding
         self._convertEOL = convertLineEndings
 
-        # TODO? Because a dual buffer is needed, divide this number?
-        # bufferSize = bufferSize // 2
-
         # Enforce minimum buffer size
         if (bufferSize<256):
             bufferSize=256
-            _.warnings.warn(category=RuntimeWarning, message=
+            __.warnings.warn(category=RuntimeWarning, message=
                 f"Set the buffer size to {bufferSize} as that is the minimum required size to functionally operate."
             )
 
-        self._bufferSize = bufferSize // 2 * 2
+        self._bufferSize = bufferSize // 2 * 2 # Ensure even number
         self._buffer = bytes()
 
-        self._undecodedBytes     = bytes()
+        self._undecodedBytes = bytes()
         self._undecodedBytesSize = 0
 
         self._f_isEof = False
-        self._f = open(fp, "rb")
+        self._f = open(fp, "rb") # pylint: disable=consider-using-with
 
         self._Read(self._bufferSize)
         self._RefreshBufferStringMeta()
@@ -130,19 +131,7 @@ class Textstream_Disk (_.AbstractTextstream, _.ITextstream):
         if (n > self._bufferStringSize):
             raise MemoryError("Requested update size is bigger than the allocated buffer string size!")
 
-        old_pos = self._bufferStringPos
-        self._bufferStringPos += n
-
-        # Update textposition
-        _tp = self._tp  # NOTE: It's faster to lookup/cache the variable in Python like this
-        for char in self._bufferString[ old_pos : self._bufferStringPos ]:
-
-            _tp.pos += 1
-            _tp.col += 1
-
-            if (char == '\n'):
-                _tp.ln += 1
-                _tp.col = 0
+        self._UpdatePosition(n)
 
         if (self._f_isEof):
             if (self._bufferStringPos >= self._bufferStringSize):
@@ -209,7 +198,7 @@ class Textstream_Disk (_.AbstractTextstream, _.ITextstream):
             nBytes = bytes_read
 
         # If some multi-byte encoded characters had missing bytes, insert the already
-        # read files at the beginning of the buffer. That way multi-byte encoded
+        # read bytes at the beginning of the buffer. That way multi-byte encoded
         # characters can be fully decoded.
         if (self._undecodedBytes):
             self._buffer = self._undecodedBytes + temp

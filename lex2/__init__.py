@@ -7,7 +7,7 @@ regular expressions (regex).
 '''
 zlib License
 
-(C) 2020-2021 DeltaRazero
+(C) 2020-2022 DeltaRazero
 All rights reserved.
 '''
 
@@ -17,17 +17,23 @@ __version__ = "0.9.4"
 
 from . import (
     excs,
-    misc,
-    opts,
     textio,
+    _util,
 )
 
-from ._token import *
-from ._rule  import *
+from ._rule  import Rule, RuleGroup, ruleset_t
+from ._token import Token
 from . import predefs
 
-from ._intf_lexer   import *
-from ._intf_matcher import *
+from ._opts import LexerOptions
+
+from ._itf_lexer   import ILexer
+from ._itf_matcher import IMatcher
 
 from . import lexer
-from ._make_lexer import *
+from . import matcher
+from ._make_lexer import (
+    DEFAULT_LEXER,
+    DEFAULT_MATCHER,
+    MakeLexer
+)

@@ -1,12 +1,18 @@
-"""<internal>"""
+"""<internal>
+
+Common library components.
+"""
 
 '''
 zlib License
 
-(C) 2020-2021 DeltaRazero
+(C) 2020-2022 DeltaRazero
 All rights reserved.
 '''
 
 # ***************************************************************************************
 
-from . import re_python
+from . import (
+    deps,
+    types,
+)
