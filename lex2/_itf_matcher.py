@@ -28,11 +28,11 @@ class IMatcher (metaclass=__.abc.ABCMeta):
     """Common interface to a rule matcher object instance.
     """
 
-  # --- INTERFACE GETTERS --- #
+    # :: INTERFACE GETTERS :: #
 
     @__.abc.abstractmethod
-    def GetImplementationId(self) -> str:
-        """Gets the lexer implementation identifier string.
+    def get_uid(self) -> str:
+        """Gets the unique identifier (UID) of the matcher implementation.
 
         Returns
         -------
@@ -42,19 +42,19 @@ class IMatcher (metaclass=__.abc.ABCMeta):
 
 
     @__.abc.abstractmethod
-    def CompilePattern(self, regexPattern: str) -> __.ptr_t[str]:
+    def compile_pattern(self, regex_pattern: str) -> None:
         """Compiles regex pattern to implementation-specific regex matcher object.
 
         Parameters
         ----------
-        regexPattern
+        regex_pattern
             Regular expression to compile.
         """
         ...
 
 
     @__.abc.abstractmethod
-    def Match(self, ts: __.textio.ITextstream) -> __.ptr_t[str]:
+    def match(self, ts: __.textio.ITextstream) -> __.ptr_t[str]:
         """Looks for a pattern match and returns string data in case of a match.
 
         Parameters

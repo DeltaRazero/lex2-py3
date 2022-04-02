@@ -34,7 +34,7 @@ class Rule:
     id : str
         The rule ID is the identifying string value of a token's type (e.g. "NUMBER",
         "WORD").
-    regexPattern : str
+    regex_pattern : str
         The regex pattern string is used by a matcher to perform regex matching.
 
     Properties
@@ -43,36 +43,36 @@ class Rule:
         Whether tokens matched by this rule should be returned when scanning for tokens.
     """
 
-  # --- READONLY PROPERTIES --- #
+    # :: READONLY PROPERTIES :: #
 
     # Rule identifier string
     id : str
 
     # The regex pattern string is used by a matcher to perform regex matching.
-    regexPattern : str
+    regex_pattern : str
 
 
-  # --- PROPERTIES --- #
+    # :: PROPERTIES :: #
 
     # Whether tokens matched by this rule should be returned when scanning for tokens.
     returns : bool
 
 
-  # --- FIELDS --- #
+    # :: FIELDS :: #
 
     _matcher : __.ptr_t[__.IMatcher]
 
 
-  # --- CONSTRUCTOR & DESTRUCTOR --- #
+    # :: CONSTRUCTOR & DESTRUCTOR :: #
 
-    def __init__(self, id: str, regexPattern: str, returns: bool=True):
+    def __init__(self, id: str, regex_pattern: str, returns: bool=True):
         """Rule object instance initializer.
 
         Parameters
         ----------
         id : str
             The identifying string of a resulting token's type (e.g. "NUMBER", "WORD").
-        regexPattern : str
+        regex_pattern : str
             Regex pattern used by a lexer to identify tokens during lexical analysis.
         returns : bool, optional
             Specify whether tokens matched by this rule should be returned when scanning
@@ -80,7 +80,7 @@ class Rule:
             By default True
         """
         self.id = id
-        self.regexPattern = regexPattern
+        self.regex_pattern = regex_pattern
 
         self.returns = returns
 
@@ -90,22 +90,22 @@ class Rule:
 
 
     def __del__(self):
-        self._DestructMatcher()
+        self._destruct_matcher()
         return
 
 
-  # --- PRIVATE METHODS --- #
+    # :: PRIVATE METHODS :: #
 
-    def _DestructMatcher(self) -> None:
+    def _destruct_matcher(self) -> None:
         if (self._matcher):
             del self._matcher
         self._matcher = None
         return
 
 
-  # --- GETTERS --- #
+    # :: GETTERS :: #
 
-    def GetMatcher(self) -> __.ptr_t[__.IMatcher]:
+    def get_matcher(self) -> __.ptr_t[__.IMatcher]:
         """Gets the IMatcher-compatible object instance.
 
         The rule matcher object is used by a lexer object to identify tokens during
@@ -118,16 +118,16 @@ class Rule:
         return self._matcher
 
 
-  # --- SETTERS --- #
+    # :: SETTERS :: #
 
-    def SetMatcher(self, matcher: __.IMatcher) -> None:
+    def set_matcher(self, matcher: __.IMatcher) -> None:
         """Sets the rule matcher object reference.
 
         Parameters
         ----------
         matcher : IMatcher
         """
-        self._DestructMatcher()
+        self._destruct_matcher()
         self._matcher = matcher
         return
 
@@ -135,7 +135,7 @@ class Rule:
 
 class RuleGroup (metaclass=__.abc.ABCMeta):
 
-  # --- PRIVATE PROPERTIES --- #
+    # :: PRIVATE PROPERTIES :: #
 
     _default_id : str
     _default_returns : bool
@@ -143,7 +143,7 @@ class RuleGroup (metaclass=__.abc.ABCMeta):
     _regex_patterns : __.t.List[str]
 
 
-  # --- CONSTRUCTOR & DESTRUCTOR --- #
+    # :: CONSTRUCTOR & DESTRUCTOR :: #
 
     def __init__(self, default_id: str, default_returns: bool=True):
         """Rule object instance initializer.
@@ -151,12 +151,12 @@ class RuleGroup (metaclass=__.abc.ABCMeta):
         Parameters
         ----------
         id : str
-            The identifying string of a resulting token's type (e.g. "NUMBER", "WORD").
-        regexPattern : str
+            The identifying string of a resulting token's type (e.g. "NUMBER", "WORD"). # TODO: Change description to identifier string
+        regex_pattern : str
             Regex pattern used by a lexer to identify tokens during lexical analysis.
         returns : bool, optional
-            Specify whether tokens matched by this rule should be returned when scanning
-            for tokens.
+            Specify whether tokens matched by this rule group should be returned when scanning  # TODO: Add 'whether ... by default' in other files
+            for tokens by default.
             By default True
         """
         self._default_id = default_id
@@ -167,10 +167,25 @@ class RuleGroup (metaclass=__.abc.ABCMeta):
         return
 
 
-  # --- PUBLIC METHODS --- #
+    # :: PUBLIC METHODS :: #
 
     def to_rule(self, id: __.nullable[str]=None, returns: __.nullable[bool]=None) -> Rule:
+        """Compiles the rule group to a rule object.
 
+        Parameters
+        ----------
+        id : str, optional
+            Identifier string.
+            By default the default id from the child class
+        returns : bool, optional
+            Specify whether tokens matched by this rule group should be returned when scanning
+            for tokens  by default.
+            By default the default returns from the child class
+
+        Returns
+        -------
+        Rule
+        """
         if (not id): id = self._default_id
         if (not returns): returns = self._default_returns
 
@@ -182,7 +197,7 @@ class RuleGroup (metaclass=__.abc.ABCMeta):
         return rule
 
 
-  # --- PROTECTED METHODS --- #
+    # :: PROTECTED METHODS :: #
 
     def _add_pattern_group(self, regex_pattern: str) -> None:
         regex_pattern = f'({regex_pattern})'

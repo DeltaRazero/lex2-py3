@@ -1,6 +1,6 @@
 """<internal>
 
-Common library components.
+Common library components and utilities.
 """
 
 '''

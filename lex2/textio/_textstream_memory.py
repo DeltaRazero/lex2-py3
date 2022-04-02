@@ -14,63 +14,61 @@ class __:
 
     from ._textstream_core import (
         ITextstream,
-        AbstractTextstream,
+        BaseTextstream,
+        TextstreamType,
     )
 
 # ***************************************************************************************
 
-class Textstream_Memory (__.AbstractTextstream, __.ITextstream):
+class TextstreamMemory (__.BaseTextstream, __.ITextstream):
 
-  # --- CONSTRUCTOR & DESTRUCTOR --- #
+    # :: CONSTRUCTOR & DESTRUCTOR :: #
 
     def __init__(self,
-                 strData: str,
-                 convertLineEndings: bool
+                 str_data: str,
+                 convert_line_endings: bool
     ) -> None:
         """TextPosition object instance initializer.
 
         Parameters
         ----------
-        strData : str
+        str_data : str
             String data to directly load. Note that encoding depends on the system-wide
             encoding.
-        convertLineEndings : bool
+        convert_line_endings : bool
             Convert line-endings from Windows style to UNIX style.
         """
-        super().__init__()
+        super().__init__(__.TextstreamType.MEMORY)
 
         # Convert all line-endings to POSIX format ('\n')
-        if (convertLineEndings):
-            strData = strData.replace("\r\n", "\n")
+        if (convert_line_endings):
+            str_data = str_data.replace("\r\n", "\n")
 
-        self._bufferString = strData
-        self._bufferStringSize = len(strData)  # TODO: Make this StringBufferSize --> size is binary/chars/bytes, length for amount of code points
+        self._string_buffer = str_data
+        self._string_buffer_size = len(str_data)
 
         return
 
 
     def __del__(self):
-        self.Close()
+        self.close()
         return
 
 
-  # --- INTERFACE METHODS --- #
+    # :: INTERFACE METHODS :: #
 
-    def Close(self) -> None:
-
-        self._bufferString = ""
-        self._bufferStringPos  = 0
-        self._bufferStringSize = 0
-
+    def close(self) -> None:
+        self._string_buffer = ""
+        self._string_buffer_pos  = 0
+        self._string_buffer_size = 0
         return
 
 
-    def Update(self, n: int) -> None:
-
-        self._UpdatePosition(n)
+    def update(self, n: int) -> None:
+        self._update_position(n)
 
         # If current position Signal EOF
-        if (self._bufferStringPos >= self._bufferStringSize):
-            self._isEof = True
+        if (self._string_buffer_pos >= self._string_buffer_size):
+            self._is_eof = True
 
         return

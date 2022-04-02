@@ -35,5 +35,5 @@ from . import matcher
 from ._make_lexer import (
     DEFAULT_LEXER,
     DEFAULT_MATCHER,
-    MakeLexer
+    make_lexer
 )

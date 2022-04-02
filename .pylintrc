@@ -1,0 +1,53 @@
+[MESSAGES CONTROL]
+
+max-line-length = 120
+
+# Enable the message, report, category or checker with the given id(s). You can
+# either give multiple identifier separated by comma (,) or put this option
+# multiple time.
+#enable=
+
+# Disable the message, report, category or checker with the given id(s). You
+# can either give multiple identifier separated by comma (,) or put this option
+# multiple time (only on the command line, not in the configuration file where
+# it should appear only once).
+disable=
+    superfluous-parens,
+    useless-return,
+    ; invalid-name,
+    import-outside-toplevel,
+    pointless-string-statement,
+    import-error,
+    wrong-import-position,
+    multiple-statements,
+    protected-access,
+    cyclic-import,
+    too-few-public-methods,
+    too-many-instance-attributes,
+    redefined-builtin,
+    too-many-branches,
+    inconsistent-return-statements,
+
+good-names=
+    __, ; Used for imports classes
+    i, j, k, _, n, ; Indices
+    f, fp, ; Files and I/O
+
+    ; Library specific cases to ignore
+    id,
+    s,
+    ln, col,
+    tp, ts,
+
+good-names-rgxs=
+    .+_t$,
+    [A-Z]+_T$, ; types like notation in c++
+
+    ; allow class aliases to be constants (like macros)
+    [A-Z_]+$,
+
+    ; Matcher implementation names
+    .+_Matcher$,
+
+; Docstring not necessary for private classes/methods/functions
+no-docstring-rgx=^_*

@@ -29,13 +29,13 @@ class TokenError (Exception):
         String data of the unknown token.
     """
 
-  # --- READONLY PROPERTIES --- #
+    # :: READONLY PROPERTIES :: #
 
     pos  : __.textio.TextPosition
     data : str
 
 
-  # --- CONSTRUCTOR --- #
+    # :: CONSTRUCTOR :: #
 
     def __init__(self, pos: __.textio.TextPosition, data: str, message: str):
 
@@ -43,7 +43,7 @@ class TokenError (Exception):
         # one-based numbered, offset line/column positions by one (1).
 
         message =\
-            f"{message} at ln:{pos.ln+1}|col:{pos.col+1}" + "\n" + f'"{data}"'
+            f"{message} @ ln:{pos.ln+1}|col:{pos.col+1}" + "\n" + f'"{data}"'
 
         # Call the base class constructor with the parameters it needs
         super().__init__(message)
@@ -53,8 +53,8 @@ class TokenError (Exception):
         return
 
 
-class UnidentifiedTokenError (TokenError):
-    """Raised whenever an unidentified token type has been encountered.
+class UnknownTokenError (TokenError):
+    """Raised whenever an unknown token type has been encountered.
 
     Readonly Properties
     -------------------
@@ -64,14 +64,14 @@ class UnidentifiedTokenError (TokenError):
         String data of the unknown token.
     """
 
-  # --- CONSTRUCTOR --- #
+    # :: CONSTRUCTOR :: #
 
     def __init__(self, pos: __.textio.TextPosition, data: str):
 
         # Call the base class constructor with the parameters it needs
         super().__init__(
             pos=pos, data=data,
-            message="Unidentified token type"
+            message="Unknown token type"
         )
 
         return
@@ -88,7 +88,7 @@ class UnexpectedTokenError (TokenError):
         String data of the unknown token.
     """
 
-  # --- CONSTRUCTOR --- #
+    # :: CONSTRUCTOR :: #
 
     def __init__(self, pos: __.textio.TextPosition, data: str, id: str):
 
@@ -106,10 +106,6 @@ class EndOfData (Exception):
     """
 
     def __init__(self):
-
-        message = "End of data reached."
-
         # Call the base class constructor with the parameters it needs
-        super().__init__(message)
-
+        super().__init__()
         return

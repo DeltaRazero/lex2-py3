@@ -21,24 +21,24 @@ class __:
 # ***************************************************************************************
 
 class BaseMatcher (__.IMatcher, metaclass=__.abc.ABCMeta):
-    """Abstract base class of an IMatcher implementation.
+    """Abstract base class partially implementing IMatcher.
     """
 
-  # --- PROTECTED FIELDS --- #
+    # :: PROTECTED PROPERTIES :: #
 
-    # Lexer implementation identifier string
-    _implementationId : str
+    # Unique identifier (UID) of the matcher implementation
+    _uid : str
 
 
-  # --- CONSTRUCTOR --- #
+    # :: CONSTRUCTOR :: #
 
     @__.abc.abstractmethod
     def __init__(self) -> None:
-        self._implementationId = ""
+        self._uid = ""
         return
 
 
-  # --- GETTERS --- #
+    # :: GETTERS :: #
 
-    def GetImplementationId(self) -> str:
-        return self._implementationId
+    def get_uid(self) -> str:
+        return self._uid

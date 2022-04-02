@@ -36,13 +36,12 @@
     <!--
         Documentation
     --->
-    <!--
-    <a href="https://deltarazero.github.io/liblex2-py3">
-        <img src="https://img.shields.io/badge/-Documentation_»-informational"
+    <!-- <a href="https://deltarazero.github.io/liblex2-py3">
+        <img src="https://img.shields.io/badge/-Documentation_»-363d45"
         height="24"
-        alt="[Documentation]"/></a>
-    --->
+        alt="[Documentation]"/></a> -->
 </div>
+
 
 <div align="justify"><br/>
 
@@ -74,31 +73,31 @@ ruleset: lex2.ruleset_t = [
     lex2.Rule("NUMBER",      r"[0-9]+"),
     lex2.Rule("PUNCTUATION", r"[.,:;!?\\-]")
 ]
-lexer: lex2.ILexer = lex2.MakeLexer(ruleset=ruleset)
+lexer: lex2.ILexer = lex2.make_lexer()(ruleset=ruleset)
 
 # Load input data by opening a file
-lexer.Open(r"C:/path/to/file.txt")
+lexer.open(r"C:/path/to/file.txt")
 # Or by directly passing a string
-lexer.Load("The quick, brown fox jumps over 2 lazy dogs. \nMr. Jock, TV quiz PhD, bags few lynx.")
+lexer.load("The quick, brown fox jumps over 2 lazy dogs. \nMr. Jock, TV quiz PhD, bags few lynx.")
 
 # Main tokenization loop
 token: lex2.Token
 while(1):
 
     # Find the next token in the textstream
-    try: token = lexer.GetNextToken()
+    try: token = lexer.get_next_token()
     except lex2.excs.EndOfData:
         break
 
     info = [
-         "ln: {}".format(token.position.ln +1),
-        "col: {}".format(token.position.col+1),
+         "ln: {}".format(token.pos.ln +1),
+        "col: {}".format(token.pos.col+1),
         token.id,
         token.data,
     ]
     print("{: <12} {: <15} {: <20} {: <20}".format(*info))
 
-lexer.Close()
+lexer.close()
 ```
 
 ```console
@@ -134,10 +133,10 @@ The repository is hosted at [deltarazero/liblex2-py3](https://github.com/deltara
 
 * __Submitting a pull request:__ to contribute your own changes to the repository. See ["Proposing changes to your work with pull requests"](https://docs.github.com/en/github/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests) for more information on pull requests using GitHub. Furthermore, please follow the guidelines below:
 
-    1. File an issue to notify the maintainers about what you're working on.
-    2. Fork the repo, develop and test your code changes, add docs/unit tests (if applicable).
-    3. Make sure that your commit messages clearly describe the changes.
-    4. Send a pull request, using the available template.
+    - File an issue to notify the maintainers about what you're working on.
+    - Fork the repo, develop and test your code changes, add docs/unit tests (if applicable).
+    - Make sure that your commit messages clearly describe the changes.
+    - Send a pull request, using the available template.
 
     For changes that address core functionality or would require breaking changes (i.e. for a major release), it's best to open an issue to discuss your proposal beforehand.
 

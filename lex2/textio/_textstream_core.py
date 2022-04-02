@@ -13,8 +13,25 @@ class __:
     '<imports>'
 
     import abc
+    import enum
 
     from ._textposition import TextPosition
+
+# ***************************************************************************************
+
+class TextstreamType (__.enum.Enum):
+    """Textstream enum type.
+
+    Values
+    ------
+    MEMORY
+        When a textstream has all data in working memory at its disposal.
+    DISK
+        When a textstream only has part data available in working memory at one time, and
+        has to dynamically read and swap data in chunks from disk.
+    """
+    MEMORY = 0
+    DISK   = 1
 
 # ***************************************************************************************
 
@@ -22,17 +39,17 @@ class ITextstream (metaclass=__.abc.ABCMeta):
     """Common interface to a Textstream object instance.
     """
 
-  # --- INTERFACE METHODS --- #
+    # :: INTERFACE METHODS :: #
 
     @__.abc.abstractmethod
-    def Close(self) -> None:
+    def close(self) -> None:
         """Closes and deletes textstream resources.
         """
         ...
 
 
     @__.abc.abstractmethod
-    def Update(self, n: int) -> None:
+    def update(self, n: int) -> None:
         """Updates the textstream's buffer.
 
         Parameters
@@ -44,115 +61,132 @@ class ITextstream (metaclass=__.abc.ABCMeta):
 
 
     @__.abc.abstractmethod
-    def IsEOF(self) -> bool:
+    def is_eof(self) -> bool:
         """Evaluates whether the textstream has reached the end of data.
         """
         ...
 
 
-  # --- INTERFACE GETTERS --- #
+    # :: INTERFACE GETTERS :: #
 
     @__.abc.abstractmethod
-    def GetTextPosition(self) -> __.TextPosition:
+    def get_textstream_type(self) -> TextstreamType:
+        """Gets textstream enum type.
+        """
+        ...
+
+
+    @__.abc.abstractmethod
+    def get_text_position(self) -> __.TextPosition:
         """Gets the TextPosition object instance.
         """
         ...
 
 
     @__.abc.abstractmethod
-    def GetBufferString(self) -> str:
+    def get_string_buffer(self) -> str:
         """Gets the currently buffered string value.
         """
         ...
 
 
     @__.abc.abstractmethod
-    def GetBufferStringSize(self) -> int:
+    def get_string_buffer_size(self) -> int:
         """Gets the length of the currently buffered string (in characters).
         """
         ...
 
 
     @__.abc.abstractmethod
-    def GetBufferStringPosition(self) -> int:
+    def get_string_buffer_position(self) -> int:
         """Gets the index of the current position in the buffered string.
         """
         ...
 
-
-    # TODO?: GetTextstreamType()  -->  check if memory or buffered
-
-
 # ***************************************************************************************
 
-class AbstractTextstream (ITextstream): # pylint: disable=abstract-method
+class BaseTextstream (ITextstream): # pylint: disable=abstract-method
     """Abstract base class of an ITextstream implementation.
     """
 
-  # --- FIELDS --- #
+    # :: PRIVATE PROPERTIES :: #
+
+    _textstream_type : TextstreamType
 
     _tp : __.TextPosition
 
-    _isEof : bool
+    _is_eof : bool
 
-    _bufferString : str
-    _bufferStringSize : int
-    _bufferStringPos  : int
+    # The string buffer may either be unicode-aware/ASCII or a multibyte system-encoding
+    # (such as UTF-8)
+    _string_buffer : str
+    _string_buffer_size : int
+    _string_buffer_pos  : int
 
 
-  # --- CONSTRUCTOR & DESTRUCTOR --- #
+    # :: CONSTRUCTOR & DESTRUCTOR :: #
 
-    def __init__(self) -> None:
+    def __init__(self, textstream_type: TextstreamType) -> None:
 
-        self._tp = __.TextPosition()
+        self._textstream_type = textstream_type
 
-        self._isEof = False
+        self._tp = __.TextPosition(
+            pos=0,
+            ln =0,
+            col=0,
+        )
 
-        self._bufferString = ""
-        self._bufferStringSize = 0
-        self._bufferStringPos  = 0
+        self._is_eof = False
+
+        self._string_buffer = ""
+        self._string_buffer_size = 0
+        self._string_buffer_pos  = 0
 
         return
 
 
-  # --- INTERFACE METHODS --- #
+    # :: INTERFACE METHODS :: #
 
-    def IsEOF(self) -> bool:
-        return self._isEof
+    def is_eof(self) -> bool:
+        return self._is_eof
 
 
-  # --- INTERFACE GETTERS --- #
+    # :: INTERFACE GETTERS :: #
 
-    def GetTextPosition(self) -> __.TextPosition:
+    def get_textstream_type(self) -> TextstreamType:
+        return self._textstream_type
+
+
+    def get_text_position(self) -> __.TextPosition:
         return self._tp
 
 
-    def GetBufferString(self) -> str:
-        return self._bufferString
+    def get_string_buffer(self) -> str:
+        return self._string_buffer
 
 
-    def GetBufferStringSize(self) -> int:
-        return self._bufferStringSize
+    def get_string_buffer_size(self) -> int:
+        return self._string_buffer_size
 
 
-    def GetBufferStringPosition(self) -> int:
-        return self._bufferStringPos
+    def get_string_buffer_position(self) -> int:
+        return self._string_buffer_pos
 
 
-  # --- PROTECTED METHODS --- #
+    # :: PROTECTED METHODS :: #
 
-    def _UpdatePosition(self, n: int) -> None:
+    def _update_position(self, n: int) -> None:
         """Updates text position."""
 
         # Cache variable for faster lookup times in Python. Not necessary for compiled languages
         _tp = self._tp
 
-        old_pos = self._bufferStringPos
-        self._bufferStringPos += n
+        old_pos = self._string_buffer_pos
+        self._string_buffer_pos += n
 
-        chars = self._bufferString[ old_pos : self._bufferStringPos ]
-        strlen = len(chars)
-        sizeof = strlen # in bytes
+        chars = self._string_buffer[ old_pos : self._string_buffer_pos ]
+        strlen = len(chars) # Amount codepoints
+        sizeof = strlen # Amount bytes
 
         _tp.pos += strlen
 
@@ -163,10 +197,14 @@ class AbstractTextstream (ITextstream): # pylint: disable=abstract-method
             # for (int i=size-1; i>=0; i--)
             for i in range(sizeof-1, -1, -1):
                 if (chars[i] == '\n'):
+                # IF SYSTEM-ENCODING (UTF-8) STRINGS
                     # chars  = chars[ i+1 : ]
                     # strlen = sizeof(chars)
+                    # break
+                # IF UNICODE-AWARE OR ASCII-ONLY STRINGS
                     strlen = strlen - i - 1
                     break
+                # ENDIF
 
         _tp.col += strlen
 
@@ -175,7 +213,7 @@ class AbstractTextstream (ITextstream): # pylint: disable=abstract-method
         # Older slower code, not portable without unicode-aware strings
         """
         _tp = self._tp
-        for char in self._bufferString[ old_pos : self._bufferStringPos ]:
+        for char in self._string_buffer[ old_pos : self._string_buffer_pos ]:
 
             _tp.pos += 1
             _tp.col += 1

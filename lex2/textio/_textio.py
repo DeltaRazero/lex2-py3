@@ -20,8 +20,8 @@ class __:
         ITextstream,
     )
 
-    from ._textstream_disk   import Textstream_Disk
-    from ._textstream_memory import Textstream_Memory
+    from ._textstream_disk   import TextstreamDisk
+    from ._textstream_memory import TextstreamMemory
 
 # ***************************************************************************************
 
@@ -33,14 +33,14 @@ class ITextIO (metaclass=__.abc.ABCMeta):
     """Interface to a class implementing TextIO functionality.
     """
 
-  # --- INTERFACE METHODS --- #
+    # :: INTERFACE METHODS :: #
 
     @__.abc.abstractmethod
-    def Open(self,
+    def open(self,
              fp: __.t.Union[str, __.pl.Path],
-             bufferSize: int=DEFAULT_BUFFER_SIZE,
+             buffer_size: int=DEFAULT_BUFFER_SIZE,
              encoding: str="UTF-8",
-             convertLineEndings: bool=True
+             convert_line_endings: bool=True
     ) -> None:
         """Opens a textfile.
 
@@ -48,7 +48,7 @@ class ITextIO (metaclass=__.abc.ABCMeta):
         ----------
         fp : str | Path
             String or Path object of a text file to open.
-        bufferSize : int, optional
+        buffer_size : int, optional
             Size of the buffer in kilobytes (kB). A size of zero (0) allocates the whole
             file into memory.
             Keep in mind that in order to completely capture a token, it must be smaller
@@ -56,29 +56,29 @@ class ITextIO (metaclass=__.abc.ABCMeta):
             buffer size will be floored to the nearest even number.
         encoding : str, optional
             Encoding of the text file.
-        convertLineEndings : bool, optional
+        convert_line_endings : bool, optional
             Convert line-endings from Windows style to UNIX style.
         """
         ...
 
 
     @__.abc.abstractmethod
-    def Load(self, strData: str, convertLineEndings: bool=False) -> None:
+    def load(self, str_data: str, convert_line_endings: bool=False) -> None:
         """Load string data directly.
 
         Parameters
         ----------
-        strData : str
+        str_data : str
             String data to directly load. Note that encoding depends on the system-wide
             encoding.
-        convertLineEndings : bool, optional
+        convert_line_endings : bool, optional
             Convert line-endings from Windows style to UNIX style.
         """
         ...
 
 
     @__.abc.abstractmethod
-    def Close(self) -> None:
+    def close(self) -> None:
         """Closes and deletes textstream resources.
         """
         ...
@@ -86,15 +86,15 @@ class ITextIO (metaclass=__.abc.ABCMeta):
 # ***************************************************************************************
 
 class TextIO (ITextIO, metaclass=__.abc.ABCMeta):
-    """A base class implementing ITextIO, providing TextIO functionality.
+    """Base class implementing ITextIO, providing TextIO functionality.
     """
 
-  # --- PROTECTED FIELDS --- #
+    # :: PROTECTED FIELDS :: #
 
     _ts : __.ITextstream
 
 
-  # --- CONSTRUCTOR & DESTRUCTOR --- #
+    # :: CONSTRUCTOR & DESTRUCTOR :: #
 
     @__.abc.abstractmethod
     def __init__(self) -> None:
@@ -105,77 +105,77 @@ class TextIO (ITextIO, metaclass=__.abc.ABCMeta):
 
 
     def __del__(self) -> None:
-        self.Close()
+        self.close()
         return
 
 
-  # --- INTERFACE METHODS --- #
+    # :: INTERFACE METHODS :: #
 
-    def Open(self,
+    def open(self,
              fp: __.t.Union[str, __.pl.Path],
-             bufferSize: int=DEFAULT_BUFFER_SIZE,
+             buffer_size: int=DEFAULT_BUFFER_SIZE,
              encoding: str="UTF-8",
-             convertLineEndings: bool=True,
+             convert_line_endings: bool=True,
     ) -> None:
 
         # Re-call method in case of string filepath
         if (isinstance(fp, str)):
-            self.Open(
+            self.open(
                 fp=__.pl.Path(fp),
-                bufferSize=bufferSize,
+                buffer_size=buffer_size,
                 encoding=encoding,
-                convertLineEndings=convertLineEndings,
+                convert_line_endings=convert_line_endings,
             )
             return
 
-        self.Close()
+        self.close()
 
         # Check if path exists and is file
         if (not fp.is_file()):
             raise FileNotFoundError(f'Not an existing file or is a directory: "{str(fp)}"')
 
         # Buffersize is in units of kilobytes (kB)
-        bufferSize *= 1000
+        buffer_size *= 1000
 
-        if (bufferSize < 0):
+        if (buffer_size < 0):
             raise ValueError("buffer size cannot be a negative value")
 
-        if (bufferSize == 0):
+        if (buffer_size == 0):
             with open(fp, "r", encoding=encoding) as f:
-                self._ts = __.Textstream_Memory(
-                    strData=f.read(),
-                    convertLineEndings=convertLineEndings,
+                self._ts = __.TextstreamMemory(
+                    str_data=f.read(),
+                    convert_line_endings=convert_line_endings,
                 )
         else:
-            self._ts = __.Textstream_Disk(
+            self._ts = __.TextstreamDisk(
                 fp=fp,
-                bufferSize=bufferSize,
+                buffer_size=buffer_size,
                 encoding=encoding,
-                convertLineEndings=convertLineEndings,
+                convert_line_endings=convert_line_endings,
             )
 
         return
 
 
-    def Load(self,
-             strData: str,
-             convertLineEndings: bool=False
+    def load(self,
+             str_data: str,
+             convert_line_endings: bool=False
     ) -> None:
 
-        self.Close()
-        self._ts = __.Textstream_Memory(
-            strData=strData,
-            convertLineEndings=convertLineEndings,
+        self.close()
+        self._ts = __.TextstreamMemory(
+            str_data=str_data,
+            convert_line_endings=convert_line_endings,
         )
 
         return
 
 
-    def Close(self) -> None:
+    def close(self) -> None:
 
         # Only close/cleanup if a textream is already instanced
         if (self._ts):
-            self._ts.Close()
+            self._ts.close()
             del self._ts
             self._ts = None
 

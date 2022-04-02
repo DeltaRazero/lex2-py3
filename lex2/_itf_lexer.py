@@ -30,10 +30,10 @@ class ILexer (__.textio.ITextIO, metaclass=__.abc.ABCMeta):
     """Common interface to a lexer object instance.
     """
 
-  # --- INTERFACE METHODS --- #
+    # :: INTERFACE METHODS :: #
 
     @__.abc.abstractmethod
-    def PushRuleset(self, ruleset: __.ruleset_t) -> None:
+    def push_ruleset(self, ruleset: __.ruleset_t) -> None:
         """Pushes a ruleset to the lexer's ruleset-stack.
 
         Parameters
@@ -43,20 +43,20 @@ class ILexer (__.textio.ITextIO, metaclass=__.abc.ABCMeta):
         ...
 
     @__.abc.abstractmethod
-    def PopRuleset(self) -> None:
+    def pop_ruleset(self) -> None:
         """Pops a ruleset from the lexer's ruleset-stack.
         """
         ...
 
     @__.abc.abstractmethod
-    def ClearRulesets(self) -> None:
+    def clear_rulesets(self) -> None:
         """Clears all rulesets from the lexer's ruleset-stack.
         """
         ...
 
 
     @__.abc.abstractmethod
-    def GetNextToken(self) -> __.Token:
+    def get_next_token(self) -> __.Token:
         """Finds the next token in the textstream, by using the currently active ruleset.
 
         Returns
@@ -65,18 +65,18 @@ class ILexer (__.textio.ITextIO, metaclass=__.abc.ABCMeta):
 
         Raises
         ------
-        UnidentifiedTokenError
-            If an unexpected token type has been encountered.
+        UnknownTokenError
+            If an unknown token type has been encountered.
         EndOfData
             If the lexer has reached the end of input data.
         """
         ...
 
 
-  # --- INTERFACE GETTERS & SETTERS --- #
+    # :: INTERFACE GETTERS & SETTERS :: #
 
     @__.abc.abstractmethod
-    def GetOptions(self) -> __.LexerOptions:
+    def get_options(self) -> __.LexerOptions:
         """Gets the LexerOptions object instance to define processing options of the lexer.
 
         Returns
@@ -86,7 +86,7 @@ class ILexer (__.textio.ITextIO, metaclass=__.abc.ABCMeta):
         ...
 
     @__.abc.abstractmethod
-    def SetOptions(self, options: __.LexerOptions) -> None:
+    def set_options(self, options: __.LexerOptions) -> None:
         """Sets the LexerOptions object instance to define processing options of the lexer.
 
         Parameters

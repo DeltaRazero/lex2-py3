@@ -29,12 +29,14 @@ class __:
 
 # ***************************************************************************************
 
-DEFAULT_MATCHER = __.matcher.Re_Matcher
+DEFAULT_MATCHER = __.matcher.ReMatcher
 DEFAULT_LEXER   = __.lexer.GenericLexer
 
-# TEMPLATE
-def MakeLexer(MATCHER_T: __.t.Type[__.matcher.BaseMatcher]=DEFAULT_MATCHER,
-              LEXER_T  : __.t.Type[  __.lexer.BaseLexer  ]=DEFAULT_LEXER,
+# ***************************************************************************************
+
+# template
+def make_lexer(MATCHER_T: __.t.Type[__.matcher.BaseMatcher]=DEFAULT_MATCHER,
+              LEXER_T  :  __.t.Type[  __.lexer.BaseLexer  ]=DEFAULT_LEXER,
 ):
     """Factory function for creating a lexer instance.
 
@@ -45,11 +47,11 @@ def MakeLexer(MATCHER_T: __.t.Type[__.matcher.BaseMatcher]=DEFAULT_MATCHER,
     Template Parameters
     -------------------
     MATCHER_T : Type[BaseMatcher], optional
-        ...
+        ... # TODO:
 
     LEXER_T : Type[BaseLexer], optional
         ...
-        Template class type implementing the ILexer interface. By default DEFAULT_LEXER_IMPLEMENTATION
+        Template class type implementing the ILexer interface. By default DEFAULT_LEXER
 
     Parameters
     ----------
@@ -63,26 +65,9 @@ def MakeLexer(MATCHER_T: __.t.Type[__.matcher.BaseMatcher]=DEFAULT_MATCHER,
     ILexer
     """
 
-    class Matcher (MATCHER_T):
-        def __init__(self, implementationId: str) -> None:
-            self._implementationId = implementationId
-            return
-
-    class Lexer (LEXER_T):
-        def __init__(self):
-            """Re_Lexer object instance initializer."""
-            super().__init__()
-            self._implementationId = MATCHER_T.__name__
-            return
-      # --- PROTECTED METHODS --- #
-        def _CompileRule(self, rule: __.Rule) -> __.IMatcher:
-            matcher = Matcher(self._implementationId)
-            matcher.CompilePattern(rule.regexPattern)
-            return matcher
-
-    # NOTE: This would be the actual function body in C++
-    def _MakeLexer(ruleset: __.ruleset_t=[],
-                   options: __.LexerOptions=__.LexerOptions(),
+    # This would be the actual function body in C++/C#/Rust/etc.
+    def _make_lexer(ruleset: __.ruleset_t=None,
+                  options: __.LexerOptions=__.LexerOptions(),
         ) -> __.ILexer:
         """Factory function for creating a lexer instance (templated).
 
@@ -97,9 +82,35 @@ def MakeLexer(MATCHER_T: __.t.Type[__.matcher.BaseMatcher]=DEFAULT_MATCHER,
         -------
         ILexer
         """
+
+        UID: str = MATCHER_T.__name__
+
+        class Matcher (MATCHER_T):
+            def __init__(self, uid: str) -> None:
+                super().__init__()
+                self._uid = uid
+                return
+
+        class Lexer (LEXER_T):
+            def __init__(self):
+                super().__init__()
+                self._uid = UID
+                return
+
+            # :: PROTECTED METHODS :: #
+
+            def _compile_rule(self, rule: __.Rule) -> __.IMatcher:
+                matcher = Matcher(self._uid)
+                matcher.compile_pattern(rule.regex_pattern)
+                return matcher
+
+        # Default value is empty array
+        ruleset = ruleset or []
+
         lexer = Lexer()
-        lexer.SetOptions(options)
-        lexer.PushRuleset(ruleset)
+        lexer.set_options(options)
+        lexer.push_ruleset(ruleset)
+
         return lexer
 
-    return _MakeLexer
+    return _make_lexer

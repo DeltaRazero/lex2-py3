@@ -42,95 +42,18 @@ class Comments (__.RuleGroup):
         return self
 
 
-# comments = Comments().add_comment_singleline("a") \
-#                      .add_comment_multiline("b", "a") \
+# comments = Comments().add_singleline_comment("a") \
+#                      .add_multiline_comment("b", "a") \
 #                      .to_rule()
-
-r'''
-
-class BaseComment (__.Rule, metaclass=__.abc.ABCMeta):
-    """Base class for a rule filtering comments.
-    """
-
-  # --- CONSTANTS --- #
-
-    RULE_ID = "COMMENT"
-
-
-  # --- READONLY PROPERTIES --- #
-
-    endRule : __.Rule
-
-
-  # --- CONSTRUCTOR --- #
-
-    @__.abc.abstractmethod
-    def __init__(self, regexPatternStart: str, regexPatternEnd: str):
-        """
-        """
-        __.Rule.__init__(self, self.RULE_ID, regexPatternStart, returns=False)
-        self.endRule = __.Rule(self.RULE_ID, regexPatternEnd)
-        return
-
-
-class SinglelineComment (BaseComment):
-    """Rule template for filtering singleline comments.
-    """
-
-  # --- CONSTRUCTOR --- #
-
-    def __init__(self, identifyingRegex: str):
-        """SinglelineComment object instance initializer.
-
-        Parameters
-        ----------
-        identifyingRegex : str
-            This regex pattern denotes the start of a singleline comment. For example:
-            r"//".
-        """
-        super().__init__(
-            regexPatternStart=identifyingRegex,
-            regexPatternEnd  =r".*"
-        )
-
-        return
-
-
-class MultilineComment (BaseComment):
-    """Rule template for filtering singleline comments.
-    """
-
-  # --- CONSTRUCTOR --- #
-
-    def __init__(self, identifyingStartRegex: str, identifyingEndRegex: str):
-        r"""SinglelineComment object instance initializer.
-
-        Parameters
-        ----------
-        identifyingStartRegex : str
-            This regex pattern denotes the start of a multiline comment. For example:
-            r"\/\*" (/*).
-        identifyingEndRegex : str
-            This regex pattern denotes the start of a multiline comment. For example:
-            r"\*\/" (*/).
-        """
-        super().__init__(
-            regexPatternStart=identifyingStartRegex,
-            regexPatternEnd  =rf'[\s\S]*?{identifyingEndRegex}|[\s\S]*'
-            # regexPatternEnd  =r"([\s\S]*?)\*\/|([\s\S]*)"
-        )
-
-        return
-'''
 
 # ***************************************************************************************
 
-def __MakeDummyRule(id: str) -> __.Rule: return __.Rule(id, r"a^")
+def __make_dummy_rule(id: str) -> __.Rule: return __.Rule(id, r"a^")
 # __MakeDummyRule: _t.Callable[[str], _Rule] = lambda id: _Rule(id, r"a^")
 
 # These rule object instances are not meant to be actually used in rulesets as they won't
 # match anything.
 # Instead, they are used to label and identify tokens by using the the rule ID property.
-space        = __MakeDummyRule("SPACE")
-tab          = __MakeDummyRule("TAB")
-newline      = __MakeDummyRule("NEWLINE")
+space   = __make_dummy_rule("SPACE")
+tab     = __make_dummy_rule("TAB")
+newline = __make_dummy_rule("NEWLINE")

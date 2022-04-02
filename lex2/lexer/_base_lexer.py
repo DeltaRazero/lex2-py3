@@ -17,7 +17,6 @@ class __:
 
     from lex2 import (
         textio,
-        predefs,
     )
     from lex2 import (
         ruleset_t,
@@ -30,14 +29,17 @@ class __:
 # ***************************************************************************************
 
 class BaseLexer (__.textio.TextIO, __.ILexer, metaclass=__.abc.ABCMeta):
-    """Abstract base class of an ILexer implementation.
+    """Abstract base class partially implementing ILexer.
     """
 
-  # --- PROTECTED FIELDS --- #
+    # :: PROTECTED FIELDS :: #
 
     # A string value for uniquely identifying a matcher implementation. For pretty much
-    # all cases, passing the class name works.
-    _implementationId : str
+    # all cases, passing the class name is fine
+
+    # Uses the UID from a matcher. It shouldn't be set manually, as that is done in the
+    # make_lexer() factory function
+    _uid : str
 
     _rulesets : __.t.List[__.ruleset_t]
     _active_ruleset : __.ruleset_t
@@ -45,7 +47,7 @@ class BaseLexer (__.textio.TextIO, __.ILexer, metaclass=__.abc.ABCMeta):
     _options : __.LexerOptions
 
 
-  # --- CONSTRUCTOR & DESTRUCTOR --- #
+    # :: CONSTRUCTOR & DESTRUCTOR :: #
 
     @__.abc.abstractmethod
     def __init__(self):
@@ -53,7 +55,7 @@ class BaseLexer (__.textio.TextIO, __.ILexer, metaclass=__.abc.ABCMeta):
         """
         super().__init__()
 
-        self._implementationId = ""
+        self._uid = ""
 
         self._rulesets = []
         self._options  = __.LexerOptions()
@@ -66,44 +68,44 @@ class BaseLexer (__.textio.TextIO, __.ILexer, metaclass=__.abc.ABCMeta):
         return
 
 
-  # --- PUBLIC METHODS --- #
+    # :: PUBLIC METHODS :: #
 
-    def PushRuleset(self, ruleset: __.ruleset_t) -> None:
-        # Before pushing the ruleset, we check if the pattern matchers (saved in the rule
-        # objects) are compiled for the specific lexer implementation this function is called from.
-        self._CompileRuleset(ruleset)
+    def push_ruleset(self, ruleset: __.ruleset_t) -> None:
+        # Before pushing the ruleset, check if the rules' matcher objects are compiled for use in
+        # the current lexer instance by checking the UID.
+        self._compile_ruleset(ruleset)
         self._rulesets.append(ruleset)
         self._active_ruleset = self._rulesets[-1]
         return
 
 
-    def PopRuleset(self) -> None:
+    def pop_ruleset(self) -> None:
         self._rulesets.pop()
         self._active_ruleset = self._rulesets[-1]
         return
 
 
-    def ClearRulesets(self) -> None:
+    def clear_rulesets(self) -> None:
         self._rulesets.clear()
         return
 
 
-  # --- GETTERS & SETTERS --- #
+    # :: GETTERS & SETTERS :: #
 
-    def GetOptions(self) -> __.LexerOptions:
+    def get_options(self) -> __.LexerOptions:
         return self._options
 
 
-    def SetOptions(self, options: __.LexerOptions) -> None:
+    def set_options(self, options: __.LexerOptions) -> None:
         self._options = options
         return
 
 
-  # --- PROTECTED METHODS --- #
+    # :: PROTECTED METHODS :: #
 
     @__.abc.abstractmethod
-    def _CompileRule(self, rule: __.Rule) -> __.IMatcher:
-        """Requests implemented lexer to compile a regex matcher object.
+    def _compile_rule(self, rule: __.Rule) -> __.IMatcher:
+        """Compiles and sets a rule's matcher object.
 
         Parameters
         ----------
@@ -116,44 +118,33 @@ class BaseLexer (__.textio.TextIO, __.ILexer, metaclass=__.abc.ABCMeta):
         ...
 
 
-  # --- PRIVATE METHODS --- #
+    # :: PRIVATE METHODS :: #
 
-    def _CompileRuleset(self, ruleset: __.ruleset_t) -> None:
+    def _compile_ruleset(self, ruleset: __.ruleset_t) -> None:
         """Checks and compiles rules within a newly pushed ruleset.
 
         Whenever a ruleset is pushed, this method will check if all rules have their
-        corresponding IMatcher-compatible object set to the matcher type, used by
-        a specific lexer/matcher implementation, and compiles if necessary.
+        corresponding IMatcher-compatible object set to the supported matcher type used
+        by the current lexer instance, and compiles if necessary.
         """
         for rule in ruleset:
+            if (not isinstance(rule, __.Rule)): # type: ignore
+                raise TypeError(f'Object {rule} is not a (sub)class of {__.Rule.__name__}.')
 
-            # TODO: Throw TypeError exception if rule is not of (sub)type Rule, so the error message is clearer for the user. This is dynamic language specific
-
-            # Call the specific lexer implementation's CompileRule() method for regex
-            # pattern matcher compilation
-            if (self._NeedsCompilation(rule)):
-                rule.SetMatcher(self._CompileRule(rule))
-
-            # Comment rules have an addition rule to be compiled # TODO: REMOVE
-            # if (rule.id == __.predefs.comment.id):
-            #     # rule = static_cast<BaseComment*>(rule)->endRule
-            #     rule: __.Rule = __.t.cast(__.predefs.BaseComment, rule).endRule
-            #     if (self._NeedsCompilation(rule)):
-            #         rule.SetMatcher(self._CompileRule(rule))
-
+            if (self._needs_compilation(rule)):
+                rule.set_matcher(self._compile_rule(rule))
         return
 
 
-    def _NeedsCompilation(self, rule: __.Rule) -> bool:
-        """Check if the regex pattern matcher in a rule object needs to be compiled.
+    def _needs_compilation(self, rule: __.Rule) -> bool:
+        """Check if a rule's matcher object needs to be compiled.
         """
         needs_compilation = False
-        matcher = rule.GetMatcher()
-        # If a Matcher object already compiled and stored, check the ID of the matcher
-        # implementation
+        matcher = rule.get_matcher()
+        # If a matcher object is already compiled and stored, check the ID of the matcher
         if (matcher):
-            needs_compilation = matcher.GetImplementationId() != self._implementationId
-        # If no object Matcher object stored at all
+            needs_compilation = matcher.get_uid() != self._uid
+        # If no object matcher object stored at all
         else:
             needs_compilation = True
 

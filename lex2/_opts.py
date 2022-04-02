@@ -28,12 +28,12 @@ class LexerOptions:
         Options to specify how a TAB seperator should be handled.
     newline : SeperatorOptions
         Options to specify how a NEWLINE seperator should be handled.
-    idReturns : Dict[str, bool]
+    id_returns : Dict[str, bool]
         Map with <str, bool> keypairs to specify whether to return tokens from a rule
         which its identifier matches the key given as input.
     """
 
-  # --- NESTED CLASSES --- #
+    # :: NESTED CLASSES :: #
 
     #struct
     class SeperatorOptions:
@@ -48,12 +48,10 @@ class LexerOptions:
             Flag to specify whether tokens of this seperator should be returned.
             Defaults to False
         """
-
         ignored : bool
         returns : bool
 
-
-      # --- CONSTRUCTOR --- #
+        # :: CONSTRUCTOR :: #
 
         def __init__(self):
             self.ignores = False
@@ -61,7 +59,7 @@ class LexerOptions:
             return
 
 
-  # --- PROPERTIES --- #
+    # :: PROPERTIES :: #
 
     space   : SeperatorOptions
     tab     : SeperatorOptions
@@ -70,10 +68,10 @@ class LexerOptions:
     # Key should be the identifier string value of a Rule object. To check whether a
     # token should be returned or ignored, the map gets checked for existence of the
     # token's identifier string as key value.
-    idReturns : __.t.Dict[str, bool]
+    id_returns : __.t.Dict[str, bool]
 
 
-  # --- CONSTRUCTOR --- #
+    # :: CONSTRUCTOR :: #
 
     def __init__(self):
 
@@ -81,6 +79,6 @@ class LexerOptions:
         self.tab     = LexerOptions.SeperatorOptions()
         self.newline = LexerOptions.SeperatorOptions()
 
-        self.idReturns = {}
+        self.id_returns = {}
 
         return

@@ -28,37 +28,36 @@ class __:
 
 # ***************************************************************************************
 
-class Re_Matcher (__.BaseMatcher):
-    """An implementation of IMatcher using Python's builtin `re` module, using AbstractMatcher as base.
+class ReMatcher (__.BaseMatcher):
+    """Implementation of IMatcher using Python's builtin `re` module.
     """
 
-  # --- FIELDS --- #
+    # :: PRIVATE PROPERTIES :: #
 
-    # t.Pattern is an object instance of a compiled regex pattern, by Python's builtin
-    # `re` module.
+    # t.Pattern is an instance of a compiled regex pattern of Python's builtin 're' module
     _pattern : __.t.Pattern[str]
 
 
-  # --- CONSTRUCTOR --- #
+    # :: CONSTRUCTOR :: #
 
     def __init__(self) -> None:
         super().__init__()
         return
 
 
-  # --- PUBLIC METHODS --- #
+    # :: PUBLIC METHODS :: #
 
-    def CompilePattern(self, regexPattern: str) -> None:
-        self._pattern = __.re.compile(regexPattern)
+    def compile_pattern(self, regex_pattern: str) -> None:
+        self._pattern = __.re.compile(regex_pattern)
         return
 
 
-    def Match(self, ts: __.textio.ITextstream) -> __.ptr_t[str]:
+    def match(self, ts: __.textio.ITextstream) -> __.ptr_t[str]:
 
         regex_match = self._pattern.match(
-            ts._bufferString,     # Data input
-            ts._bufferStringPos,  # Read STARTING AT position
-            ts._bufferStringSize, # Read UNTIL position
+            ts._string_buffer,     # Data input
+            ts._string_buffer_pos,  # Read STARTING AT position
+            ts._string_buffer_size, # Read UNTIL position
         )
 
         if (regex_match):

@@ -37,7 +37,7 @@ class Token:
         Position in the textstream where a token occurs.
     """
 
-  # --- READONLY PROPERTIES --- #
+    # :: READONLY PROPERTIES :: #
 
     # Identifying string of the token's type (e.g. "NUMBER", "WORD") -- rule ID
     id : str
@@ -49,7 +49,7 @@ class Token:
     pos : __.textio.TextPosition
 
 
-  # --- CONSTRUCTOR --- #
+    # :: CONSTRUCTOR :: #
 
     def __init__(self, id: str, data: str, pos: __.textio.TextPosition):
         """Token object instance initializer.
@@ -70,29 +70,29 @@ class Token:
         return
 
 
-  # --- PUBLIC METHODS --- #
+    # :: PUBLIC METHODS :: #
 
-    def IsRule(self, expectedRule: __.Rule) -> bool:
+    def is_rule(self, expected_rule: __.Rule) -> bool:
         """Evaluates if the token's identifier matches that of a given rule.
 
         Parameters
         ----------
-        expectedRule : Rule
+        expected_rule : Rule
             Rule object instance.
 
         Returns
         -------
         bool
         """
-        return self.id == expectedRule.id
+        return self.id == expected_rule.id
 
 
-    def ValidateRule(self, expectedRule: __.Rule) -> None:
+    def validate_rule(self, expected_rule: __.Rule) -> None:
         """Validates that the token's identifier matches that of a given rule.
 
         Parameters
         ----------
-        expectedRule : Rule
+        expected_rule : Rule
             Rule object instance.
 
         Raises
@@ -100,6 +100,6 @@ class Token:
         UnknownTokenError
             When the token's identifier does not match that of a given rule.
         """
-        if (not self.IsRule(expectedRule)):
+        if (not self.is_rule(expected_rule)):
             raise __.excs.UnexpectedTokenError(self.pos, self.data, self.id)
         return
