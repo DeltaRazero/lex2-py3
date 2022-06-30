@@ -17,8 +17,8 @@ class __:
 
 # ***************************************************************************************
 
-# Typedef to simulate pointer type
-ptr_t = nullable = __.t.Optional
+PtrType = Nullable = __.t.Optional
+"""Typedef to simulate pointer type."""
 
-# Typedef to simulate void*
-voidptr_t = __.t.Any
+VoidptrType = __.t.Any
+"""Typedef to simulate void pointer type (`void*`)."""

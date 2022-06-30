@@ -35,7 +35,7 @@ class TextstreamType (__.enum.Enum):
 
 # ***************************************************************************************
 
-class ITextstream (metaclass=__.abc.ABCMeta):
+class ITextstream (__.abc.ABC):
     """Common interface to a Textstream object instance.
     """
 
@@ -105,11 +105,17 @@ class ITextstream (metaclass=__.abc.ABCMeta):
 
 # ***************************************************************************************
 
-class BaseTextstream (ITextstream): # pylint: disable=abstract-method
+class BaseTextstream (ITextstream, __.abc.ABC): # pylint: disable=abstract-method
     """Abstract base class of an ITextstream implementation.
     """
 
-    # :: PRIVATE PROPERTIES :: #
+    __slots__ = (
+        '_tp', '_is_eof',
+        '_string_buffer', '__string_buffer_size', '_string_buffer_pos',
+        '_textstream_type',
+    )
+
+    # :: PRIVATE ATTRIBUTES :: #
 
     _textstream_type : TextstreamType
 
@@ -126,6 +132,7 @@ class BaseTextstream (ITextstream): # pylint: disable=abstract-method
 
     # :: CONSTRUCTOR & DESTRUCTOR :: #
 
+    @__.abc.abstractmethod
     def __init__(self, textstream_type: TextstreamType) -> None:
 
         self._textstream_type = textstream_type
@@ -175,6 +182,7 @@ class BaseTextstream (ITextstream): # pylint: disable=abstract-method
 
     # :: PROTECTED METHODS :: #
 
+    # @profile
     def _update_position(self, n: int) -> None:
         """Updates text position."""
 

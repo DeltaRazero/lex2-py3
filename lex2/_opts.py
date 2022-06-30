@@ -20,7 +20,7 @@ class __:
 class LexerOptions:
     """Struct to define processing options of a lexer.
 
-    Properties
+    Attributes
     ----------
     space : SeperatorOptions
         Options to specify how a SPACE seperator should be handled.
@@ -39,7 +39,7 @@ class LexerOptions:
     class SeperatorOptions:
         """Struct that defines processing options of a seperator token.
 
-        Properties
+        Attributes
         ----------
         ignored : bool
             Flag to specify whether processing of tokens of this seperator should be ignored.
@@ -48,18 +48,22 @@ class LexerOptions:
             Flag to specify whether tokens of this seperator should be returned.
             Defaults to False
         """
+
+        __slots__ = ('ignored', 'returns')
+
         ignored : bool
         returns : bool
 
         # :: CONSTRUCTOR :: #
 
         def __init__(self):
-            self.ignores = False
+            self.ignored = False
             self.returns = False
             return
 
+    __slots__ = ('space', 'tab', 'newline', 'id_returns')
 
-    # :: PROPERTIES :: #
+    # :: PUBLIC ATTRIBUTES :: #
 
     space   : SeperatorOptions
     tab     : SeperatorOptions
@@ -75,9 +79,9 @@ class LexerOptions:
 
     def __init__(self):
 
-        self.space   = LexerOptions.SeperatorOptions()
-        self.tab     = LexerOptions.SeperatorOptions()
-        self.newline = LexerOptions.SeperatorOptions()
+        self.space   = self.SeperatorOptions()
+        self.tab     = self.SeperatorOptions()
+        self.newline = self.SeperatorOptions()
 
         self.id_returns = {}
 

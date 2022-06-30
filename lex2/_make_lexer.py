@@ -23,7 +23,7 @@ class __:
         ILexer,
         IMatcher,
         Rule,
-        ruleset_t,
+        RulesetType,
         LexerOptions,
     )
 
@@ -36,29 +36,31 @@ DEFAULT_LEXER   = __.lexer.GenericLexer
 
 # template
 def make_lexer(MATCHER_T: __.t.Type[__.matcher.BaseMatcher]=DEFAULT_MATCHER,
-              LEXER_T  :  __.t.Type[  __.lexer.BaseLexer  ]=DEFAULT_LEXER,
+               LEXER_T  : __.t.Type[  __.lexer.BaseLexer  ]=DEFAULT_LEXER,
 ):
     """Factory function for creating a lexer instance.
 
     If no values are provided for the template parameters, the implementations used for
-    the matcher and lexer will default to the library constants `DEFAULT_MATCHER` and
-    `DEFAULT_LEXER` respectively.
+    the matcher and lexer will default to the library constants ``DEFAULT_MATCHER`` and
+    ``DEFAULT_LEXER`` respectively.
 
     Template Parameters
     -------------------
     MATCHER_T : Type[BaseMatcher], optional
-        ... # TODO:
-
+        Template class type that implements the ``BaseMatcher`` base class.
+        By default ``DEFAULT_MATCHER``
     LEXER_T : Type[BaseLexer], optional
-        ...
-        Template class type implementing the ILexer interface. By default DEFAULT_LEXER
+        Template class type that implements the ``BaseLexer`` base class.
+        By default ``DEFAULT_LEXER``
 
     Parameters
     ----------
-    ruleset : ruleset_t, optional
-        Initial ruleset. By default []
+    ruleset : RulesetType, optional
+        Initial ruleset.
+        By default ``[]``
     options : LexerOptions, optional
-        Struct specifying processing options of the lexer. By default LexerOptions()
+        Struct specifying processing options of the lexer.
+        By default ``LexerOptions()``
 
     Returns
     -------
@@ -66,14 +68,14 @@ def make_lexer(MATCHER_T: __.t.Type[__.matcher.BaseMatcher]=DEFAULT_MATCHER,
     """
 
     # This would be the actual function body in C++/C#/Rust/etc.
-    def _make_lexer(ruleset: __.ruleset_t=None,
-                  options: __.LexerOptions=__.LexerOptions(),
+    def _templated_make_lexer(ruleset: __.RulesetType=None,
+                              options: __.LexerOptions=__.LexerOptions(),
         ) -> __.ILexer:
         """Factory function for creating a lexer instance (templated).
 
         Parameters
         ----------
-        ruleset : ruleset_t, optional
+        ruleset : RulesetType, optional
             Initial ruleset. By default []
         options : LexerOptions, optional
             Struct specifying processing options of the lexer. By default LexerOptions()
@@ -101,7 +103,7 @@ def make_lexer(MATCHER_T: __.t.Type[__.matcher.BaseMatcher]=DEFAULT_MATCHER,
 
             def _compile_rule(self, rule: __.Rule) -> __.IMatcher:
                 matcher = Matcher(self._uid)
-                matcher.compile_pattern(rule.regex_pattern)
+                matcher.compile_pattern(rule.regex)
                 return matcher
 
         # Default value is empty array
@@ -113,4 +115,8 @@ def make_lexer(MATCHER_T: __.t.Type[__.matcher.BaseMatcher]=DEFAULT_MATCHER,
 
         return lexer
 
-    return _make_lexer
+    # Workaround for using autodoc with nested functions
+    # see: https://stackoverflow.com/a/12039980
+    make_lexer.templated_make_lexer = _templated_make_lexer
+
+    return _templated_make_lexer

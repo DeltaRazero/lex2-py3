@@ -33,7 +33,13 @@ class TextstreamDisk (__.BaseTextstream, __.ITextstream):
     """Abstract base class of an ITextstream implementation.
     """
 
-    # :: FIELDS :: #
+    __slots__ = (
+        '_f', '_f_is_eof'
+        '_byte_buffer', '_byte_buffer_size', '_n_undecoded_bytes', '_string_buffer_split'
+        '_encoding', '_convert_eol',
+    )
+
+    # :: PRIVATE ATTRIBUTES :: #
 
     _encoding : str
     _convert_eol : bool
@@ -66,14 +72,14 @@ class TextstreamDisk (__.BaseTextstream, __.ITextstream):
         Parameters
         ----------
         fp : Union[str, Path]
-            String or Path object of a textfile to open.
+            String or Path object of a text file to open.
         buffer_size : int
-            Size of the buffer used to split a file into segments. Keep in mind that in
-            order to completely capture a token, it must be smaller or equal to the size
-            allocated to the buffer by this argument. NOTE: this number will be floored
-            to the nearest even number.
+            Size of the buffer in kilobytes (kB). A size of zero (0) allocates the whole
+            file into memory. In order to completely capture a token, its length must be
+            smaller or equal to half the buffer size value.
+            Note that the buffer size will be floored to the nearest even number.
         encoding : str
-            Encoding of text in the file.
+            Encoding of the text file.
         convert_line_endings : bool
             Convert line-endings from Windows style to UNIX style.
         """
@@ -119,16 +125,16 @@ class TextstreamDisk (__.BaseTextstream, __.ITextstream):
 
         return
 
-
+    # @profile
     def update(self, n: int) -> None:
         if (n < 1):
             if (n < 0):
-                raise ValueError("Requested update size is invalid (smaller than 0)!")
+                raise ValueError("Requested update size is invalid (smaller than 0)")
             return
 
         # Can't be possible to read more than the allocated buffer size
         if (n > self._string_buffer_size):
-            raise ValueError("Requested update size is invalid (bigger than the allocated buffer string size)!")
+            raise ValueError("Requested update size is invalid (bigger than the allocated buffer string size)")
 
         self._update_position(n)
 
@@ -223,17 +229,18 @@ class TextstreamDisk (__.BaseTextstream, __.ITextstream):
 
         # Decode to a string object with given text encoding
         self._string_buffer = self._byte_buffer.decode(encoding=self._encoding, errors="ignore")
+
+        # If converting line endings, then \r bytes that are filtered out don't count towards n_undecoded_bytes
+        eol_adjust = 0
         if (self._convert_eol):
+            size_before = len(self._string_buffer)
             self._string_buffer = self._string_buffer.replace("\r", "")
+            eol_adjust = size_before - len(self._string_buffer)
 
         # In case multi-byte characters are present, some characters may not have been
         # decoded (at the end). We keep those undecoded bytes and insert them at the
         # beginning of the next buffer when updating.
-        n_undecoded_bytes = n_bytes - self._binary_string_length(self._string_buffer) + self._n_undecoded_bytes
-        # If converting line endings, then \r bytes that are filtered out don't count
-        # towards this number
-        if (self._convert_eol):
-            n_undecoded_bytes -= self._byte_buffer.count(b"\r\n")
+        n_undecoded_bytes = n_bytes - self._binary_string_length(self._string_buffer) + self._n_undecoded_bytes - eol_adjust
 
         if (n_undecoded_bytes):
             self._byte_buffer       = self._byte_buffer[-n_undecoded_bytes:]

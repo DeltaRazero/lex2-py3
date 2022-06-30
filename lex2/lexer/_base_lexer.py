@@ -19,8 +19,8 @@ class __:
         textio,
     )
     from lex2 import (
-        ruleset_t,
         Rule,
+        RulesetType,
         ILexer,
         IMatcher,
         LexerOptions,
@@ -28,11 +28,17 @@ class __:
 
 # ***************************************************************************************
 
-class BaseLexer (__.textio.TextIO, __.ILexer, metaclass=__.abc.ABCMeta):
+class BaseLexer (__.textio.TextIO, __.ILexer, __.abc.ABC):
     """Abstract base class partially implementing ILexer.
     """
 
-    # :: PROTECTED FIELDS :: #
+    __slots__ = (
+        '_rulesets', '_active_ruleset',
+        '_options',
+        '_uid'
+    )
+
+    # :: PROTECTED ATTRIBUTES :: #
 
     # A string value for uniquely identifying a matcher implementation. For pretty much
     # all cases, passing the class name is fine
@@ -41,8 +47,8 @@ class BaseLexer (__.textio.TextIO, __.ILexer, metaclass=__.abc.ABCMeta):
     # make_lexer() factory function
     _uid : str
 
-    _rulesets : __.t.List[__.ruleset_t]
-    _active_ruleset : __.ruleset_t
+    _rulesets : __.t.List[__.RulesetType]
+    _active_ruleset : __.RulesetType
 
     _options : __.LexerOptions
 
@@ -70,7 +76,7 @@ class BaseLexer (__.textio.TextIO, __.ILexer, metaclass=__.abc.ABCMeta):
 
     # :: PUBLIC METHODS :: #
 
-    def push_ruleset(self, ruleset: __.ruleset_t) -> None:
+    def push_ruleset(self, ruleset: __.RulesetType) -> None:
         # Before pushing the ruleset, check if the rules' matcher objects are compiled for use in
         # the current lexer instance by checking the UID.
         self._compile_ruleset(ruleset)
@@ -120,7 +126,7 @@ class BaseLexer (__.textio.TextIO, __.ILexer, metaclass=__.abc.ABCMeta):
 
     # :: PRIVATE METHODS :: #
 
-    def _compile_ruleset(self, ruleset: __.ruleset_t) -> None:
+    def _compile_ruleset(self, ruleset: __.RulesetType) -> None:
         """Checks and compiles rules within a newly pushed ruleset.
 
         Whenever a ruleset is pushed, this method will check if all rules have their
@@ -129,7 +135,7 @@ class BaseLexer (__.textio.TextIO, __.ILexer, metaclass=__.abc.ABCMeta):
         """
         for rule in ruleset:
             if (not isinstance(rule, __.Rule)): # type: ignore
-                raise TypeError(f'Object {rule} is not a (sub)class of {__.Rule.__name__}.')
+                raise TypeError(f'Object {rule} is not a (sub)class of {__.Rule.__name__}')
 
             if (self._needs_compilation(rule)):
                 rule.set_matcher(self._compile_rule(rule))

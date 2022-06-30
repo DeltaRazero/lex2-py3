@@ -20,25 +20,25 @@ class __:
 
     from lex2 import (
         Token,
-        ruleset_t,
+        RulesetType,
         LexerOptions,
     )
 
 # ***************************************************************************************
 
-class ILexer (__.textio.ITextIO, metaclass=__.abc.ABCMeta):
+class ILexer (__.textio.ITextIO, __.abc.ABC):
     """Common interface to a lexer object instance.
     """
 
     # :: INTERFACE METHODS :: #
 
     @__.abc.abstractmethod
-    def push_ruleset(self, ruleset: __.ruleset_t) -> None:
+    def push_ruleset(self, ruleset: __.RulesetType) -> None:
         """Pushes a ruleset to the lexer's ruleset-stack.
 
         Parameters
         ----------
-        ruleset : ruleset_t
+        ruleset : RulesetType
         """
         ...
 
@@ -67,8 +67,8 @@ class ILexer (__.textio.ITextIO, metaclass=__.abc.ABCMeta):
         ------
         UnknownTokenError
             If an unknown token type has been encountered.
-        EndOfData
-            If the lexer has reached the end of input data.
+        EOD
+            If the lexer has reached the end of input data from a textstream.
         """
         ...
 

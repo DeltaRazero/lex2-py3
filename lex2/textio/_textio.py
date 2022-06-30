@@ -29,7 +29,7 @@ DEFAULT_BUFFER_SIZE = 512
 
 # ***************************************************************************************
 
-class ITextIO (metaclass=__.abc.ABCMeta):
+class ITextIO (__.abc.ABC):
     """Interface to a class implementing TextIO functionality.
     """
 
@@ -50,10 +50,9 @@ class ITextIO (metaclass=__.abc.ABCMeta):
             String or Path object of a text file to open.
         buffer_size : int, optional
             Size of the buffer in kilobytes (kB). A size of zero (0) allocates the whole
-            file into memory.
-            Keep in mind that in order to completely capture a token, it must be smaller
-            or equal to the size allocated to the buffer by this argument. Note that the
-            buffer size will be floored to the nearest even number.
+            file into memory. In order to completely capture a token, its length must be
+            smaller or equal to half the buffer size value.
+            Note that the buffer size will be floored to the nearest even number.
         encoding : str, optional
             Encoding of the text file.
         convert_line_endings : bool, optional
@@ -85,11 +84,13 @@ class ITextIO (metaclass=__.abc.ABCMeta):
 
 # ***************************************************************************************
 
-class TextIO (ITextIO, metaclass=__.abc.ABCMeta):
-    """Base class implementing ITextIO, providing TextIO functionality.
+class TextIO (ITextIO, __.abc.ABC):
+    """Abstract base class implementing ITextIO, providing TextIO functionality.
     """
 
-    # :: PROTECTED FIELDS :: #
+    __slots__ = ('_ts')
+
+    # :: PROTECTED ATTRIBUTES :: #
 
     _ts : __.ITextstream
 

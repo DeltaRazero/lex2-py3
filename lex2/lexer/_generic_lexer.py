@@ -24,8 +24,8 @@ class __:
     from lex2 import (
         Token,
     )
-    from lex2._util.types import (
-        ptr_t
+    from lex2.util.types import (
+        PtrType,
     )
 
 # ***************************************************************************************
@@ -63,18 +63,16 @@ class GenericLexer (__.BaseLexer):
     def _count_char_occurrences(self, matching_char: str) -> int:
         """Counts the amount of continuous occurrences of a given character at the current position in the textstream.
         """
-        # NOTE: These variables are cached here to make lookup times faster. This is not
-        # necessary in compiled languages.
-        buf: str         = self._ts._string_buffer
-        buf_size: int    = self._ts._string_buffer_size
-        current_pos: int = self._ts._string_buffer_pos
+        # Variable caching to prevent slow dictionary lookups
+        ts = self._ts
+        buf: str         = ts._string_buffer
+        buf_size: int    = ts._string_buffer_size
+        current_pos: int = ts._string_buffer_pos
 
         # NOTE: The character at the current position has already been read, so skip it
         i = current_pos + 1
         while (i < buf_size):
-
-            char: str = buf[i]
-            if (char != matching_char):
+            if (buf[i] != matching_char):
                 break
             i += 1
 
@@ -91,30 +89,31 @@ class GenericLexer (__.BaseLexer):
 
         If no seperator characters are found, proceed to matching rules.
         """
-        # Cache some variables to prevent constant lookups
+        # Variable caching to prevent slow dictionary lookups
         opts = self._options
-        # tp: _textio.TextPosition = self._ts.get_text_position()
-        tp: __.textio.TextPosition = self._ts._tp
+        ts   = self._ts
+        # tp: __.textio.TextPosition = self._ts.get_text_position()
+        tp: __.textio.TextPosition = ts._tp
 
-        token: __.ptr_t[__.Token] = None
+        token: __.PtrType[__.Token] = None
         char: str
         goto_matchers: bool
 
         # Scan mainloop
-        while (not self._ts.is_eof()):
+        # while (not ts.is_eof()):
+        while (not ts._is_eof):
 
-            # char = self._ts.get_string_buffer()[ self._ts.get_string_buffer_position() ]
-            char: str = self._ts._string_buffer[ self._ts._string_buffer_pos ]
+            # char = ts.get_string_buffer()[ ts.get_string_buffer_position() ]
+            char: str = ts._string_buffer[ ts._string_buffer_pos ]
             goto_matchers = False
 
             # SPACE character
             if (char == ' '):
 
                 opt = opts.space
-                n = self._count_char_occurrences(' ')
-
-                if (opt.ignores): goto_matchers = True
+                if (opt.ignored): goto_matchers = True
                 else:
+                    n = self._count_char_occurrences(' ')
                     if (opt.returns): token = __.Token(
                         __.predefs.space.id,
                         " "*n,
@@ -124,14 +123,13 @@ class GenericLexer (__.BaseLexer):
                             tp.ln
                         )
                     )
-                    self._ts.update(n)
+                    ts.update(n)
 
             # NEWLINE character (UNIX)
             elif (char == '\n'):
 
                 opt = opts.newline
-
-                if (opt.ignores): goto_matchers = True
+                if (opt.ignored): goto_matchers = True
                 else:
                     if (opt.returns): token = __.Token(
                         __.predefs.newline.id,
@@ -142,18 +140,17 @@ class GenericLexer (__.BaseLexer):
                             tp.ln
                         )
                     )
-                    self._ts.update(1)
+                    ts.update(1)
 
             # NEWLINE character (Windows)
             elif (char == '\r'):
-
-                # NOTE: Files using the old Macintosh NEWLINE style (a single '\r' character)
-                # is extremely uncommon and therefore not supported. It is always assumed
-                # that this is going to be a Windows NEWLINE character ("\r\n").
+                # Files that use the old Macintosh-style NEWLINE (a single 'r' character)
+                # is considered obsolete and unsupported in this library. Whenever the
+                # '\r' character is encountered, this implementation assumes that it is
+                # part of a Windows-style NEWLINE ("\r\n").
 
                 opt = opts.newline
-
-                if (opt.ignores): goto_matchers = True
+                if (opt.ignored): goto_matchers = True
                 else:
                     if (opt.returns): token = __.Token(
                         __.predefs.newline.id,
@@ -164,16 +161,15 @@ class GenericLexer (__.BaseLexer):
                             tp.ln
                         )
                     )
-                    self._ts.update(2)
+                    ts.update(2)
 
             # TAB character
             elif (char == '\t'):
 
                 opt = opts.tab
-                n = self._count_char_occurrences('\t')
-
-                if (opt.ignores): goto_matchers = True
+                if (opt.ignored): goto_matchers = True
                 else:
+                    n = self._count_char_occurrences('\t')
                     if (opt.returns): token = __.Token(
                         __.predefs.tab.id,
                         "\t"*n,
@@ -183,11 +179,11 @@ class GenericLexer (__.BaseLexer):
                             tp.ln
                         )
                     )
-                    self._ts.update(n)
+                    ts.update(n)
 
             # Not a seperator character, so proceed to matching rules
             else:
-                goto_matchers = True
+                return self._match_rules()
 
             if (goto_matchers):
                 return self._match_rules()
@@ -196,30 +192,34 @@ class GenericLexer (__.BaseLexer):
                 return token
 
         # If EOF is reached
-        raise __.excs.EndOfData()
+        raise __.excs.EOD()
 
-
+    # @profile
     def _match_rules(self) -> __.Token:
         """
         Scans for rules in the currently active ruleset using regex matchers.
 
         If no rule matches, proceed to throw an unknown token type error.
         """
+        # Variable caching to prevent slow dictionary lookups
+        ts = self._ts
+        ar = self._active_ruleset
+
         # Match mainloop
-        for rule in self._active_ruleset:
+        for rule in ar:
 
             # A string is returned when a match is found, else NULL.
             # NOTE: When a ruleset is pushed, it is guaranteed that a rule always has a
             # matcher instance set.
-            # match: __.ptr_t[str] = rule.get_matcher().match(self._ts)
-            match: __.ptr_t[str] = rule._matcher.match(self._ts)
+            # match: __.PtrType[str] = rule.get_matcher().match(ts)
+            match: __.PtrType[str] = rule._matcher.match(ts)
             if (match):
                 # Store if the token type should be returned to the user
                 returns = self._options.id_returns.get(rule.id, rule.returns)
 
                 # Create a token instance
-                # tp: __.textio.TextPosition = self._ts.GetTextPosition()
-                tp: __.textio.TextPosition = self._ts._tp
+                # tp: __.textio.TextPosition = ts.get_text_position()
+                tp: __.textio.TextPosition = ts._tp
                 token = __.Token(
                     rule.id,
                     match,
@@ -231,7 +231,8 @@ class GenericLexer (__.BaseLexer):
                 )
 
                 # Update text position and new data into buffer
-                self._ts.update(len(match))
+                ts.update(len(match))
+                del match
 
                 # Return token accordingly
                 if (returns):
@@ -266,8 +267,8 @@ class GenericLexer (__.BaseLexer):
             buf = self._ts.get_string_buffer()[self._ts.get_string_buffer_position():]
 
             for n_chars_read, char in enumerate(buf):
-                # Store data and throw exception
                 if (char in (' ', '\t', '\n', '\r')):
+                    # Store data and throw exception
                     unknown_data += buf[:n_chars_read]
                     raise __.excs.UnknownTokenError(pos, unknown_data)
 

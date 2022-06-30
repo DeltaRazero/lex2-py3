@@ -1,7 +1,9 @@
 """<library> lex2
 
-"lex2" is a library to perform lexical analysis (often called tokenization), using
-regular expressions (regex).
+lex2 is a library intended for lexical analysis (also called tokenization). String
+analysis is performed using regular expressions (regex), as specified in user-defined
+rules. Mechanisms, such as a dynamic ruleset-stack, provide flexibility to some degree
+at runtime.
 """
 
 '''
@@ -18,10 +20,10 @@ __version__ = "0.9.4"
 from . import (
     excs,
     textio,
-    _util,
+    util,
 )
 
-from ._rule  import Rule, RuleGroup, ruleset_t
+from ._rule  import Rule, RuleGroup, RulesetType
 from ._token import Token
 from . import predefs
 
@@ -35,5 +37,5 @@ from . import matcher
 from ._make_lexer import (
     DEFAULT_LEXER,
     DEFAULT_MATCHER,
-    make_lexer
+    make_lexer,
 )

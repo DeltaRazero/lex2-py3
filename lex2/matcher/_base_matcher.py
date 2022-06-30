@@ -20,11 +20,13 @@ class __:
 
 # ***************************************************************************************
 
-class BaseMatcher (__.IMatcher, metaclass=__.abc.ABCMeta):
+class BaseMatcher (__.IMatcher, __.abc.ABC):
     """Abstract base class partially implementing IMatcher.
     """
 
-    # :: PROTECTED PROPERTIES :: #
+    __slots__ = ('_uid')
+
+    # :: PROTECTED ATTRIBUTES :: #
 
     # Unique identifier (UID) of the matcher implementation
     _uid : str

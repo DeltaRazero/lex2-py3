@@ -12,97 +12,96 @@ All rights reserved.
 class __:
     '<imports>'
 
+    import typing as t
+
     from lex2 import (
         textio,
     )
 
 # ***************************************************************************************
 
-class TokenError (Exception):
-    """Base class for token errors.
+class UnknownTokenError (Exception):
+    """Raised whenever an unknown token type has been encountered.
 
-    Readonly Properties
+    Readonly Attributes
     -------------------
     pos : TextPosition
         Position in the textstream where the token occurs.
     data : str
         String data of the unknown token.
     """
-
-    # :: READONLY PROPERTIES :: #
 
     pos  : __.textio.TextPosition
     data : str
-
-
-    # :: CONSTRUCTOR :: #
-
-    def __init__(self, pos: __.textio.TextPosition, data: str, message: str):
-
-        # Positions are zero-based numbered. Since most, if not all, text editors are
-        # one-based numbered, offset line/column positions by one (1).
-
-        message =\
-            f"{message} @ ln:{pos.ln+1}|col:{pos.col+1}" + "\n" + f'"{data}"'
-
-        # Call the base class constructor with the parameters it needs
-        super().__init__(message)
-        self.pos  = pos
-        self.data = data
-
-        return
-
-
-class UnknownTokenError (TokenError):
-    """Raised whenever an unknown token type has been encountered.
-
-    Readonly Properties
-    -------------------
-    pos : TextPosition
-        Position in the textstream where the token occurs.
-    data : str
-        String data of the unknown token.
-    """
 
     # :: CONSTRUCTOR :: #
 
     def __init__(self, pos: __.textio.TextPosition, data: str):
 
+        self.pos  = pos
+        self.data = data
+
+        # Positions are zero-based numbered. Since most, if not all, text editors are
+        # one-based numbered, offset line/column positions by one (1).
+
+        message =\
+            f"Unknown token type @ ln:{pos.ln+1}|col:{pos.col+1} for the following data:" +\
+            f'\n    "{data}"'
+
         # Call the base class constructor with the parameters it needs
-        super().__init__(
-            pos=pos, data=data,
-            message="Unknown token type"
-        )
+        super().__init__(message)
 
         return
 
 
-class UnexpectedTokenError (TokenError):
+class UnexpectedTokenError (Exception):
     """Raised whenever an unexpected token type has been encountered.
 
-    Readonly Properties
+    Readonly Attributes
     -------------------
     pos : TextPosition
         Position in the textstream where the token occurs.
     data : str
-        String data of the unknown token.
+        String data of the received token.
+    received_id : str
+        Identifying string value of received token's type
+    expected_ids : List[str]
+        List of identifying string values of expected tokens' type.
     """
+
+    pos  : __.textio.TextPosition
+    data : str
+
+    received_id: str
+    expected_ids : __.t.List[str]
 
     # :: CONSTRUCTOR :: #
 
-    def __init__(self, pos: __.textio.TextPosition, data: str, id: str):
+    def __init__(self, pos: __.textio.TextPosition, data: str, received_id: str, expected_ids: __.t.List[str]):
+
+        self.pos  = pos
+        self.data = data
+
+        self.received_id  = received_id
+        self.expected_ids = expected_ids
+
+        # Positions are zero-based numbered. Since most, if not all, text editors are
+        # one-based numbered, offset line/column positions by one (1).
+
+        expected_ids_msg = ", ".join([f'"{eid}"' for eid in expected_ids])
+        message =\
+            f'Unexpected token type "{received_id}" @ ln:{pos.ln+1}|col:{pos.col+1}' +\
+            f'\nExpected the following type(s): {expected_ids_msg}, for the following data:' +\
+            f'\n    "{data}"'
 
         # Call the base class constructor with the parameters it needs
-        super().__init__(
-            pos=pos, data=data,
-            message=f'Unexpected token type \"{id}\"'
-        )
+        super().__init__(message)
 
         return
 
 
-class EndOfData (Exception):
-    """Raised whenever a lexer has reached the end of input data.
+class EOD (Exception):
+    """Raised whenever a lexer has reached the end of input data from a textstream.
     """
 
     def __init__(self):

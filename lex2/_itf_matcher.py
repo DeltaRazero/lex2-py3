@@ -18,13 +18,13 @@ class __:
         textio,
     )
 
-    from lex2._util.types import (
-        ptr_t,
+    from lex2.util.types import (
+        PtrType,
     )
 
 # ***************************************************************************************
 
-class IMatcher (metaclass=__.abc.ABCMeta):
+class IMatcher (__.abc.ABC):
     """Common interface to a rule matcher object instance.
     """
 
@@ -42,19 +42,19 @@ class IMatcher (metaclass=__.abc.ABCMeta):
 
 
     @__.abc.abstractmethod
-    def compile_pattern(self, regex_pattern: str) -> None:
+    def compile_pattern(self, regex: str) -> None:
         """Compiles regex pattern to implementation-specific regex matcher object.
 
         Parameters
         ----------
-        regex_pattern
+        regex
             Regular expression to compile.
         """
         ...
 
 
     @__.abc.abstractmethod
-    def match(self, ts: __.textio.ITextstream) -> __.ptr_t[str]:
+    def match(self, ts: __.textio.ITextstream) -> __.PtrType[str]:
         """Looks for a pattern match and returns string data in case of a match.
 
         Parameters
@@ -64,7 +64,7 @@ class IMatcher (metaclass=__.abc.ABCMeta):
 
         Returns
         -------
-        ptr_t[str]
+        PtrType[str]
             Nullable string object. Contains string data in case of a match, otherwise
             NULL/None.
         """
