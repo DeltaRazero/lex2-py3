@@ -1,0 +1,49 @@
+name: docs_workflow
+
+# Execute this workflow automatically when pushed to master
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+
+  build_docs_job:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          sudo apt install default-jre
+          sudo apt install graphviz
+          pip install -r requirements.txt
+
+      - name: Build docs
+        run: make docs
+
+      - name: Init new repo in build folder and commit generated files
+        run: |
+          cd docs/build/html
+          git init
+          touch .nojekyll
+          git add -A
+          git config --local user.email "action@github.com"
+          git config --local user.name  "GitHub Actions"
+          git commit -m 'deploy docs'
+
+      - name: Force push to gh-pages branch
+        uses: ad-m/github-push-action@v0.5.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: gh-pages
+          force: true
+          directory: ./docs/build/html
