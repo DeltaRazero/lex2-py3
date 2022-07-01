@@ -40,7 +40,7 @@ setuptools.setup(
 
         "License :: OSI Approved :: zlib/libpng License",
 
-        "Development Status :: 4 - Beta",
+        "Development Status :: 5 - Production/Stable",
 
         "Intended Audience :: Developers",
         "Topic :: Scientific/Engineering :: Information Analysis",
