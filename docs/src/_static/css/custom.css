@@ -5,9 +5,9 @@
 
 @font-face {
     font-family: Box-Drawing;
-    src: local('Courier New');
+    src: url('fonts/BoxDrawing.ttf');
     /* Box drawing + Block elements */
-    unicode-range: U+2500-259FF;
+    /* unicode-range: U+2500-259F; */
 }
 
 pre {

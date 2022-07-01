@@ -2,7 +2,7 @@
 allow_mixing
 
 skinparam DefaultFontName           JetBrains Mono Slashed
-skinparam DefaultMonospacedFontName Courier
+skinparam DefaultMonospacedFontName Courier New
 
 skinparam CircledCharacterFontName  JetBrains Mono Slashed
 skinparam CircledCharacterFontStyle normal
@@ -16,7 +16,7 @@ hide enum      methods
 hide <<typedef>> circle
 hide <<typedef>> methods
 
-skinparam NoteFontName Consolas
+skinparam NoteFontName Cousine
 skinparam NoteFontSize 12
 
 <style>

@@ -25,7 +25,25 @@ jobs:
         run: |
           sudo apt install default-jre
           sudo apt install graphviz
+          sudo apt install unzip
+          sudo apt install wget
           pip install -r requirements.txt
+
+      - name: Install fonts
+        run: |
+          wget -O /tmp/JetBrainsMonoSlashed-2.242.zip https://github.com/sharpjs/JetBrainsMonoSlashed/releases/download/v2.242/JetBrainsMonoSlashed-2.242.zip
+          sudo unzip /tmp/JetBrainsMonoSlashed-2.242.zip -d /tmp/ && sudo mv /tmp/*.otf /usr/share/fonts/
+
+          sudo apt-get install debconf
+          echo ttf-mscorefonts-installer msttcorefonts/accepted-mscorefonts-eula select true | sudo debconf-set-selections
+          sudo apt-get install ttf-mscorefonts-installer
+
+          sudo apt install fonts-croscore
+
+          # wget -O /tmp/YaHei.Consolas.1.12.zip  https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/uigroupcode/YaHei.Consolas.1.12.zip
+          # sudo unzip /tmp/YaHei.Consolas.1.12.zip -d /usr/local/share/fonts/
+
+          sudo fc-cache -f -v
 
       - name: Build docs
         run: make docs

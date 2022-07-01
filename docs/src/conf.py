@@ -111,7 +111,7 @@ html_context = {
     "github_repo"   : "lex2-py",
     "github_version": "master/doc/src/",
 }
-Html_css_files = [
+html_css_files = [
     "css/custom.css",
 ]
 
