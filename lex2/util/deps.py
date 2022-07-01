@@ -17,5 +17,16 @@ class __:
 # ***************************************************************************************
 
 def is_module_installed(module_name: str) -> bool:
+    """Checks whether a specified module is installed.
+
+    Parameters
+    ----------
+    module_name : str
+        Name of the module.
+
+    Returns
+    -------
+    bool
+    """
     module = __.importlib.util.find_spec(module_name)
     return module is not None
