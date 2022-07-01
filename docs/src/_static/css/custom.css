@@ -1,0 +1,24 @@
+.c1 {
+    /* Make comments non-italic */
+    font-style: normal !important;
+}
+
+@font-face {
+    font-family: Box-Drawing;
+    src: local('Courier New');
+    /* Box drawing + Block elements */
+    unicode-range: U+2500-259FF;
+}
+
+pre {
+    font-family:
+        Box-Drawing,
+        SFMono-Regular,
+        Menlo,
+        Monaco,
+        Consolas,
+        Liberation Mono,
+        Courier New,
+        Courier,
+        monospace !important;
+}

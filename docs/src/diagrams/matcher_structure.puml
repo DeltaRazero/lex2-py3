@@ -1,0 +1,134 @@
+
+@startuml matcher_structure
+!include _skin_settings.iuml
+
+' skinparam Linetype ortho
+
+' ***************************************************************************************
+
+interface ITextIO
+
+class TextIO implements ITextIO
+{
+    - **ITextstream?** _ts
+}
+TextIO *-- ITextstream
+
+' ***************************************************************************************
+
+enum TextstreamType
+{
+    * MEMORY
+    * DISK
+}
+
+interface ITextstream
+{
+    + {abstract} **string** get_string_buffer()
+    + {abstract} **int** get_string_buffer_position()
+    + {abstract} **int** get_string_buffer_size()
+}
+ITextstream -up-> TextstreamType
+
+abstract class BaseTextstream implements ITextstream
+{
+    - **string** _string_buffer
+    - **int** _string_buffer_position
+    - **int** _string_buffer_size
+___
+    + **string** get_string_buffer()
+    + **int** get_string_buffer_position()
+    + **int** get_string_buffer_size()
+}
+
+class TextstreamDisk   extends BaseTextstream
+class TextstreamMemory extends BaseTextstream
+
+' ***************************************************************************************
+
+interface ILexer extends ITextIO
+
+abstract class BaseLexer implements ILexer
+abstract class BaseLexer extends    TextIO
+abstract class BaseLexer
+{
+    - **List<Ruleset>** _rulesets
+}
+
+BaseLexer "1" o-r- "0..*" Ruleset : "     "
+
+class Lexer <<implementation>> extends BaseLexer
+
+' ***************************************************************************************
+
+
+interface IMatcher
+{
+    + {abstract} **string** get_implementation_id()
+    + {abstract} **void** compile_pattern()
+    + {abstract} **string?** match()
+}
+
+note as n1
+    Lexer passes its ""ITextstream""
+    instance ""_ts"" to ""match()"" so
+    matchers can access and use
+    the string buffer variables.
+endnote
+
+IMatcher::match <.. n1
+BaseTextstream .right. n1
+
+
+
+
+abstract class BaseMatcher implements IMatcher
+{
+    - {abstract} **string** _implementation_id
+___
+    + {abstract} **string **get_implementation_id()
+}
+
+
+class Matcher <<implementation>> extends BaseMatcher
+{
+    - //**CompiledRegex** _re//
+___
+    + **void** compile_pattern()
+    + **string?** match()
+}
+
+note left of Matcher::_re
+    A ""Matcher"" implementation stores a compiled regex
+    pattern using a regex engine of choice.
+     ● The regex pattern string is passed down from
+       ""Rule"" as argument to ""compile_pattern()"".
+     ● ""match()"" will call the compiled regex pattern
+       instance to try and match a token.
+endnote
+
+
+
+class Rule
+{
+    + **str** regex
+    - **IMatcher?** _matcher
+___
+    + **IMatcher?** get_matcher()
+    + **void** set_matcher()
+}
+Rule "1 " *-down- "0..1 " IMatcher
+
+
+class Ruleset <<typedef>> {
+    **List<Rule>**
+}
+
+Ruleset "1 " o-down- "0..* " Rule
+
+' ***************************************************************************************
+
+
+' ***************************************************************************************
+
+@enduml

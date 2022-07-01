@@ -1,0 +1,27 @@
+
+allow_mixing
+
+skinparam DefaultFontName           JetBrains Mono Slashed
+skinparam DefaultMonospacedFontName Courier
+
+skinparam CircledCharacterFontName  JetBrains Mono Slashed
+skinparam CircledCharacterFontStyle normal
+
+skinparam ClassAttributeFontSize  12
+skinparam ClassStereotypeFontSize 10
+
+hide interface attributes
+hide enum      methods
+
+hide <<typedef>> circle
+hide <<typedef>> methods
+
+skinparam NoteFontName Consolas
+skinparam NoteFontSize 12
+
+<style>
+document {
+  BackgroundColor transparent
+'   Margin 0 100 5 100
+}
+</style>

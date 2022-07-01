@@ -1,5 +1,4 @@
 
-.PHONY: all build install test upload
 # Select Python testing framework, based on availability
 ifneq ($(shell which pytest),)
     TEST_FRAMEWORK = pytest
@@ -8,6 +7,7 @@ TEST_FRAMEWORK ?= python -m unittest
 
 # *****************************************************************************
 
+.PHONY: all build install test upload docs
 all: build install
 
 build:
@@ -27,6 +27,8 @@ test:
 install:
 	python setup.py install
 
+docs:
+	cd docs && $(MAKE)
 
 upload:
 	python -m twine upload dist/*

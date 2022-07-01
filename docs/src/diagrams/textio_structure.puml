@@ -1,0 +1,78 @@
+
+@startuml textio_structure
+!include _skin_settings.iuml
+
+' ***************************************************************************************
+
+interface ITextIO
+{
+    + {abstract} **void** open()
+    + {abstract} **void** load()
+    + {abstract} **void** close()
+}
+
+class TextIO implements ITextIO
+{
+    - **ITextstream?** _ts
+___
+    + **void** open()
+    + **void** load()
+    + **bool** close()
+}
+TextIO *-- ITextstream
+
+' ***************************************************************************************
+
+enum TextstreamType
+{
+    * MEMORY
+    * DISK
+}
+
+interface ITextstream
+{
+    + {abstract} **void** close()
+    + {abstract} **void** update()
+    + {abstract} **bool** is_eof()
+}
+ITextstream -up-> TextstreamType
+
+abstract class BaseTextstream implements ITextstream
+{
+    + **bool** is_eof()
+}
+
+class TextstreamDisk extends BaseTextstream
+{
+    + **void** close()
+    + **void** update()
+}
+
+class TextstreamMemory extends BaseTextstream
+{
+    + **void** close()
+    + **void** update()
+}
+
+' ***************************************************************************************
+
+interface ILexer extends ITextIO
+
+note right of ILexer
+    Return type of
+     ""make_lexer()""
+endnote
+
+abstract class BaseLexer implements ILexer
+abstract class BaseLexer extends    TextIO
+
+class Lexer <<implementation>> extends BaseLexer
+
+note right of Lexer
+    Returned object of
+        ""make_lexer()""
+endnote
+
+' ***************************************************************************************
+
+@enduml
