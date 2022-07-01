@@ -18,41 +18,25 @@ class __:
 
 # Struct
 class LexerOptions:
-    """Struct to define processing options of a lexer.
-
-    Attributes
-    ----------
-    space : SeperatorOptions
-        Options to specify how a SPACE seperator should be handled.
-    tab : SeperatorOptions
-        Options to specify how a TAB seperator should be handled.
-    newline : SeperatorOptions
-        Options to specify how a NEWLINE seperator should be handled.
-    id_returns : Dict[str, bool]
-        Map with <str, bool> keypairs to specify whether to return tokens from a rule
-        which its identifier matches the key given as input.
-    """
+    """Struct to define processing options of a lexer."""
 
     # :: NESTED CLASSES :: #
 
     #struct
-    class SeperatorOptions:
-        """Struct that defines processing options of a seperator token.
-
-        Attributes
-        ----------
-        ignored : bool
-            Flag to specify whether processing of tokens of this seperator should be ignored.
-            Defaults to False
-        returns : bool
-            Flag to specify whether tokens of this seperator should be returned.
-            Defaults to False
-        """
+    class SeparatorOptions:
+        """Struct that defines processing options of a separator token."""
 
         __slots__ = ('ignored', 'returns')
 
         ignored : bool
+        """Flag to specify whether processing of tokens of this separator should be ignored.
+           Defaults to ``False``
+        """
+
         returns : bool
+        """Flag to specify whether tokens of this separator should be returned.
+           Defaults to ``False``
+        """
 
         # :: CONSTRUCTOR :: #
 
@@ -65,23 +49,29 @@ class LexerOptions:
 
     # :: PUBLIC ATTRIBUTES :: #
 
-    space   : SeperatorOptions
-    tab     : SeperatorOptions
-    newline : SeperatorOptions
+    space   : SeparatorOptions
+    """Options to specify how a SPACE separator should be handled."""
+    tab     : SeparatorOptions
+    """Options to specify how a TAB separator should be handled."""
+    newline : SeparatorOptions
+    """Options to specify how a NEWLINE separator should be handled."""
 
     # Key should be the identifier string value of a Rule object. To check whether a
     # token should be returned or ignored, the map gets checked for existence of the
     # token's identifier string as key value.
     id_returns : __.t.Dict[str, bool]
+    """Map with <str, bool> key-pairs to specify whether to return tokens from a rule
+       which its identifier matches the key given as input.
+    """
 
 
     # :: CONSTRUCTOR :: #
 
     def __init__(self):
 
-        self.space   = self.SeperatorOptions()
-        self.tab     = self.SeperatorOptions()
-        self.newline = self.SeperatorOptions()
+        self.space   = self.SeparatorOptions()
+        self.tab     = self.SeparatorOptions()
+        self.newline = self.SeparatorOptions()
 
         self.id_returns = {}
 

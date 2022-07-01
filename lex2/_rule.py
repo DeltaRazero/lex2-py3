@@ -27,23 +27,9 @@ class __:
 # ***************************************************************************************
 
 class Rule:
-    """Class representing a rule, used as filter during lexical analysis.
+    """Class representing a rule, used as filter during lexical analysis."""
 
-    Readonly Attributes
-    -------------------
-    id : str
-        The rule ID is the identifying string value of a token's type (e.g. "NUMBER",
-        "WORD").
-    regex : str
-        The regular expression used by a matcher to perform regex matching.
-
-    Attributes
-    ----------
-    returns: bool
-        Whether tokens matched by this rule should be returned when scanning for tokens.
-    """
-
-    slots = "_matcher", "id", "regex", "returns"
+    __slots__ = ('_matcher', 'id', 'regex', 'returns')
 
     # :: PRIVATE ATTRIBUTES :: #
 
@@ -53,16 +39,16 @@ class Rule:
     # :: READONLY ATTRIBUTES :: #
 
     id : str
-    """Rule identifier string"""
+    """<readonly> Rule identifier string."""
 
     regex : str
-    """The regular expression used by a matcher to perform regex matching"""
+    """<readonly> The regular expression used by a matcher to perform regex matching."""
 
 
     # :: PUBLIC ATTRIBUTES :: #
 
     returns : bool
-    """Whether tokens matched by this rule should be returned when scanning for tokens"""
+    """Whether tokens matched by this rule should be returned when scanning for tokens."""
 
 
     # :: CONSTRUCTOR & DESTRUCTOR :: #

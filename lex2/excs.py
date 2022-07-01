@@ -21,18 +21,13 @@ class __:
 # ***************************************************************************************
 
 class UnknownTokenError (Exception):
-    """Raised whenever an unknown token type has been encountered.
-
-    Readonly Attributes
-    -------------------
-    pos : TextPosition
-        Position in the textstream where the token occurs.
-    data : str
-        String data of the unknown token.
-    """
+    """Raised whenever an unknown token type has been encountered."""
 
     pos  : __.textio.TextPosition
+    """<readonly> Position in the textstream where the token occurs."""
+
     data : str
+    """<readonly> String data of the received token."""
 
     # :: CONSTRUCTOR :: #
 
@@ -55,25 +50,19 @@ class UnknownTokenError (Exception):
 
 
 class UnexpectedTokenError (Exception):
-    """Raised whenever an unexpected token type has been encountered.
-
-    Readonly Attributes
-    -------------------
-    pos : TextPosition
-        Position in the textstream where the token occurs.
-    data : str
-        String data of the received token.
-    received_id : str
-        Identifying string value of received token's type
-    expected_ids : List[str]
-        List of identifying string values of expected tokens' type.
-    """
+    """Raised whenever an unexpected token type has been encountered."""
 
     pos  : __.textio.TextPosition
-    data : str
+    """<readonly> Position in the textstream where the token occurs."""
 
-    received_id: str
+    data : str
+    """<readonly> String data of the received token."""
+
+    received_id : str
+    """<readonly>  Identifying string value of received token's type."""
+
     expected_ids : __.t.List[str]
+    """<readonly> List of identifying string values of expected tokens' type."""
 
     # :: CONSTRUCTOR :: #
 

@@ -21,6 +21,7 @@ class __:
 # ***************************************************************************************
 
 class TextstreamMemory (__.BaseTextstream, __.ITextstream):
+    """Textstream using memory streaming."""
 
     # :: CONSTRUCTOR & DESTRUCTOR :: #
 

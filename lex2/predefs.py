@@ -64,11 +64,6 @@ class Comments (__.RuleGroup):
         self._add_regex_group(rf'{start_regex}[\s\S]*?{end_regex}')
         return self
 
-
-# comments = Comments().add_singleline_comment("a") \
-#                      .add_multiline_comment("b", "a") \
-#                      .to_rule()
-
 # ***************************************************************************************
 
 space = __.Rule("SPACE", r" ")

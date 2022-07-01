@@ -30,8 +30,7 @@ _SYSTEM_ENCODING = __.sys.stdin.encoding
 # ***************************************************************************************
 
 class TextstreamDisk (__.BaseTextstream, __.ITextstream):
-    """Abstract base class of an ITextstream implementation.
-    """
+    """Textstream using disk streaming."""
 
     __slots__ = (
         '_f', '_f_is_eof'
@@ -156,7 +155,7 @@ class TextstreamDisk (__.BaseTextstream, __.ITextstream):
             # self._refresh_string_buffer_meta()
 
         # IF UNICODE-AWARE STRINGS
-            # Remainder to fill entire string buffer in bytes (for when multibyte characters are read)
+            # Remainder to fill entire string buffer in bytes (for when multi-byte characters are read)
             remainder = self._byte_buffer_size - self._binary_string_length(self._string_buffer)
 
             # Amount of bytes read by the textstream

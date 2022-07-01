@@ -135,7 +135,7 @@ class TextIO (ITextIO, __.abc.ABC):
         if (not fp.is_file()):
             raise FileNotFoundError(f'Not an existing file or is a directory: "{str(fp)}"')
 
-        # Buffersize is in units of kilobytes (kB)
+        # Buffer size is in units of kilobytes (kB)
         buffer_size *= 1000
 
         if (buffer_size < 0):
@@ -174,7 +174,7 @@ class TextIO (ITextIO, __.abc.ABC):
 
     def close(self) -> None:
 
-        # Only close/cleanup if a textream is already instanced
+        # Only close/cleanup if a textstream is already instanced
         if (self._ts):
             self._ts.close()
             del self._ts

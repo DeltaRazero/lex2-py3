@@ -26,31 +26,20 @@ class __:
 # ***************************************************************************************
 
 class Token:
-    """Represents a token that is output during lexical analysis.
-
-    Readonly Attributes
-    -------------------
-    id : str
-        The rule ID is the identifying string value of a token's type (e.g. "NUMBER",
-        "WORD").
-    data : str
-        String data of an identified token type.
-    pos : TextPosition
-        Position in the textstream where a token occurs.
-    """
+    """Represents a token that is output during lexical analysis."""
 
     __slots__ = ('id', 'data', 'pos')
 
     # :: READONLY ATTRIBUTES :: #
 
-    # Identifying string of the token's type (e.g. "NUMBER", "WORD") -- rule ID
     id : str
+    """<readonly> The rule ID is the identifying string value of a token's type (e.g. "NUMBER", "WORD")."""
 
-    # String data of the identified token type
     data : str
+    """<readonly> String data of an identified token type."""
 
-    # Position in the textstream where the token occurs
     pos : __.textio.TextPosition
+    """<readonly> Position in the textstream where a token occurs."""
 
 
     # :: CONSTRUCTOR :: #

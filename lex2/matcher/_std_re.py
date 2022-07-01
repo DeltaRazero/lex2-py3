@@ -56,12 +56,12 @@ class ReMatcher (__.BaseMatcher):
 
     def match(self, ts: __.textio.ITextstream) -> __.PtrType[str]:
         regex_match = self._pattern.match(
-            ts.get_string_buffer(),      # Data input
-            ts.get_string_buffer_position(),  # Read STARTING AT position
-            ts.get_string_buffer_size(), # Read UNTIL position
-            # ts._string_buffer,      # Data input
-            # ts._string_buffer_pos,  # Read STARTING AT position
-            # ts._string_buffer_size, # Read UNTIL position
+            # ts.get_string_buffer(),          # Data input
+            # ts.get_string_buffer_position(), # Read STARTING AT position
+            # ts.get_string_buffer_size(),     # Read UNTIL position
+            ts._string_buffer,      # Data input
+            ts._string_buffer_pos,  # Read STARTING AT position
+            ts._string_buffer_size, # Read UNTIL position
         )
 
         if (regex_match):

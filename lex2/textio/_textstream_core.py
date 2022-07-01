@@ -123,7 +123,7 @@ class BaseTextstream (ITextstream, __.abc.ABC): # pylint: disable=abstract-metho
 
     _is_eof : bool
 
-    # The string buffer may either be unicode-aware/ASCII or a multibyte system-encoding
+    # The string buffer may either be unicode-aware/ASCII or a multi-byte system-encoding
     # (such as UTF-8)
     _string_buffer : str
     _string_buffer_size : int
