@@ -1,16 +1,12 @@
 
-# .RECIPEPREFIX =
 .PHONY: all build install test upload
-
-# ***************************************************************************************
-
 # Select Python testing framework, based on availability
 ifneq ($(shell which pytest),)
     TEST_FRAMEWORK = pytest
 endif
 TEST_FRAMEWORK ?= python -m unittest
 
-# ***************************************************************************************
+# *****************************************************************************
 
 all: build install
 
@@ -25,10 +21,8 @@ build:
 	python setup.py clean --all
 	find ./ -type d -name "*.egg-info" -exec rm -r {} \; -prune
 
-
 test:
 	$(TEST_FRAMEWORK) tests
-
 
 install:
 	python setup.py install

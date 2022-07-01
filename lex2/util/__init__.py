@@ -1,7 +1,4 @@
-"""<internal> TODO: chjange
-
-Common library components and utilities.
-"""
+"""Common library components and utilities."""
 
 '''
 zlib License

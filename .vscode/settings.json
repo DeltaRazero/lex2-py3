@@ -1,7 +1,37 @@
 {
-  "restructuredtext.confPath": "${workspaceFolder}\\doc\\src\\src_sphinx\\source",
-  "files.exclude": {
-    "**/__pycache__": true,
-    "**/__pycache__.*": true
-  }
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/__pycache__.*": true
+    },
+    "python.linting.enabled": true,
+    "python.linting.pylintArgs": [
+        "{$workspaceDirectory}/lex2"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true,
+    "python.testing.pytestArgs": [
+        "tests"
+    ],
+    "cSpell.enabled": true,
+    "cSpell.useGitignore": false,
+    "cSpell.language": "en",
+    "cSpell.enableFiletypes": [
+        "restructuredtext",
+        "python",
+    ],
+    "esbonio.sphinx.confDir": "${workspaceFolder}/doc/src",
+    "esbonio.sphinx.srcDir": "${workspaceFolder}/doc/src",
+    "esbonio.sphinx.buildDir": "${workspaceFolder}/doc/build",
+    "[restructuredtext]": {
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.wordWrapColumn": 90,
+    },
+    "cSpell.words": [
+        "automodule",
+        "docstring",
+        "docstrings",
+        "Templating",
+        "typehint",
+        "typehints"
+    ],
 }

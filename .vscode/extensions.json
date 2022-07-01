@@ -1,0 +1,11 @@
+{
+    "recommendations": [
+        "editorconfig.editorconfig",
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "lextudio.restructuredtext",
+        "trond-snekvik.simple-rst",
+        "streetsidesoftware.code-spell-checker",
+        "zokugun.explicit-folding",
+    ]
+}
