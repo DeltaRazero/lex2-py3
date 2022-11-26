@@ -70,7 +70,7 @@ As discussed, the :class:`ITextIO <lex2.textio.ITextIO>` interface is what is ex
 Iteration and Tokenization
 --------------------------
 
-Once a lexer is instantiated and prepared, the lexer's :meth:`get_next_token() <ILexer.get_next_token>` method is to be used to tokenize the input data. Whenever the method is called, the lexer will iterate through the textstream and return the next identifiable token it can find back to the caller. Once the end of data (EOD) is reached, the lexer will raise the :exc:`EOD <lex2.exc.EOD>` signal exception to let the caller know to break out of a main lexing loop.
+Once a lexer is instantiated and prepared, the lexer's :meth:`get_next_token() <ILexer.get_next_token>` method is to be used to tokenize the input data. Whenever the method is called, the lexer will iterate through the textstream and return the next identifiable token it can find back to the caller. Once the end of stream (EOF) is reached, the lexer will raise the :exc:`EOF <lex2.exc.EOF>` signal exception to let the caller know to break out of a main lexing loop.
 
 Tokens are in the form of :py:class:`Token` class instances, and contain information about the token type, tokenized data, and position in the textstream (in the form of a :class:`TextPosition <lex2.textio.TextPosition>` class instance).
 
@@ -91,11 +91,11 @@ Tokens are in the form of :py:class:`Token` class instances, and contain informa
 
     #  Tries to find the next token in the textstream.
     #  A try/catch block is required at the same or
-    #  higher level to catch the 'EOD' exception signal
+    #  higher level to catch the 'EOF' exception signal
     #  whenever the textstream is exhausted of data.
     #   ┌────────────────┴────────────────┐
         try: token = lexer.get_next_token()
-        except lex2.excs.EOD:
+        except lex2.excs.EOF:
             break
 
         info = [
@@ -144,22 +144,3 @@ For the use-case of making a parser and creating abstract trees (AST), the token
     >>> lex2.excs.UnexpectedTokenError: Unexpected token type "WORD" @ ln:1|col:1
     >>> Expected the following type(s): "PUNCTUATION", for the following data:
     >>>     "word"
-
-
-Changing Lexer Behaviour
-------------------------
-
-
-
-.. autoclass:: lex2.ILexer
-
-
-
-
-if wanting to use your own regex engine see: blah blah, or want to create your own lexer implementation (blah blah)
-
-
-
-
-
-

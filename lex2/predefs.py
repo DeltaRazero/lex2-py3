@@ -48,7 +48,7 @@ class Comments (__.RuleGroup):
 
 
     def add_multiline_comment(self, start_regex: str, end_regex: str) -> 'Comments':
-        """Adds a definition for a multline comment.
+        """Adds a definition for a multiline comment.
 
         Parameters
         ----------

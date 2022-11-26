@@ -69,7 +69,7 @@ class GenericLexer (__.BaseLexer):
         buf_size: int    = ts._string_buffer_size
         current_pos: int = ts._string_buffer_pos
 
-        # NOTE: The character at the current position has already been read, so skip it
+        # The character at the current position has already been read, so skip it
         i = current_pos + 1
         while (i < buf_size):
             if (buf[i] != matching_char):
@@ -81,13 +81,13 @@ class GenericLexer (__.BaseLexer):
 
     def _split_by_separators(self) -> __.Token:
         """
-        Scans for the special seperator characters (SPACE, TAB, NEWLINE).
+        Scans for separator characters (SPACE, TAB, NEWLINE).
 
-        The seperator characters are skipped by default, but can be returned or ignored
+        The separator characters are skipped by default, but can be returned or ignored
         entirely by setting the corresponding options for them. Scanning is done
         independently of a regex engine.
 
-        If no seperator characters are found, proceed to matching rules.
+        If no separator characters are found, proceed to matching rules.
         """
         # Variable caching to prevent slow dictionary lookups
         opts = self._options
@@ -97,19 +97,16 @@ class GenericLexer (__.BaseLexer):
 
         token: __.PtrType[__.Token] = None
         char: str
-        goto_matchers: bool
+        goto_matchers = False
 
         # Scan mainloop
         # while (not ts.is_eof()):
         while (not ts._is_eof):
-
             # char = ts.get_string_buffer()[ ts.get_string_buffer_position() ]
             char: str = ts._string_buffer[ ts._string_buffer_pos ]
-            goto_matchers = False
 
             # SPACE character
             if (char == ' '):
-
                 opt = opts.space
                 if (opt.ignored): goto_matchers = True
                 else:
@@ -127,7 +124,6 @@ class GenericLexer (__.BaseLexer):
 
             # NEWLINE character (UNIX)
             elif (char == '\n'):
-
                 opt = opts.newline
                 if (opt.ignored): goto_matchers = True
                 else:
@@ -144,11 +140,10 @@ class GenericLexer (__.BaseLexer):
 
             # NEWLINE character (Windows)
             elif (char == '\r'):
-                # Files that use the old Macintosh-style NEWLINE (a single 'r' character)
-                # is considered obsolete and unsupported in this library. Whenever the
-                # '\r' character is encountered, this implementation assumes that it is
-                # part of a Windows-style NEWLINE ("\r\n").
-
+                # The old Macintosh-style newline (single '\r' character) is considered
+                # obsolete, and strings using the format are unsupported in this library.
+                # Whenever such a character is encountered, it is assumed that it is part
+                # of a Windows-style newline, i.e. "\r\n".
                 opt = opts.newline
                 if (opt.ignored): goto_matchers = True
                 else:
@@ -165,7 +160,6 @@ class GenericLexer (__.BaseLexer):
 
             # TAB character
             elif (char == '\t'):
-
                 opt = opts.tab
                 if (opt.ignored): goto_matchers = True
                 else:
@@ -181,7 +175,7 @@ class GenericLexer (__.BaseLexer):
                     )
                     ts.update(n)
 
-            # Not a seperator character, so proceed to matching rules
+            # Not a separator character, so proceed to matching rules
             else:
                 return self._match_rules()
 
@@ -192,9 +186,9 @@ class GenericLexer (__.BaseLexer):
                 return token
 
         # If EOF is reached
-        raise __.excs.EOD()
+        raise __.excs.EOF()
 
-    # @profile
+
     def _match_rules(self) -> __.Token:
         """
         Scans for rules in the currently active ruleset using regex matchers.
@@ -204,77 +198,47 @@ class GenericLexer (__.BaseLexer):
         # Variable caching to prevent slow dictionary lookups
         ts = self._ts
         ar = self._active_ruleset
+        tp: __.textio.TextPosition = ts._tp
+
+        token = __.Token(
+            pos=__.textio.TextPosition(
+                tp.pos,
+                tp.col,
+                tp.ln
+            )
+        )
 
         # Match mainloop
         for rule in ar:
-
-            # A string is returned when a match is found, else NULL.
-            # NOTE: When a ruleset is pushed, it is guaranteed that a rule always has a
-            # matcher instance set.
-            # match: __.PtrType[str] = rule.get_matcher().match(ts)
-            match: __.PtrType[str] = rule._matcher.match(ts)
-            if (match):
-                # Store if the token type should be returned to the user
-                returns = self._options.id_returns.get(rule.id, rule.returns)
-
-                # Create a token instance
-                # tp: __.textio.TextPosition = ts.get_text_position()
-                tp: __.textio.TextPosition = ts._tp
-                token = __.Token(
-                    rule.id,
-                    match,
-                    __.textio.TextPosition(
-                        tp.pos,
-                        tp.col,
-                        tp.ln
-                    )
-                )
+            # No null check necessary, as pushing a ruleset guarantees that each rule has
+            # their matcher instances set.
+            if (rule._matcher.match(ts, token)): # type: ignore[reportOptionalMemberAccess]
+                token.id = rule.id
 
                 # Update text position and new data into buffer
-                ts.update(len(match))
-                del match
+                ts.update(len(token.data))
 
-                # Return token accordingly
-                if (returns):
+                # Check if the token type should be returned and return token accordingly
+                if (self._options.id_returns.get(rule.id, rule.returns)):
                     return token
                 del token
                 return self.get_next_token()
 
-            # Else no match
-            del match
-
         # If no match has been found, proceed to throw an unknown token type error.
-        self._raise_unknown_token_error()
-
-
-    def _raise_unknown_token_error(self) -> None:
-        """Raises an error whenever an unknown token type error has been found.
-        """
-        tp: __.textio.TextPosition = self._ts.get_text_position()
-
-        # Store the current position as start position first
-        pos = __.textio.TextPosition(
-            tp.pos,
-            tp.col,
-            tp.ln
-        )
-
-        # Include all characters until a seperator character (SPACE, TAB or NEWLINE) or EOF
+        # Include all characters until a separator character (SPACE, TAB or NEWLINE) or EOF
         unknown_data = ""
-        while(1):
+        while(not self._ts.is_eof()):
 
-            n_chars_read: int = 0
+            n_chars_read = 0
             buf = self._ts.get_string_buffer()[self._ts.get_string_buffer_position():]
 
             for n_chars_read, char in enumerate(buf):
                 if (char in (' ', '\t', '\n', '\r')):
-                    # Store data and throw exception
                     unknown_data += buf[:n_chars_read]
-                    raise __.excs.UnknownTokenError(pos, unknown_data)
+                    raise __.excs.UnknownTokenError(token.pos, unknown_data)
 
             # If the buffer is exhausted, the unknown data is continued in the next buffer
             unknown_data += buf
             self._ts.update(n_chars_read)
 
-            if (self._ts.is_eof()):
-                raise __.excs.UnknownTokenError(pos, unknown_data)
+        raise __.excs.UnknownTokenError(token.pos, unknown_data)

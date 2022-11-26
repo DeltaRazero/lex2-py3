@@ -15,9 +15,8 @@ class __:
     import abc
     import typing as t
 
-    from lex2._itf_matcher import (
-        IMatcher,  # NOTE: Direct import to prevent class not being defined yet
-    )
+    # Forward declare to avoid circular dependency
+    class IMatcher: pass
 
     from lex2.util.types import (
         PtrType,

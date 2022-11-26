@@ -82,7 +82,7 @@ while(1):
 
     # Find the next token in the textstream
     try: token = lexer.get_next_token()
-    except lex2.excs.EOD:
+    except lex2.excs.EOF:
         break
 
     info = [

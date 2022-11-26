@@ -14,13 +14,13 @@ class __:
 
     import typing as t
 
-    from lex2 import (
-        excs,
-        textio,
+    from ._rule import (
+        Rule,
     )
 
     from lex2 import (
-        Rule,
+        excs,
+        textio,
     )
 
 # ***************************************************************************************
@@ -28,38 +28,47 @@ class __:
 class Token:
     """Represents a token that is output during lexical analysis."""
 
-    __slots__ = ('id', 'data', 'pos')
+    __slots__ = ('id', 'data', 'pos', 'groups')
 
-    # :: READONLY ATTRIBUTES :: #
+    # :: ATTRIBUTES :: #
 
     id : str
-    """<readonly> The rule ID is the identifying string value of a token's type (e.g. "NUMBER", "WORD")."""
+    """The identifier of a token's type (e.g. "NUMBER", "WORD")."""
 
     data : str
-    """<readonly> String data of an identified token type."""
+    """Result of regex match."""
+
+    groups : __.t.Iterable[str]
+    """Result of regex match, split by encapsulated groups."""
 
     pos : __.textio.TextPosition
-    """<readonly> Position in the textstream where a token occurs."""
+    """Position in the textstream where a token occurs."""
 
 
     # :: CONSTRUCTOR :: #
 
-    def __init__(self, id: str, data: str, pos: __.textio.TextPosition):
+    def __init__(self, id: str="", data: str="", pos: __.textio.TextPosition=__.textio.TextPosition(), groups: __.t.Iterable[str]=()):
         """Token object instance initializer.
 
         Parameters
         ----------
-        id : str
+        id : str, optional
             The identifying string of the resulting token's type (e.g. "NUMBER", "WORD").
-        data : str
+            By default ``""``
+        data : str, optional
             String data of the identified token.
-        position : TextPosition
+            By default ``""``
+        position : TextPosition, optional
             Position in the textstream where the token occurs.
+            By default ``TextPosition()``
+        groups : Iterable[str], optional
+            Result of regex match, split by encapsulated groups.
+            By default ``()``
         """
-        self.id   = id
-        self.data = data
-        self.pos  = pos
-
+        self.id     = id
+        self.data   = data
+        self.pos    = pos
+        self.groups = groups
         return
 
 

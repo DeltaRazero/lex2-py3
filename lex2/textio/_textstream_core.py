@@ -20,7 +20,7 @@ class __:
 # ***************************************************************************************
 
 class TextstreamType (__.enum.Enum):
-    """Textstream enum type.
+    """Textstream type.
 
     Values
     ------
@@ -193,7 +193,7 @@ class BaseTextstream (ITextstream, __.abc.ABC): # pylint: disable=abstract-metho
         self._string_buffer_pos += n
 
         chars = self._string_buffer[ old_pos : self._string_buffer_pos ]
-        strlen = len(chars) # Amount codepoints
+        strlen = len(chars) # Amount code-points
         sizeof = strlen # Amount bytes
 
         _tp.pos += strlen

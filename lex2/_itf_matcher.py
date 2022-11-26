@@ -14,12 +14,10 @@ class __:
 
     import abc
 
+    from ._token import Token
+
     from lex2 import (
         textio,
-    )
-
-    from lex2.util.types import (
-        PtrType,
     )
 
 # ***************************************************************************************
@@ -54,18 +52,19 @@ class IMatcher (__.abc.ABC):
 
 
     @__.abc.abstractmethod
-    def match(self, ts: __.textio.ITextstream) -> __.PtrType[str]:
-        """Looks for a pattern match and returns string data in case of a match.
+    def match(self, ts: __.textio.ITextstream, token: __.Token) -> bool:
+        """Looks for a pattern match and sets it in the provided token object.
 
         Parameters
         ----------
         ts : ITextstream
             Textstream object managed by the lexer object.
+        token : Token
+            Used to set the match data in the token.
 
         Returns
         -------
-        PtrType[str]
-            Nullable string object. Contains string data in case of a match, otherwise
-            NULL/None.
+        bool
+            True in case of a match.
         """
         ...

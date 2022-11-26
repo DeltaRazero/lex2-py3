@@ -10,12 +10,19 @@
     /* unicode-range: U+2500-259F; */
 }
 
+@font-face {
+    font-family: 'Monaco';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Monaco'), url('fonts/Monaco.woff') format('woff');
+}
+
 pre {
     font-family:
         Box-Drawing,
+        Monaco,
         SFMono-Regular,
         Menlo,
-        Monaco,
         Consolas,
         Liberation Mono,
         Courier New,

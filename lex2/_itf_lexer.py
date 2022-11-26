@@ -34,7 +34,7 @@ class ILexer (__.textio.ITextIO, __.abc.ABC):
 
     @__.abc.abstractmethod
     def push_ruleset(self, ruleset: __.RulesetType) -> None:
-        """Pushes a ruleset to the lexer's ruleset-stack.
+        """Pushes a ruleset to the ruleset-stack.
 
         Parameters
         ----------
@@ -44,20 +44,20 @@ class ILexer (__.textio.ITextIO, __.abc.ABC):
 
     @__.abc.abstractmethod
     def pop_ruleset(self) -> None:
-        """Pops a ruleset from the lexer's ruleset-stack.
+        """Pops a ruleset from the ruleset-stack.
         """
         ...
 
     @__.abc.abstractmethod
     def clear_rulesets(self) -> None:
-        """Clears all rulesets from the lexer's ruleset-stack.
+        """Clears all rulesets from the ruleset-stack.
         """
         ...
 
 
     @__.abc.abstractmethod
     def get_next_token(self) -> __.Token:
-        """Finds the next token in the textstream, by using the currently active ruleset.
+        """Finds the next token in the textstream using the currently active ruleset.
 
         Returns
         -------
@@ -67,7 +67,7 @@ class ILexer (__.textio.ITextIO, __.abc.ABC):
         ------
         UnknownTokenError
             If an unknown token type has been encountered.
-        EOD
+        EOF
             If the lexer has reached the end of input data from a textstream.
         """
         ...
@@ -77,7 +77,7 @@ class ILexer (__.textio.ITextIO, __.abc.ABC):
 
     @__.abc.abstractmethod
     def get_options(self) -> __.LexerOptions:
-        """Gets the LexerOptions object instance to define processing options of the lexer.
+        """Gets the lexer options to define processing options of the lexer.
 
         Returns
         -------
@@ -87,7 +87,7 @@ class ILexer (__.textio.ITextIO, __.abc.ABC):
 
     @__.abc.abstractmethod
     def set_options(self, options: __.LexerOptions) -> None:
-        """Sets the LexerOptions object instance to define processing options of the lexer.
+        """Sets the lexer options to define processing options of the lexer.
 
         Parameters
         ----------

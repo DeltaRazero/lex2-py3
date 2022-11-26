@@ -16,13 +16,11 @@ class __:
 
 # ***************************************************************************************
 
-# Struct
 class LexerOptions:
     """Struct to define processing options of a lexer."""
 
     # :: NESTED CLASSES :: #
 
-    #struct
     class SeparatorOptions:
         """Struct that defines processing options of a separator token."""
 
@@ -56,12 +54,9 @@ class LexerOptions:
     newline : SeparatorOptions
     """Options to specify how a NEWLINE separator should be handled."""
 
-    # Key should be the identifier string value of a Rule object. To check whether a
-    # token should be returned or ignored, the map gets checked for existence of the
-    # token's identifier string as key value.
     id_returns : __.t.Dict[str, bool]
-    """Map with <str, bool> key-pairs to specify whether to return tokens from a rule
-       which its identifier matches the key given as input.
+    """Map with <str, bool> key-pairs to specify whether tokens matched by a rule (Rule.id)
+       should be returned to the user.
     """
 
 

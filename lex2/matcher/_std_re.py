@@ -21,9 +21,7 @@ class __:
 
     from lex2 import (
         textio,
-    )
-    from lex2.util.types import (
-        PtrType,
+        Token,
     )
 
 # ***************************************************************************************
@@ -54,7 +52,7 @@ class ReMatcher (__.BaseMatcher):
         return
 
 
-    def match(self, ts: __.textio.ITextstream) -> __.PtrType[str]:
+    def match(self, ts: __.textio.ITextstream, token: __.Token) -> bool:
         regex_match = self._pattern.match(
             # ts.get_string_buffer(),          # Data input
             # ts.get_string_buffer_position(), # Read STARTING AT position
@@ -65,5 +63,7 @@ class ReMatcher (__.BaseMatcher):
         )
 
         if (regex_match):
-            return regex_match.group()
-        return None
+            token.data = regex_match.group()
+            token.groups = regex_match.groups()
+            return True
+        return False

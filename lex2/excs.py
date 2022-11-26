@@ -89,7 +89,7 @@ class UnexpectedTokenError (Exception):
         return
 
 
-class EOD (Exception):
+class EOF (Exception):
     """Raised whenever a lexer has reached the end of input data from a textstream.
     """
 
