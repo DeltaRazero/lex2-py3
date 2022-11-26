@@ -1,0 +1,54 @@
+lex2.excs
+=========
+.. Page title
+
+.. This will only display the module's docstring
+.. automodule:: lex2.excs
+    :no-members:
+
+
+.. Table of (sub)modules
+
+
+
+
+
+.. Table of attributes
+
+
+
+
+
+.. Table of classes
+
+
+
+
+
+.. Table of functions
+
+
+
+
+
+.. Table of exceptions
+
+
+.. rubric:: Exceptions
+
+.. autosummary::
+
+    EOF
+    UnexpectedTokenError
+    UnknownTokenError
+
+
+
+
+.. Document all components within the current (sub)module
+.. Undocumented members are not included (or you need to add :undoc-members:)
+.. automodule:: lex2.excs
+    :no-value:
+    :members:
+    :imported-members:
+    :no-undoc-members:

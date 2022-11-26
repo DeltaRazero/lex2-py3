@@ -1,0 +1,52 @@
+lex2.util.deps
+==============
+.. Page title
+
+.. This will only display the module's docstring
+.. automodule:: lex2.util.deps
+    :no-members:
+
+
+.. Table of (sub)modules
+
+
+
+
+
+.. Table of attributes
+
+
+
+
+
+.. Table of classes
+
+
+
+
+
+.. Table of functions
+
+
+.. rubric:: Functions
+
+.. autosummary::
+
+    is_module_installed
+
+
+
+
+.. Table of exceptions
+
+
+
+
+
+.. Document all components within the current (sub)module
+.. Undocumented members are not included (or you need to add :undoc-members:)
+.. automodule:: lex2.util.deps
+    :no-value:
+    :members:
+    :imported-members:
+    :no-undoc-members:

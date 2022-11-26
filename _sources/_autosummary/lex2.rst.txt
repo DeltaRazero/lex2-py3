@@ -1,0 +1,79 @@
+﻿lex2
+====
+.. Page title
+
+.. This will only display the module's docstring
+.. automodule:: lex2
+    :no-members:
+
+
+.. Table of (sub)modules
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: autosummary_module_template.rst
+   :recursive:
+
+    lex2.excs
+    lex2.lexer
+    lex2.matcher
+    lex2.predefs
+    lex2.textio
+    lex2.util
+
+
+
+
+.. Table of attributes
+
+
+
+
+
+.. Table of classes
+
+
+.. rubric:: Classes
+
+.. autosummary::
+
+    DEFAULT_LEXER
+    DEFAULT_MATCHER
+    ILexer
+    IMatcher
+    LexerOptions
+    Rule
+    RuleGroup
+    Token
+
+
+
+
+.. Table of functions
+
+
+.. rubric:: Functions
+
+.. autosummary::
+
+    make_lexer
+
+
+
+
+.. Table of exceptions
+
+
+
+
+
+.. Document all components within the current (sub)module
+.. Undocumented members are not included (or you need to add :undoc-members:)
+.. automodule:: lex2
+    :no-value:
+    :members:
+    :imported-members:
+    :no-undoc-members:

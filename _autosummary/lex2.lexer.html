@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lex2.lexer &mdash; lex2-py3 v1.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="lex2.matcher" href="lex2.matcher.html" />
+    <link rel="prev" title="lex2.excs" href="lex2.excs.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lex2-py3
+          </a>
+              <div class="version">
+                v1.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Library Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../docs/01_installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/02_defining_rulesets.html">Defining Rulesets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docs/02_defining_rulesets.html#rules">Rules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docs/02_defining_rulesets.html#lex2.Rule"><code class="docutils literal notranslate"><span class="pre">Rule</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docs/02_defining_rulesets.html#rule-groups">Rule Groups</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docs/02_defining_rulesets.html#lex2.RuleGroup"><code class="docutils literal notranslate"><span class="pre">RuleGroup</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docs/02_defining_rulesets.html#ruleset">Ruleset</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/03_lexer_usage.html">Lexer Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docs/03_lexer_usage.html#instantiation">Instantiation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docs/03_lexer_usage.html#lex2.make_lexer"><code class="docutils literal notranslate"><span class="pre">lex2.make_lexer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docs/03_lexer_usage.html#textstream-i-o">Textstream I/O</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docs/03_lexer_usage.html#lex2.textio.ITextIO"><code class="docutils literal notranslate"><span class="pre">ITextIO</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docs/03_lexer_usage.html#iteration-and-tokenization">Iteration and Tokenization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../docs/03_lexer_usage.html#lex2.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../docs/03_lexer_usage.html#lex2.textio.TextPosition"><code class="docutils literal notranslate"><span class="pre">TextPosition</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../docs/03_lexer_usage.html#token-validation">Token Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/04_customizing_regex_engine.html">Customizing Regex Engine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docs/04_customizing_regex_engine.html#underlying-architecture">Underlying Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docs/04_customizing_regex_engine.html#practical-example">Practical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../docs/04_customizing_regex_engine.html#improving-match-performance-on-python">Improving match() Performance on Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../docs/05_miscellaneous.html">Miscellaneous</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../docs/05_miscellaneous.html#profiling-order-of-rules-improving-performance">Profiling Order of Rules (Improving Performance)</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="lex2.html">lex2</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="lex2.excs.html">lex2.excs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lex2.excs.html#lex2.excs.UnknownTokenError"><code class="docutils literal notranslate"><span class="pre">UnknownTokenError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.excs.html#lex2.excs.UnexpectedTokenError"><code class="docutils literal notranslate"><span class="pre">UnexpectedTokenError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.excs.html#lex2.excs.EOF"><code class="docutils literal notranslate"><span class="pre">EOF</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">lex2.lexer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lex2.lexer.BaseLexer"><code class="docutils literal notranslate"><span class="pre">BaseLexer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lex2.lexer.ProfilerLexer"><code class="docutils literal notranslate"><span class="pre">ProfilerLexer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lex2.lexer.GenericLexer"><code class="docutils literal notranslate"><span class="pre">GenericLexer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.matcher.html">lex2.matcher</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lex2.matcher.html#lex2.matcher.BaseMatcher"><code class="docutils literal notranslate"><span class="pre">BaseMatcher</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.matcher.html#lex2.matcher.ReMatcher"><code class="docutils literal notranslate"><span class="pre">ReMatcher</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.predefs.html">lex2.predefs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lex2.predefs.html#lex2.predefs.Comments"><code class="docutils literal notranslate"><span class="pre">Comments</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.predefs.html#lex2.predefs.space"><code class="docutils literal notranslate"><span class="pre">space</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.predefs.html#lex2.predefs.tab"><code class="docutils literal notranslate"><span class="pre">tab</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.predefs.html#lex2.predefs.newline"><code class="docutils literal notranslate"><span class="pre">newline</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.textio.html">lex2.textio</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lex2.textio.html#lex2.textio.TextPosition"><code class="docutils literal notranslate"><span class="pre">TextPosition</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.textio.html#lex2.textio.ITextstream"><code class="docutils literal notranslate"><span class="pre">ITextstream</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.textio.html#lex2.textio.BaseTextstream"><code class="docutils literal notranslate"><span class="pre">BaseTextstream</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.textio.html#lex2.textio.TextstreamType"><code class="docutils literal notranslate"><span class="pre">TextstreamType</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.textio.html#lex2.textio.TextstreamDisk"><code class="docutils literal notranslate"><span class="pre">TextstreamDisk</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.textio.html#lex2.textio.TextstreamMemory"><code class="docutils literal notranslate"><span class="pre">TextstreamMemory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.textio.html#lex2.textio.ITextIO"><code class="docutils literal notranslate"><span class="pre">ITextIO</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.textio.html#lex2.textio.TextIO"><code class="docutils literal notranslate"><span class="pre">TextIO</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.util.html">lex2.util</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lex2.util.deps.html">lex2.util.deps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.util.types.html">lex2.util.types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.html#lex2.Rule"><code class="docutils literal notranslate"><span class="pre">Rule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Rule.__init__"><code class="docutils literal notranslate"><span class="pre">Rule.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Rule.id"><code class="docutils literal notranslate"><span class="pre">Rule.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Rule.returns"><code class="docutils literal notranslate"><span class="pre">Rule.returns</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Rule.regex"><code class="docutils literal notranslate"><span class="pre">Rule.regex</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Rule.get_matcher"><code class="docutils literal notranslate"><span class="pre">Rule.get_matcher()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Rule.set_matcher"><code class="docutils literal notranslate"><span class="pre">Rule.set_matcher()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.html#lex2.RuleGroup"><code class="docutils literal notranslate"><span class="pre">RuleGroup</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.RuleGroup.__init__"><code class="docutils literal notranslate"><span class="pre">RuleGroup.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.RuleGroup.rule"><code class="docutils literal notranslate"><span class="pre">RuleGroup.rule()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.html#lex2.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Token.__init__"><code class="docutils literal notranslate"><span class="pre">Token.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Token.id"><code class="docutils literal notranslate"><span class="pre">Token.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Token.data"><code class="docutils literal notranslate"><span class="pre">Token.data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Token.pos"><code class="docutils literal notranslate"><span class="pre">Token.pos</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Token.groups"><code class="docutils literal notranslate"><span class="pre">Token.groups</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Token.is_rule"><code class="docutils literal notranslate"><span class="pre">Token.is_rule()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Token.is_rule_oneof"><code class="docutils literal notranslate"><span class="pre">Token.is_rule_oneof()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Token.validate_rule"><code class="docutils literal notranslate"><span class="pre">Token.validate_rule()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.Token.validate_rule_oneof"><code class="docutils literal notranslate"><span class="pre">Token.validate_rule_oneof()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.html#lex2.LexerOptions"><code class="docutils literal notranslate"><span class="pre">LexerOptions</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.LexerOptions.SeparatorOptions"><code class="docutils literal notranslate"><span class="pre">LexerOptions.SeparatorOptions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.LexerOptions.__init__"><code class="docutils literal notranslate"><span class="pre">LexerOptions.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.LexerOptions.space"><code class="docutils literal notranslate"><span class="pre">LexerOptions.space</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.LexerOptions.tab"><code class="docutils literal notranslate"><span class="pre">LexerOptions.tab</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.LexerOptions.newline"><code class="docutils literal notranslate"><span class="pre">LexerOptions.newline</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.LexerOptions.id_returns"><code class="docutils literal notranslate"><span class="pre">LexerOptions.id_returns</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.html#lex2.ILexer"><code class="docutils literal notranslate"><span class="pre">ILexer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.ILexer.push_ruleset"><code class="docutils literal notranslate"><span class="pre">ILexer.push_ruleset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.ILexer.pop_ruleset"><code class="docutils literal notranslate"><span class="pre">ILexer.pop_ruleset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.ILexer.clear_rulesets"><code class="docutils literal notranslate"><span class="pre">ILexer.clear_rulesets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.ILexer.get_next_token"><code class="docutils literal notranslate"><span class="pre">ILexer.get_next_token()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.ILexer.get_options"><code class="docutils literal notranslate"><span class="pre">ILexer.get_options()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.ILexer.set_options"><code class="docutils literal notranslate"><span class="pre">ILexer.set_options()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.html#lex2.IMatcher"><code class="docutils literal notranslate"><span class="pre">IMatcher</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.IMatcher.get_uid"><code class="docutils literal notranslate"><span class="pre">IMatcher.get_uid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.IMatcher.compile_pattern"><code class="docutils literal notranslate"><span class="pre">IMatcher.compile_pattern()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="lex2.html#lex2.IMatcher.match"><code class="docutils literal notranslate"><span class="pre">IMatcher.match()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.html#lex2.DEFAULT_LEXER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LEXER</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.html#lex2.DEFAULT_MATCHER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_MATCHER</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="lex2.html#lex2.make_lexer"><code class="docutils literal notranslate"><span class="pre">make_lexer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lex2-py3</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+          <li class="breadcrumb-item"><a href="lex2.html">lex2</a></li>
+      <li class="breadcrumb-item active">lex2.lexer</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/deltarazero/lex2-py/blob/master/doc/src/_autosummary/lex2.lexer.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <blockquote>
+<div><blockquote>
+<div><style> .red {color:red} </style><style> .blue {color:blue} </style><style> .green {color:green} </style><style> .yellow {color:yellow} </style></div></blockquote>
+<blockquote>
+<div></div></blockquote>
+</div></blockquote>
+<section id="lex2-lexer">
+<h1>lex2.lexer<a class="headerlink" href="#lex2-lexer" title="Permalink to this heading"></a></h1>
+<span class="target" id="module-lex2.lexer"></span><p>Components of lexer implementations.</p>
+<p class="rubric">Classes</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lex2.lexer.BaseLexer" title="lex2.lexer.BaseLexer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">BaseLexer</span></code></a></p></td>
+<td><p>Abstract base class partially implementing ILexer.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#lex2.lexer.GenericLexer" title="lex2.lexer.GenericLexer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">GenericLexer</span></code></a></p></td>
+<td><p>An generic implementation of ILexer.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#lex2.lexer.ProfilerLexer" title="lex2.lexer.ProfilerLexer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ProfilerLexer</span></code></a></p></td>
+<td><p>A wrapper around a lexer implementation to provide profiling functionality.</p></td>
+</tr>
+</tbody>
+</table>
+<span class="target" id="module-0"></span><dl class="py class">
+<dt class="sig sig-object py" id="lex2.lexer.BaseLexer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lex2.lexer.</span></span><span class="sig-name descname"><span class="pre">BaseLexer</span></span><a class="headerlink" href="#lex2.lexer.BaseLexer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="lex2.textio.html#lex2.textio.TextIO" title="lex2.textio._textio.TextIO"><code class="xref py py-class docutils literal notranslate"><span class="pre">TextIO</span></code></a>, <a class="reference internal" href="lex2.html#lex2.ILexer" title="lex2._itf_lexer.ILexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">ILexer</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract base class partially implementing ILexer.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.BaseLexer.__init__">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.BaseLexer.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>AbstractLexer object instance initializer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.BaseLexer.push_ruleset">
+<span class="sig-name descname"><span class="pre">push_ruleset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ruleset</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.BaseLexer.push_ruleset" title="Permalink to this definition"></a></dt>
+<dd><p>Pushes a ruleset to the ruleset-stack.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ruleset</strong> (<em>RulesetType</em>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.BaseLexer.pop_ruleset">
+<span class="sig-name descname"><span class="pre">pop_ruleset</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.BaseLexer.pop_ruleset" title="Permalink to this definition"></a></dt>
+<dd><p>Pops a ruleset from the ruleset-stack.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.BaseLexer.clear_rulesets">
+<span class="sig-name descname"><span class="pre">clear_rulesets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.BaseLexer.clear_rulesets" title="Permalink to this definition"></a></dt>
+<dd><p>Clears all rulesets from the ruleset-stack.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.BaseLexer.get_options">
+<span class="sig-name descname"><span class="pre">get_options</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.BaseLexer.get_options" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the lexer options to define processing options of the lexer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="lex2.html#lex2.LexerOptions" title="lex2.LexerOptions">LexerOptions</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.BaseLexer.set_options">
+<span class="sig-name descname"><span class="pre">set_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.BaseLexer.set_options" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the lexer options to define processing options of the lexer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>options</strong> (<a class="reference internal" href="lex2.html#lex2.LexerOptions" title="lex2.LexerOptions"><em>LexerOptions</em></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lex2.lexer.ProfilerLexer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lex2.lexer.</span></span><span class="sig-name descname"><span class="pre">ProfilerLexer</span></span><a class="headerlink" href="#lex2.lexer.ProfilerLexer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lex2.lexer.GenericLexer" title="lex2.lexer._generic_lexer.GenericLexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">GenericLexer</span></code></a></p>
+<p>A wrapper around a lexer implementation to provide profiling functionality.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.ProfilerLexer.__init__">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.ProfilerLexer.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>AbstractLexer object instance initializer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.ProfilerLexer.get_next_token">
+<span class="sig-name descname"><span class="pre">get_next_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.ProfilerLexer.get_next_token" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the next token in the textstream using the currently active ruleset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../docs/03_lexer_usage.html#lex2.Token" title="lex2.Token">Token</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="lex2.excs.html#lex2.excs.UnknownTokenError" title="lex2.excs.UnknownTokenError"><strong>UnknownTokenError</strong></a> – If an unknown token type has been encountered.</p></li>
+<li><p><a class="reference internal" href="lex2.excs.html#lex2.excs.EOF" title="lex2.excs.EOF"><strong>EOF</strong></a> – If the lexer has reached the end of input data from a textstream.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.ProfilerLexer.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.ProfilerLexer.close" title="Permalink to this definition"></a></dt>
+<dd><p>Closes and deletes textstream resources.</p>
+<dl class="field-list simple">
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.ProfilerLexer.show_report">
+<span class="sig-name descname"><span class="pre">show_report</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value_occurrence_threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.ProfilerLexer.show_report" title="Permalink to this definition"></a></dt>
+<dd><p>Prints a report of which rules (identifiers) occur the most.</p>
+<p>This method is automatically called when it hasn’t been called manually yet and
+the textstream is closed (also done when the lexer is destroyed by the garbage
+collector).</p>
+<p>After the report is printed, the profile will be cleared.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value_occurrence_threshold</strong> (<em>int</em><em>, </em><em>optional</em>) – <p>Threshold to display the top most occurring values of a rule. A value lower
+than 1 disables the display of values entirely.</p>
+<p>By default <code class="docutils literal notranslate"><span class="pre">10</span></code></p>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="lex2.lexer.GenericLexer">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lex2.lexer.</span></span><span class="sig-name descname"><span class="pre">GenericLexer</span></span><a class="headerlink" href="#lex2.lexer.GenericLexer" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#lex2.lexer.BaseLexer" title="lex2.lexer._base_lexer.BaseLexer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseLexer</span></code></a></p>
+<p>An generic implementation of ILexer.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.GenericLexer.__init__">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.GenericLexer.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>AbstractLexer object instance initializer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.lexer.GenericLexer.get_next_token">
+<span class="sig-name descname"><span class="pre">get_next_token</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lex2.lexer.GenericLexer.get_next_token" title="Permalink to this definition"></a></dt>
+<dd><p>Finds the next token in the textstream using the currently active ruleset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="../docs/03_lexer_usage.html#lex2.Token" title="lex2.Token">Token</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="lex2.excs.html#lex2.excs.UnknownTokenError" title="lex2.excs.UnknownTokenError"><strong>UnknownTokenError</strong></a> – If an unknown token type has been encountered.</p></li>
+<li><p><a class="reference internal" href="lex2.excs.html#lex2.excs.EOF" title="lex2.excs.EOF"><strong>EOF</strong></a> – If the lexer has reached the end of input data from a textstream.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="lex2.excs.html" class="btn btn-neutral float-left" title="lex2.excs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="lex2.matcher.html" class="btn btn-neutral float-right" title="lex2.matcher" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, DeltaRazero.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

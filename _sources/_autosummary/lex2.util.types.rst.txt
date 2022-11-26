@@ -1,0 +1,53 @@
+lex2.util.types
+===============
+.. Page title
+
+.. This will only display the module's docstring
+.. automodule:: lex2.util.types
+    :no-members:
+
+
+.. Table of (sub)modules
+
+
+
+
+
+.. Table of attributes
+
+
+.. rubric:: Attributes
+
+.. autosummary::
+
+    PtrType
+    VoidptrType
+
+
+
+
+.. Table of classes
+
+
+
+
+
+.. Table of functions
+
+
+
+
+
+.. Table of exceptions
+
+
+
+
+
+.. Document all components within the current (sub)module
+.. Undocumented members are not included (or you need to add :undoc-members:)
+.. automodule:: lex2.util.types
+    :no-value:
+    :members:
+    :imported-members:
+    :no-undoc-members:

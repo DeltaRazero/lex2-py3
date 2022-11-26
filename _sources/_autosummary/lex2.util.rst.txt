@@ -1,0 +1,56 @@
+lex2.util
+=========
+.. Page title
+
+.. This will only display the module's docstring
+.. automodule:: lex2.util
+    :no-members:
+
+
+.. Table of (sub)modules
+
+
+.. rubric:: Modules
+
+.. autosummary::
+   :toctree:
+   :template: autosummary_module_template.rst
+   :recursive:
+
+    lex2.util.deps
+    lex2.util.types
+
+
+
+
+.. Table of attributes
+
+
+
+
+
+.. Table of classes
+
+
+
+
+
+.. Table of functions
+
+
+
+
+
+.. Table of exceptions
+
+
+
+
+
+.. Document all components within the current (sub)module
+.. Undocumented members are not included (or you need to add :undoc-members:)
+.. automodule:: lex2.util
+    :no-value:
+    :members:
+    :imported-members:
+    :no-undoc-members:

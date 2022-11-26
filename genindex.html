@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Index &mdash; lex2-py3 v1.1.1 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> lex2-py3
+          </a>
+              <div class="version">
+                v1.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Library Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="docs/01_installing.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docs/02_defining_rulesets.html">Defining Rulesets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docs/02_defining_rulesets.html#rules">Rules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="docs/02_defining_rulesets.html#lex2.Rule"><code class="docutils literal notranslate"><span class="pre">Rule</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="docs/02_defining_rulesets.html#rule-groups">Rule Groups</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="docs/02_defining_rulesets.html#lex2.RuleGroup"><code class="docutils literal notranslate"><span class="pre">RuleGroup</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="docs/02_defining_rulesets.html#ruleset">Ruleset</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docs/03_lexer_usage.html">Lexer Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docs/03_lexer_usage.html#instantiation">Instantiation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="docs/03_lexer_usage.html#lex2.make_lexer"><code class="docutils literal notranslate"><span class="pre">lex2.make_lexer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="docs/03_lexer_usage.html#textstream-i-o">Textstream I/O</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="docs/03_lexer_usage.html#lex2.textio.ITextIO"><code class="docutils literal notranslate"><span class="pre">ITextIO</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="docs/03_lexer_usage.html#iteration-and-tokenization">Iteration and Tokenization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="docs/03_lexer_usage.html#lex2.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="docs/03_lexer_usage.html#lex2.textio.TextPosition"><code class="docutils literal notranslate"><span class="pre">TextPosition</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="docs/03_lexer_usage.html#token-validation">Token Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docs/04_customizing_regex_engine.html">Customizing Regex Engine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docs/04_customizing_regex_engine.html#underlying-architecture">Underlying Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/04_customizing_regex_engine.html#practical-example">Practical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="docs/04_customizing_regex_engine.html#improving-match-performance-on-python">Improving match() Performance on Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="docs/05_miscellaneous.html">Miscellaneous</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="docs/05_miscellaneous.html#profiling-order-of-rules-improving-performance">Profiling Order of Rules (Improving Performance)</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="_autosummary/lex2.html">lex2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.excs.html">lex2.excs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.excs.html#lex2.excs.UnknownTokenError"><code class="docutils literal notranslate"><span class="pre">UnknownTokenError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.excs.html#lex2.excs.UnexpectedTokenError"><code class="docutils literal notranslate"><span class="pre">UnexpectedTokenError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.excs.html#lex2.excs.EOF"><code class="docutils literal notranslate"><span class="pre">EOF</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.lexer.html">lex2.lexer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.lexer.html#lex2.lexer.BaseLexer"><code class="docutils literal notranslate"><span class="pre">BaseLexer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.lexer.html#lex2.lexer.ProfilerLexer"><code class="docutils literal notranslate"><span class="pre">ProfilerLexer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.lexer.html#lex2.lexer.GenericLexer"><code class="docutils literal notranslate"><span class="pre">GenericLexer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.matcher.html">lex2.matcher</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.matcher.html#lex2.matcher.BaseMatcher"><code class="docutils literal notranslate"><span class="pre">BaseMatcher</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.matcher.html#lex2.matcher.ReMatcher"><code class="docutils literal notranslate"><span class="pre">ReMatcher</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.predefs.html">lex2.predefs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.predefs.html#lex2.predefs.Comments"><code class="docutils literal notranslate"><span class="pre">Comments</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.predefs.html#lex2.predefs.space"><code class="docutils literal notranslate"><span class="pre">space</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.predefs.html#lex2.predefs.tab"><code class="docutils literal notranslate"><span class="pre">tab</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.predefs.html#lex2.predefs.newline"><code class="docutils literal notranslate"><span class="pre">newline</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.textio.html">lex2.textio</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.textio.html#lex2.textio.TextPosition"><code class="docutils literal notranslate"><span class="pre">TextPosition</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.textio.html#lex2.textio.ITextstream"><code class="docutils literal notranslate"><span class="pre">ITextstream</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.textio.html#lex2.textio.BaseTextstream"><code class="docutils literal notranslate"><span class="pre">BaseTextstream</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.textio.html#lex2.textio.TextstreamType"><code class="docutils literal notranslate"><span class="pre">TextstreamType</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.textio.html#lex2.textio.TextstreamDisk"><code class="docutils literal notranslate"><span class="pre">TextstreamDisk</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.textio.html#lex2.textio.TextstreamMemory"><code class="docutils literal notranslate"><span class="pre">TextstreamMemory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.textio.html#lex2.textio.ITextIO"><code class="docutils literal notranslate"><span class="pre">ITextIO</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.textio.html#lex2.textio.TextIO"><code class="docutils literal notranslate"><span class="pre">TextIO</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.util.html">lex2.util</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.util.deps.html">lex2.util.deps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.util.types.html">lex2.util.types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.html#lex2.Rule"><code class="docutils literal notranslate"><span class="pre">Rule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Rule.__init__"><code class="docutils literal notranslate"><span class="pre">Rule.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Rule.id"><code class="docutils literal notranslate"><span class="pre">Rule.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Rule.returns"><code class="docutils literal notranslate"><span class="pre">Rule.returns</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Rule.regex"><code class="docutils literal notranslate"><span class="pre">Rule.regex</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Rule.get_matcher"><code class="docutils literal notranslate"><span class="pre">Rule.get_matcher()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Rule.set_matcher"><code class="docutils literal notranslate"><span class="pre">Rule.set_matcher()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.html#lex2.RuleGroup"><code class="docutils literal notranslate"><span class="pre">RuleGroup</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.RuleGroup.__init__"><code class="docutils literal notranslate"><span class="pre">RuleGroup.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.RuleGroup.rule"><code class="docutils literal notranslate"><span class="pre">RuleGroup.rule()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.html#lex2.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Token.__init__"><code class="docutils literal notranslate"><span class="pre">Token.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Token.id"><code class="docutils literal notranslate"><span class="pre">Token.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Token.data"><code class="docutils literal notranslate"><span class="pre">Token.data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Token.pos"><code class="docutils literal notranslate"><span class="pre">Token.pos</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Token.groups"><code class="docutils literal notranslate"><span class="pre">Token.groups</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Token.is_rule"><code class="docutils literal notranslate"><span class="pre">Token.is_rule()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Token.is_rule_oneof"><code class="docutils literal notranslate"><span class="pre">Token.is_rule_oneof()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Token.validate_rule"><code class="docutils literal notranslate"><span class="pre">Token.validate_rule()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.Token.validate_rule_oneof"><code class="docutils literal notranslate"><span class="pre">Token.validate_rule_oneof()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.html#lex2.LexerOptions"><code class="docutils literal notranslate"><span class="pre">LexerOptions</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.LexerOptions.SeparatorOptions"><code class="docutils literal notranslate"><span class="pre">LexerOptions.SeparatorOptions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.LexerOptions.__init__"><code class="docutils literal notranslate"><span class="pre">LexerOptions.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.LexerOptions.space"><code class="docutils literal notranslate"><span class="pre">LexerOptions.space</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.LexerOptions.tab"><code class="docutils literal notranslate"><span class="pre">LexerOptions.tab</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.LexerOptions.newline"><code class="docutils literal notranslate"><span class="pre">LexerOptions.newline</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.LexerOptions.id_returns"><code class="docutils literal notranslate"><span class="pre">LexerOptions.id_returns</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.html#lex2.ILexer"><code class="docutils literal notranslate"><span class="pre">ILexer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.ILexer.push_ruleset"><code class="docutils literal notranslate"><span class="pre">ILexer.push_ruleset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.ILexer.pop_ruleset"><code class="docutils literal notranslate"><span class="pre">ILexer.pop_ruleset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.ILexer.clear_rulesets"><code class="docutils literal notranslate"><span class="pre">ILexer.clear_rulesets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.ILexer.get_next_token"><code class="docutils literal notranslate"><span class="pre">ILexer.get_next_token()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.ILexer.get_options"><code class="docutils literal notranslate"><span class="pre">ILexer.get_options()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.ILexer.set_options"><code class="docutils literal notranslate"><span class="pre">ILexer.set_options()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.html#lex2.IMatcher"><code class="docutils literal notranslate"><span class="pre">IMatcher</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.IMatcher.get_uid"><code class="docutils literal notranslate"><span class="pre">IMatcher.get_uid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.IMatcher.compile_pattern"><code class="docutils literal notranslate"><span class="pre">IMatcher.compile_pattern()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="_autosummary/lex2.html#lex2.IMatcher.match"><code class="docutils literal notranslate"><span class="pre">IMatcher.match()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.html#lex2.DEFAULT_LEXER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LEXER</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.html#lex2.DEFAULT_MATCHER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_MATCHER</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="_autosummary/lex2.html#lex2.make_lexer"><code class="docutils literal notranslate"><span class="pre">make_lexer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">lex2-py3</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Index</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/deltarazero/lex2-py/blob/master/doc/src/genindex" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#_"><strong>_</strong></a>
+ | <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
+ 
+</div>
+<h2 id="_">_</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.excs.html#lex2.excs.EOF.__init__">__init__() (lex2.excs.EOF method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.excs.html#lex2.excs.UnexpectedTokenError.__init__">(lex2.excs.UnexpectedTokenError method)</a>
+</li>
+        <li><a href="_autosummary/lex2.excs.html#lex2.excs.UnknownTokenError.__init__">(lex2.excs.UnknownTokenError method)</a>
+</li>
+        <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.BaseLexer.__init__">(lex2.lexer.BaseLexer method)</a>
+</li>
+        <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.GenericLexer.__init__">(lex2.lexer.GenericLexer method)</a>
+</li>
+        <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.ProfilerLexer.__init__">(lex2.lexer.ProfilerLexer method)</a>
+</li>
+        <li><a href="_autosummary/lex2.html#lex2.LexerOptions.__init__">(lex2.LexerOptions method)</a>
+</li>
+        <li><a href="_autosummary/lex2.html#lex2.LexerOptions.SeparatorOptions.__init__">(lex2.LexerOptions.SeparatorOptions method)</a>
+</li>
+        <li><a href="_autosummary/lex2.matcher.html#lex2.matcher.BaseMatcher.__init__">(lex2.matcher.BaseMatcher method)</a>
+</li>
+        <li><a href="_autosummary/lex2.matcher.html#lex2.matcher.ReMatcher.__init__">(lex2.matcher.ReMatcher method)</a>
+</li>
+        <li><a href="_autosummary/lex2.html#lex2.Rule.__init__">(lex2.Rule method)</a>, <a href="docs/02_defining_rulesets.html#lex2.Rule.__init__">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.html#lex2.RuleGroup.__init__">(lex2.RuleGroup method)</a>, <a href="docs/02_defining_rulesets.html#lex2.RuleGroup.__init__">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.BaseTextstream.__init__">(lex2.textio.BaseTextstream method)</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextIO.__init__">(lex2.textio.TextIO method)</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextPosition.__init__">(lex2.textio.TextPosition method)</a>, <a href="docs/03_lexer_usage.html#lex2.textio.TextPosition.__init__">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextstreamDisk.__init__">(lex2.textio.TextstreamDisk method)</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextstreamMemory.__init__">(lex2.textio.TextstreamMemory method)</a>
+</li>
+        <li><a href="_autosummary/lex2.html#lex2.Token.__init__">(lex2.Token method)</a>, <a href="docs/03_lexer_usage.html#lex2.Token.__init__">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.predefs.html#lex2.predefs.Comments.add_multiline_comment">add_multiline_comment() (lex2.predefs.Comments method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.predefs.html#lex2.predefs.Comments.add_singleline_comment">add_singleline_comment() (lex2.predefs.Comments method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.BaseLexer">BaseLexer (class in lex2.lexer)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.matcher.html#lex2.matcher.BaseMatcher">BaseMatcher (class in lex2.matcher)</a>
+</li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.BaseTextstream">BaseTextstream (class in lex2.textio)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.html#lex2.ILexer.clear_rulesets">clear_rulesets() (lex2.ILexer method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.BaseLexer.clear_rulesets">(lex2.lexer.BaseLexer method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.ProfilerLexer.close">close() (lex2.lexer.ProfilerLexer method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextIO.close">(lex2.textio.ITextIO method)</a>, <a href="docs/03_lexer_usage.html#lex2.textio.ITextIO.close">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextstream.close">(lex2.textio.ITextstream method)</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextIO.close">(lex2.textio.TextIO method)</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextstreamDisk.close">(lex2.textio.TextstreamDisk method)</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextstreamMemory.close">(lex2.textio.TextstreamMemory method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextPosition.col">col (lex2.textio.TextPosition attribute)</a>, <a href="docs/03_lexer_usage.html#lex2.textio.TextPosition.col">[1]</a>
+</li>
+      <li><a href="_autosummary/lex2.predefs.html#lex2.predefs.Comments">Comments (class in lex2.predefs)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.IMatcher.compile_pattern">compile_pattern() (lex2.IMatcher method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.matcher.html#lex2.matcher.ReMatcher.compile_pattern">(lex2.matcher.ReMatcher method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.excs.html#lex2.excs.UnexpectedTokenError.data">data (lex2.excs.UnexpectedTokenError attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.excs.html#lex2.excs.UnknownTokenError.data">(lex2.excs.UnknownTokenError attribute)</a>
+</li>
+        <li><a href="_autosummary/lex2.html#lex2.Token.data">(lex2.Token attribute)</a>, <a href="docs/03_lexer_usage.html#lex2.Token.data">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.html#lex2.DEFAULT_LEXER">DEFAULT_LEXER (in module lex2)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.DEFAULT_MATCHER">DEFAULT_MATCHER (in module lex2)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.excs.html#lex2.excs.EOF">EOF</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.excs.html#lex2.excs.UnexpectedTokenError.expected_ids">expected_ids (lex2.excs.UnexpectedTokenError attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.GenericLexer">GenericLexer (class in lex2.lexer)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.Rule.get_matcher">get_matcher() (lex2.Rule method)</a>, <a href="docs/02_defining_rulesets.html#lex2.Rule.get_matcher">[1]</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.ILexer.get_next_token">get_next_token() (lex2.ILexer method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.GenericLexer.get_next_token">(lex2.lexer.GenericLexer method)</a>
+</li>
+        <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.ProfilerLexer.get_next_token">(lex2.lexer.ProfilerLexer method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.html#lex2.ILexer.get_options">get_options() (lex2.ILexer method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.BaseLexer.get_options">(lex2.lexer.BaseLexer method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.BaseTextstream.get_string_buffer">get_string_buffer() (lex2.textio.BaseTextstream method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextstream.get_string_buffer">(lex2.textio.ITextstream method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.BaseTextstream.get_string_buffer_position">get_string_buffer_position() (lex2.textio.BaseTextstream method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextstream.get_string_buffer_position">(lex2.textio.ITextstream method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.BaseTextstream.get_string_buffer_size">get_string_buffer_size() (lex2.textio.BaseTextstream method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextstream.get_string_buffer_size">(lex2.textio.ITextstream method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.BaseTextstream.get_text_position">get_text_position() (lex2.textio.BaseTextstream method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextstream.get_text_position">(lex2.textio.ITextstream method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.BaseTextstream.get_textstream_type">get_textstream_type() (lex2.textio.BaseTextstream method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextstream.get_textstream_type">(lex2.textio.ITextstream method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.html#lex2.IMatcher.get_uid">get_uid() (lex2.IMatcher method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.matcher.html#lex2.matcher.BaseMatcher.get_uid">(lex2.matcher.BaseMatcher method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.html#lex2.Token.groups">groups (lex2.Token attribute)</a>, <a href="docs/03_lexer_usage.html#lex2.Token.groups">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.html#lex2.Rule.id">id (lex2.Rule attribute)</a>, <a href="docs/02_defining_rulesets.html#lex2.Rule.id">[1]</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.html#lex2.Token.id">(lex2.Token attribute)</a>, <a href="docs/03_lexer_usage.html#lex2.Token.id">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.html#lex2.LexerOptions.id_returns">id_returns (lex2.LexerOptions attribute)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.LexerOptions.SeparatorOptions.ignored">ignored (lex2.LexerOptions.SeparatorOptions attribute)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.ILexer">ILexer (class in lex2)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.IMatcher">IMatcher (class in lex2)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.BaseTextstream.is_eof">is_eof() (lex2.textio.BaseTextstream method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextstream.is_eof">(lex2.textio.ITextstream method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.util.deps.html#lex2.util.deps.is_module_installed">is_module_installed() (in module lex2.util.deps)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.Token.is_rule">is_rule() (lex2.Token method)</a>, <a href="docs/03_lexer_usage.html#lex2.Token.is_rule">[1]</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.Token.is_rule_oneof">is_rule_oneof() (lex2.Token method)</a>, <a href="docs/03_lexer_usage.html#lex2.Token.is_rule_oneof">[1]</a>
+</li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextIO">ITextIO (class in lex2.textio)</a>, <a href="docs/03_lexer_usage.html#lex2.textio.ITextIO">[1]</a>
+</li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextstream">ITextstream (class in lex2.textio)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    lex2
+
+      <ul>
+        <li><a href="_autosummary/lex2.html#module-0">module</a>, <a href="_autosummary/lex2.html#module-lex2">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    lex2.excs
+
+      <ul>
+        <li><a href="_autosummary/lex2.excs.html#module-0">module</a>, <a href="_autosummary/lex2.excs.html#module-lex2.excs">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    lex2.lexer
+
+      <ul>
+        <li><a href="_autosummary/lex2.lexer.html#module-0">module</a>, <a href="_autosummary/lex2.lexer.html#module-lex2.lexer">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="docs/03_lexer_usage.html#lex2.make_lexer">lex2.make_lexer() (in module _)</a>
+</li>
+      <li>
+    lex2.matcher
+
+      <ul>
+        <li><a href="_autosummary/lex2.matcher.html#module-0">module</a>, <a href="_autosummary/lex2.matcher.html#module-lex2.matcher">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    lex2.predefs
+
+      <ul>
+        <li><a href="_autosummary/lex2.predefs.html#module-0">module</a>, <a href="_autosummary/lex2.predefs.html#module-lex2.predefs">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    lex2.textio
+
+      <ul>
+        <li><a href="_autosummary/lex2.textio.html#module-0">module</a>, <a href="_autosummary/lex2.textio.html#module-lex2.textio">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    lex2.util
+
+      <ul>
+        <li><a href="_autosummary/lex2.util.html#module-0">module</a>, <a href="_autosummary/lex2.util.html#module-lex2.util">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    lex2.util.deps
+
+      <ul>
+        <li><a href="_autosummary/lex2.util.deps.html#module-0">module</a>, <a href="_autosummary/lex2.util.deps.html#module-lex2.util.deps">[1]</a>
+</li>
+      </ul></li>
+      <li>
+    lex2.util.types
+
+      <ul>
+        <li><a href="_autosummary/lex2.util.types.html#module-0">module</a>, <a href="_autosummary/lex2.util.types.html#module-lex2.util.types">[1]</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.html#lex2.LexerOptions">LexerOptions (class in lex2)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.LexerOptions.SeparatorOptions">LexerOptions.SeparatorOptions (class in lex2)</a>
+</li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextPosition.ln">ln (lex2.textio.TextPosition attribute)</a>, <a href="docs/03_lexer_usage.html#lex2.textio.TextPosition.ln">[1]</a>
+</li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextIO.load">load() (lex2.textio.ITextIO method)</a>, <a href="docs/03_lexer_usage.html#lex2.textio.ITextIO.load">[1]</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextIO.load">(lex2.textio.TextIO method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.html#lex2.make_lexer">make_lexer() (in module lex2)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.IMatcher.match">match() (lex2.IMatcher method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.matcher.html#lex2.matcher.ReMatcher.match">(lex2.matcher.ReMatcher method)</a>
+</li>
+      </ul></li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="_autosummary/lex2.html#module-0">lex2</a>, <a href="_autosummary/lex2.html#module-lex2">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.excs.html#module-0">lex2.excs</a>, <a href="_autosummary/lex2.excs.html#module-lex2.excs">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.lexer.html#module-0">lex2.lexer</a>, <a href="_autosummary/lex2.lexer.html#module-lex2.lexer">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.matcher.html#module-0">lex2.matcher</a>, <a href="_autosummary/lex2.matcher.html#module-lex2.matcher">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.predefs.html#module-0">lex2.predefs</a>, <a href="_autosummary/lex2.predefs.html#module-lex2.predefs">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#module-0">lex2.textio</a>, <a href="_autosummary/lex2.textio.html#module-lex2.textio">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.util.html#module-0">lex2.util</a>, <a href="_autosummary/lex2.util.html#module-lex2.util">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.util.deps.html#module-0">lex2.util.deps</a>, <a href="_autosummary/lex2.util.deps.html#module-lex2.util.deps">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.util.types.html#module-0">lex2.util.types</a>, <a href="_autosummary/lex2.util.types.html#module-lex2.util.types">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.predefs.html#lex2.predefs.newline">newline (in module lex2.predefs)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.html#lex2.LexerOptions.newline">(lex2.LexerOptions attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextIO.open">open() (lex2.textio.ITextIO method)</a>, <a href="docs/03_lexer_usage.html#lex2.textio.ITextIO.open">[1]</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextIO.open">(lex2.textio.TextIO method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.html#lex2.ILexer.pop_ruleset">pop_ruleset() (lex2.ILexer method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.BaseLexer.pop_ruleset">(lex2.lexer.BaseLexer method)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.excs.html#lex2.excs.UnexpectedTokenError.pos">pos (lex2.excs.UnexpectedTokenError attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.excs.html#lex2.excs.UnknownTokenError.pos">(lex2.excs.UnknownTokenError attribute)</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextPosition.pos">(lex2.textio.TextPosition attribute)</a>, <a href="docs/03_lexer_usage.html#lex2.textio.TextPosition.pos">[1]</a>
+</li>
+        <li><a href="_autosummary/lex2.html#lex2.Token.pos">(lex2.Token attribute)</a>, <a href="docs/03_lexer_usage.html#lex2.Token.pos">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.ProfilerLexer">ProfilerLexer (class in lex2.lexer)</a>
+</li>
+      <li><a href="_autosummary/lex2.util.types.html#lex2.util.types.PtrType">PtrType (in module lex2.util.types)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.ILexer.push_ruleset">push_ruleset() (lex2.ILexer method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.BaseLexer.push_ruleset">(lex2.lexer.BaseLexer method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.excs.html#lex2.excs.UnexpectedTokenError.received_id">received_id (lex2.excs.UnexpectedTokenError attribute)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.Rule.regex">regex (lex2.Rule attribute)</a>, <a href="docs/02_defining_rulesets.html#lex2.Rule.regex">[1]</a>
+</li>
+      <li><a href="_autosummary/lex2.matcher.html#lex2.matcher.ReMatcher">ReMatcher (class in lex2.matcher)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.LexerOptions.SeparatorOptions.returns">returns (lex2.LexerOptions.SeparatorOptions attribute)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.html#lex2.Rule.returns">(lex2.Rule attribute)</a>, <a href="docs/02_defining_rulesets.html#lex2.Rule.returns">[1]</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.html#lex2.Rule">Rule (class in lex2)</a>, <a href="docs/02_defining_rulesets.html#lex2.Rule">[1]</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.RuleGroup.rule">rule() (lex2.RuleGroup method)</a>, <a href="docs/02_defining_rulesets.html#lex2.RuleGroup.rule">[1]</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.RuleGroup">RuleGroup (class in lex2)</a>, <a href="docs/02_defining_rulesets.html#lex2.RuleGroup">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.html#lex2.Rule.set_matcher">set_matcher() (lex2.Rule method)</a>, <a href="docs/02_defining_rulesets.html#lex2.Rule.set_matcher">[1]</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.ILexer.set_options">set_options() (lex2.ILexer method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.BaseLexer.set_options">(lex2.lexer.BaseLexer method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.lexer.html#lex2.lexer.ProfilerLexer.show_report">show_report() (lex2.lexer.ProfilerLexer method)</a>
+</li>
+      <li><a href="_autosummary/lex2.predefs.html#lex2.predefs.space">space (in module lex2.predefs)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.html#lex2.LexerOptions.space">(lex2.LexerOptions attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.predefs.html#lex2.predefs.tab">tab (in module lex2.predefs)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.html#lex2.LexerOptions.tab">(lex2.LexerOptions attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextIO">TextIO (class in lex2.textio)</a>
+</li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextPosition">TextPosition (class in lex2.textio)</a>, <a href="docs/03_lexer_usage.html#lex2.textio.TextPosition">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextstreamDisk">TextstreamDisk (class in lex2.textio)</a>
+</li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextstreamMemory">TextstreamMemory (class in lex2.textio)</a>
+</li>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextstreamType">TextstreamType (class in lex2.textio)</a>
+</li>
+      <li><a href="_autosummary/lex2.html#lex2.Token">Token (class in lex2)</a>, <a href="docs/03_lexer_usage.html#lex2.Token">[1]</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.excs.html#lex2.excs.UnexpectedTokenError">UnexpectedTokenError</a>
+</li>
+      <li><a href="_autosummary/lex2.excs.html#lex2.excs.UnknownTokenError">UnknownTokenError</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.textio.html#lex2.textio.ITextstream.update">update() (lex2.textio.ITextstream method)</a>
+
+      <ul>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextstreamDisk.update">(lex2.textio.TextstreamDisk method)</a>
+</li>
+        <li><a href="_autosummary/lex2.textio.html#lex2.textio.TextstreamMemory.update">(lex2.textio.TextstreamMemory method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.html#lex2.Token.validate_rule">validate_rule() (lex2.Token method)</a>, <a href="docs/03_lexer_usage.html#lex2.Token.validate_rule">[1]</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="_autosummary/lex2.html#lex2.Token.validate_rule_oneof">validate_rule_oneof() (lex2.Token method)</a>, <a href="docs/03_lexer_usage.html#lex2.Token.validate_rule_oneof">[1]</a>
+</li>
+      <li><a href="_autosummary/lex2.util.types.html#lex2.util.types.VoidptrType">VoidptrType (in module lex2.util.types)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, DeltaRazero.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

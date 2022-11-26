@@ -1,0 +1,59 @@
+lex2.textio
+===========
+.. Page title
+
+.. This will only display the module's docstring
+.. automodule:: lex2.textio
+    :no-members:
+
+
+.. Table of (sub)modules
+
+
+
+
+
+.. Table of attributes
+
+
+
+
+
+.. Table of classes
+
+
+.. rubric:: Classes
+
+.. autosummary::
+
+    BaseTextstream
+    ITextIO
+    ITextstream
+    TextIO
+    TextPosition
+    TextstreamDisk
+    TextstreamMemory
+    TextstreamType
+
+
+
+
+.. Table of functions
+
+
+
+
+
+.. Table of exceptions
+
+
+
+
+
+.. Document all components within the current (sub)module
+.. Undocumented members are not included (or you need to add :undoc-members:)
+.. automodule:: lex2.textio
+    :no-value:
+    :members:
+    :imported-members:
+    :no-undoc-members:

@@ -1,0 +1,60 @@
+lex2.predefs
+============
+.. Page title
+
+.. This will only display the module's docstring
+.. automodule:: lex2.predefs
+    :no-members:
+
+
+.. Table of (sub)modules
+
+
+
+
+
+.. Table of attributes
+
+
+.. rubric:: Attributes
+
+.. autosummary::
+
+    space
+    tab
+    newline
+
+
+
+
+.. Table of classes
+
+
+.. rubric:: Classes
+
+.. autosummary::
+
+    Comments
+
+
+
+
+.. Table of functions
+
+
+
+
+
+.. Table of exceptions
+
+
+
+
+
+.. Document all components within the current (sub)module
+.. Undocumented members are not included (or you need to add :undoc-members:)
+.. automodule:: lex2.predefs
+    :no-value:
+    :members:
+    :imported-members:
+    :no-undoc-members:

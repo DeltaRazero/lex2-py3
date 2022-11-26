@@ -1,0 +1,31 @@
+.c1 {
+    /* Make comments non-italic */
+    font-style: normal !important;
+}
+
+@font-face {
+    font-family: Box-Drawing;
+    src: url('fonts/BoxDrawing.ttf');
+    /* Box drawing + Block elements */
+    /* unicode-range: U+2500-259F; */
+}
+
+@font-face {
+    font-family: 'Monaco';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Monaco'), url('fonts/Monaco.woff') format('woff');
+}
+
+pre {
+    font-family:
+        Box-Drawing,
+        Monaco,
+        SFMono-Regular,
+        Menlo,
+        Consolas,
+        Liberation Mono,
+        Courier New,
+        Courier,
+        monospace !important;
+}

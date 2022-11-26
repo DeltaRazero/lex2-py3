@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Defining Rulesets &mdash; lex2-py3 v1.1.1 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Lexer Usage" href="03_lexer_usage.html" />
+    <link rel="prev" title="Installing" href="01_installing.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> lex2-py3
+          </a>
+              <div class="version">
+                v1.1.1
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Library Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="01_installing.html">Installing</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Defining Rulesets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#rules">Rules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lex2.Rule"><code class="docutils literal notranslate"><span class="pre">Rule</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#rule-groups">Rule Groups</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lex2.RuleGroup"><code class="docutils literal notranslate"><span class="pre">RuleGroup</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#ruleset">Ruleset</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="03_lexer_usage.html">Lexer Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="03_lexer_usage.html#instantiation">Instantiation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="03_lexer_usage.html#lex2.make_lexer"><code class="docutils literal notranslate"><span class="pre">lex2.make_lexer()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="03_lexer_usage.html#textstream-i-o">Textstream I/O</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="03_lexer_usage.html#lex2.textio.ITextIO"><code class="docutils literal notranslate"><span class="pre">ITextIO</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="03_lexer_usage.html#iteration-and-tokenization">Iteration and Tokenization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="03_lexer_usage.html#lex2.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="03_lexer_usage.html#lex2.textio.TextPosition"><code class="docutils literal notranslate"><span class="pre">TextPosition</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="03_lexer_usage.html#token-validation">Token Validation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="04_customizing_regex_engine.html">Customizing Regex Engine</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="04_customizing_regex_engine.html#underlying-architecture">Underlying Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_customizing_regex_engine.html#practical-example">Practical Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_customizing_regex_engine.html#improving-match-performance-on-python">Improving match() Performance on Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="05_miscellaneous.html">Miscellaneous</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="05_miscellaneous.html#profiling-order-of-rules-improving-performance">Profiling Order of Rules (Improving Performance)</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../_autosummary/lex2.html">lex2</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.excs.html">lex2.excs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.excs.html#lex2.excs.UnknownTokenError"><code class="docutils literal notranslate"><span class="pre">UnknownTokenError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.excs.html#lex2.excs.UnexpectedTokenError"><code class="docutils literal notranslate"><span class="pre">UnexpectedTokenError</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.excs.html#lex2.excs.EOF"><code class="docutils literal notranslate"><span class="pre">EOF</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.lexer.html">lex2.lexer</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.lexer.html#lex2.lexer.BaseLexer"><code class="docutils literal notranslate"><span class="pre">BaseLexer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.lexer.html#lex2.lexer.ProfilerLexer"><code class="docutils literal notranslate"><span class="pre">ProfilerLexer</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.lexer.html#lex2.lexer.GenericLexer"><code class="docutils literal notranslate"><span class="pre">GenericLexer</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.matcher.html">lex2.matcher</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.matcher.html#lex2.matcher.BaseMatcher"><code class="docutils literal notranslate"><span class="pre">BaseMatcher</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.matcher.html#lex2.matcher.ReMatcher"><code class="docutils literal notranslate"><span class="pre">ReMatcher</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.predefs.html">lex2.predefs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.predefs.html#lex2.predefs.Comments"><code class="docutils literal notranslate"><span class="pre">Comments</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.predefs.html#lex2.predefs.space"><code class="docutils literal notranslate"><span class="pre">space</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.predefs.html#lex2.predefs.tab"><code class="docutils literal notranslate"><span class="pre">tab</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.predefs.html#lex2.predefs.newline"><code class="docutils literal notranslate"><span class="pre">newline</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.textio.html">lex2.textio</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.textio.html#lex2.textio.TextPosition"><code class="docutils literal notranslate"><span class="pre">TextPosition</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.textio.html#lex2.textio.ITextstream"><code class="docutils literal notranslate"><span class="pre">ITextstream</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.textio.html#lex2.textio.BaseTextstream"><code class="docutils literal notranslate"><span class="pre">BaseTextstream</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.textio.html#lex2.textio.TextstreamType"><code class="docutils literal notranslate"><span class="pre">TextstreamType</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.textio.html#lex2.textio.TextstreamDisk"><code class="docutils literal notranslate"><span class="pre">TextstreamDisk</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.textio.html#lex2.textio.TextstreamMemory"><code class="docutils literal notranslate"><span class="pre">TextstreamMemory</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.textio.html#lex2.textio.ITextIO"><code class="docutils literal notranslate"><span class="pre">ITextIO</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.textio.html#lex2.textio.TextIO"><code class="docutils literal notranslate"><span class="pre">TextIO</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.util.html">lex2.util</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.util.deps.html">lex2.util.deps</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.util.types.html">lex2.util.types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Rule"><code class="docutils literal notranslate"><span class="pre">Rule</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Rule.__init__"><code class="docutils literal notranslate"><span class="pre">Rule.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Rule.id"><code class="docutils literal notranslate"><span class="pre">Rule.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Rule.returns"><code class="docutils literal notranslate"><span class="pre">Rule.returns</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Rule.regex"><code class="docutils literal notranslate"><span class="pre">Rule.regex</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Rule.get_matcher"><code class="docutils literal notranslate"><span class="pre">Rule.get_matcher()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Rule.set_matcher"><code class="docutils literal notranslate"><span class="pre">Rule.set_matcher()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.html#lex2.RuleGroup"><code class="docutils literal notranslate"><span class="pre">RuleGroup</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.RuleGroup.__init__"><code class="docutils literal notranslate"><span class="pre">RuleGroup.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.RuleGroup.rule"><code class="docutils literal notranslate"><span class="pre">RuleGroup.rule()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Token"><code class="docutils literal notranslate"><span class="pre">Token</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Token.__init__"><code class="docutils literal notranslate"><span class="pre">Token.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Token.id"><code class="docutils literal notranslate"><span class="pre">Token.id</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Token.data"><code class="docutils literal notranslate"><span class="pre">Token.data</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Token.pos"><code class="docutils literal notranslate"><span class="pre">Token.pos</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Token.groups"><code class="docutils literal notranslate"><span class="pre">Token.groups</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Token.is_rule"><code class="docutils literal notranslate"><span class="pre">Token.is_rule()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Token.is_rule_oneof"><code class="docutils literal notranslate"><span class="pre">Token.is_rule_oneof()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Token.validate_rule"><code class="docutils literal notranslate"><span class="pre">Token.validate_rule()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.Token.validate_rule_oneof"><code class="docutils literal notranslate"><span class="pre">Token.validate_rule_oneof()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.html#lex2.LexerOptions"><code class="docutils literal notranslate"><span class="pre">LexerOptions</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.LexerOptions.SeparatorOptions"><code class="docutils literal notranslate"><span class="pre">LexerOptions.SeparatorOptions</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.LexerOptions.__init__"><code class="docutils literal notranslate"><span class="pre">LexerOptions.__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.LexerOptions.space"><code class="docutils literal notranslate"><span class="pre">LexerOptions.space</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.LexerOptions.tab"><code class="docutils literal notranslate"><span class="pre">LexerOptions.tab</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.LexerOptions.newline"><code class="docutils literal notranslate"><span class="pre">LexerOptions.newline</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.LexerOptions.id_returns"><code class="docutils literal notranslate"><span class="pre">LexerOptions.id_returns</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.html#lex2.ILexer"><code class="docutils literal notranslate"><span class="pre">ILexer</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.ILexer.push_ruleset"><code class="docutils literal notranslate"><span class="pre">ILexer.push_ruleset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.ILexer.pop_ruleset"><code class="docutils literal notranslate"><span class="pre">ILexer.pop_ruleset()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.ILexer.clear_rulesets"><code class="docutils literal notranslate"><span class="pre">ILexer.clear_rulesets()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.ILexer.get_next_token"><code class="docutils literal notranslate"><span class="pre">ILexer.get_next_token()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.ILexer.get_options"><code class="docutils literal notranslate"><span class="pre">ILexer.get_options()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.ILexer.set_options"><code class="docutils literal notranslate"><span class="pre">ILexer.set_options()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.html#lex2.IMatcher"><code class="docutils literal notranslate"><span class="pre">IMatcher</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.IMatcher.get_uid"><code class="docutils literal notranslate"><span class="pre">IMatcher.get_uid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.IMatcher.compile_pattern"><code class="docutils literal notranslate"><span class="pre">IMatcher.compile_pattern()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="../_autosummary/lex2.html#lex2.IMatcher.match"><code class="docutils literal notranslate"><span class="pre">IMatcher.match()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.html#lex2.DEFAULT_LEXER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_LEXER</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.html#lex2.DEFAULT_MATCHER"><code class="docutils literal notranslate"><span class="pre">DEFAULT_MATCHER</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../_autosummary/lex2.html#lex2.make_lexer"><code class="docutils literal notranslate"><span class="pre">make_lexer()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">lex2-py3</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Defining Rulesets</li>
+      <li class="wy-breadcrumbs-aside">
+              <a href="https://github.com/deltarazero/lex2-py/blob/master/doc/src/docs/02_defining_rulesets.rst" class="fa fa-github"> Edit on GitHub</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <blockquote>
+<div><blockquote>
+<div><style> .red {color:red} </style><style> .blue {color:blue} </style><style> .green {color:green} </style><style> .yellow {color:yellow} </style></div></blockquote>
+<blockquote>
+<div></div></blockquote>
+</div></blockquote>
+<section id="defining-rulesets">
+<h1>Defining Rulesets<a class="headerlink" href="#defining-rulesets" title="Permalink to this heading"></a></h1>
+<p>The purpose of a lexer is to break a stream of text characters into a sequence of tokens (strings with an assigned and thus identified meaning). Before tokens can be recognized, of course, it must first be clear which tokens are possible and how they can be recognized as such. This is done by defining a set of rules, each defining a regex pattern on how to recognize a particular token and what identifiable name it should be assigned to it.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you are not familiar with regular expressions (regex), the <a class="reference external" href="_url_regex">quickstart guide on regular-expressions.info</a> provides a good starting point.</p>
+</div>
+<section id="rules">
+<h2>Rules<a class="headerlink" href="#rules" title="Permalink to this heading"></a></h2>
+<p>Defining rules in lex2 is done through creating <a class="reference internal" href="#lex2.Rule" title="lex2.Rule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rule</span></code></a> object instances. In addition to an identifiable name and regex pattern, each rule can be configured to be returned to the user by the lexer (on by default) or whether to be processed internally but not returned.</p>
+<p>A good example when tokens should not be returned are comments in programming languages. Comments are always ignored and should therefore not be returned to the parser. However, it must be defined on how to recognize a comment in order for them to be skipped by the lexer.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Instantiating a Rule object</span><a class="headerlink" href="#id1" title="Permalink to this code"></a></div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#                      identifier  regex  returns? (optional)</span>
+<span class="c1">#                       ┌───┴───┐ ┌──┴──┐  ┌─┴─┐</span>
+<span class="n">number_rule</span> <span class="o">=</span> <span class="n">lex2</span><span class="o">.</span><span class="n">Rule</span><span class="p">(</span><span class="s2">&quot;INTEGER&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\d+&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># You can inspect the identifier and regex pattern of the object, and change</span>
+<span class="c1"># the return behaviour property value</span>
+<span class="n">number_rule</span><span class="o">.</span><span class="n">id</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;INTEGER&#39;</span>
+<span class="n">number_rule</span><span class="o">.</span><span class="n">regex</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">d+&#39;</span>
+<span class="n">number_rule</span><span class="o">.</span><span class="n">returns</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kc">True</span>
+<span class="n">number_rule</span><span class="o">.</span><span class="n">returns</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="n">number_rule</span><span class="o">.</span><span class="n">returns</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="lex2.Rule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lex2.</span></span><span class="sig-name descname"><span class="pre">Rule</span></span><a class="headerlink" href="#lex2.Rule" title="Permalink to this definition"></a></dt>
+<dd><p>Class representing a rule, used as filter during lexical analysis.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.Rule.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lex2.Rule.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Rule object instance initializer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – The identifying name of a resulting token (e.g. “NUMBER”, “WORD”).</p></li>
+<li><p><strong>regex</strong> (<em>str</em>) – The regular expression used by a matcher to perform regex matching.</p></li>
+<li><p><strong>returns</strong> (<em>bool</em><em>, </em><em>optional</em>) – <p>Specify whether tokens matched by this rule should be returned when scanning
+for tokens.</p>
+<p>By default <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><strong>ValueError</strong> – If the given regular expression is empty.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lex2.Rule.id">
+<span class="sig-name descname"><span class="pre">id</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#lex2.Rule.id" title="Permalink to this definition"></a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">&lt;readonly&gt;</span></code> Rule identifier string.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lex2.Rule.returns">
+<span class="sig-name descname"><span class="pre">returns</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">bool</span></em><a class="headerlink" href="#lex2.Rule.returns" title="Permalink to this definition"></a></dt>
+<dd><p>Whether tokens matched by this rule should be returned when scanning for tokens.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="lex2.Rule.regex">
+<span class="sig-name descname"><span class="pre">regex</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">str</span></em><a class="headerlink" href="#lex2.Rule.regex" title="Permalink to this definition"></a></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">&lt;readonly&gt;</span></code> The regular expression used by a matcher to perform regex matching.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.Rule.get_matcher">
+<span class="sig-name descname"><span class="pre">get_matcher</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#lex2.Rule.get_matcher" title="Permalink to this definition"></a></dt>
+<dd><p>Gets the IMatcher-compatible object instance.</p>
+<p>The rule matcher object is used by a lexer object to identify tokens during
+lexical analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>PtrType[<a class="reference internal" href="../_autosummary/lex2.html#lex2.IMatcher" title="lex2.IMatcher">IMatcher</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.Rule.set_matcher">
+<span class="sig-name descname"><span class="pre">set_matcher</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">matcher</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lex2.Rule.set_matcher" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the rule matcher object reference.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>matcher</strong> (<a class="reference internal" href="../_autosummary/lex2.html#lex2.IMatcher" title="lex2.IMatcher"><em>IMatcher</em></a>) – </p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="rule-groups">
+<h2>Rule Groups<a class="headerlink" href="#rule-groups" title="Permalink to this heading"></a></h2>
+<p>If you find yourself writing boilerplate code to include or format parts of a regular expression, or just would like an abstraction layer altogether, you can opt to use the <a class="reference internal" href="#lex2.RuleGroup" title="lex2.RuleGroup"><code class="xref py py-class docutils literal notranslate"><span class="pre">RuleGroup</span></code></a> base class. An example is given in the code block below.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Creating a regular expression for specific e-mail domain addresses</span><a class="headerlink" href="#id2" title="Permalink to this code"></a></div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">AllowedEmail</span> <span class="p">(</span><span class="n">lex2</span><span class="o">.</span><span class="n">RuleGroup</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="s2">&quot;EMAIL&quot;</span><span class="p">,</span>
+            <span class="n">regex_prefix</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;(?i)\A[a-z\d_\-.]+&quot;</span>
+        <span class="p">)</span>
+
+<span class="c1">#   Define a public method to add a regex group. It has to</span>
+<span class="c1">#   call the inherited protected method &#39;_add_regex_group()&#39;</span>
+<span class="c1">#   ┌──────────────────────┴────────────────────┐</span>
+    <span class="k">def</span> <span class="nf">add_provider</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">domain</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tld</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_regex_group</span><span class="p">(</span><span class="sa">fr</span><span class="s1">&#39;@</span><span class="si">{</span><span class="n">domain</span><span class="si">}</span><span class="s1">\.</span><span class="si">{</span><span class="n">tld</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+<span class="n">allowed_email</span> <span class="o">=</span> <span class="p">(</span><span class="n">AllowedEmail</span><span class="p">()</span>
+                    <span class="o">.</span><span class="n">add_provider</span><span class="p">(</span><span class="s2">&quot;gmail&quot;</span><span class="p">,</span>   <span class="s2">&quot;com&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">add_provider</span><span class="p">(</span><span class="s2">&quot;hotmail&quot;</span><span class="p">,</span> <span class="s2">&quot;com&quot;</span><span class="p">)</span>
+                    <span class="o">.</span><span class="n">rule</span><span class="p">())</span>
+<span class="c1">#                   └──┬──┘</span>
+<span class="c1">#   Compiles your group into a singular Rule object</span>
+
+<span class="n">allowed_email</span><span class="o">.</span><span class="n">id</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;EMAIL&#39;</span>
+<span class="n">allowed_email</span><span class="o">.</span><span class="n">regex</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="s1">&#39;(?i)\A[a-z\d_\-.]+((@gmail\.com)|(@hotmail\.com))&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>By convention, your custom public methods should return themselves (<code class="docutils literal notranslate"><span class="pre">self</span></code>) so it’s possible to have method chaining.</p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="lex2.RuleGroup">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">lex2.</span></span><span class="sig-name descname"><span class="pre">RuleGroup</span></span><a class="headerlink" href="#lex2.RuleGroup" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code></p>
+<p>Abstract base class for making a creator class to dynamically build up a group of rules.</p>
+<p>To condense down the rule group into a single <code class="docutils literal notranslate"><span class="pre">Rule</span></code> object, use the inherited
+<code class="docutils literal notranslate"><span class="pre">.rule()</span></code> method.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.RuleGroup.__init__">
+<em class="property"><span class="pre">abstract</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">regex_suffix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lex2.RuleGroup.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Rule object instance initializer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em>) – The identifying name of a resulting token (e.g. “NUMBER”, “WORD”).</p></li>
+<li><p><strong>returns</strong> (<em>bool</em><em>, </em><em>optional</em>) – <p>Specify whether tokens matched by this rule group should be returned when scanning
+for tokens by default.</p>
+<p>By default <code class="docutils literal notranslate"><span class="pre">True</span></code></p>
+</p></li>
+<li><p><strong>regex_prefix</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Regular expression that is prefixed for every added regex pattern group.</p>
+<p>By default <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
+</p></li>
+<li><p><strong>regex_suffix</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Regular expression that is suffixed for every added regex pattern group.</p>
+<p>By default <code class="docutils literal notranslate"><span class="pre">&quot;&quot;</span></code></p>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="lex2.RuleGroup.rule">
+<span class="sig-name descname"><span class="pre">rule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">returns</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#lex2.RuleGroup.rule" title="Permalink to this definition"></a></dt>
+<dd><p>Compiles the rule group to a rule object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>id</strong> (<em>str</em><em>, </em><em>optional</em>) – <p>Overwrites the predefined identifying name of a resulting token.</p>
+<p>By default the id set by the parent class.</p>
+</p></li>
+<li><p><strong>returns</strong> (<em>bool</em><em>, </em><em>optional</em>) – <p>Overwrites whether tokens matched by this rule group should be returned when scanning
+for tokens by default.</p>
+<p>By default the returns set by the parent class.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#lex2.Rule" title="lex2.Rule">Rule</a></p>
+</dd>
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><strong>ValueError</strong> – If the given regular expression is empty.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="ruleset">
+<h2>Ruleset<a class="headerlink" href="#ruleset" title="Permalink to this heading"></a></h2>
+<p>Finally, rulesets can be defined as standard lists populated with <a class="reference internal" href="#lex2.Rule" title="lex2.Rule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rule</span></code></a> object instances. It is recommended to type-hint the list variable (if stored) with the <code class="xref py py-class docutils literal notranslate"><span class="pre">RulesetType</span></code> type alias.</p>
+<div class="literal-block-wrapper docutils container" id="id3">
+<div class="code-block-caption"><span class="caption-text">Defining a ruleset</span><a class="headerlink" href="#id3" title="Permalink to this code"></a></div>
+<div class="highlight-python3 notranslate"><div class="highlight"><pre><span></span><span class="n">ruleset</span><span class="p">:</span> <span class="n">lex2</span><span class="o">.</span><span class="n">RulesetType</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">lex2</span><span class="o">.</span><span class="n">Rule</span><span class="p">(</span><span class="s2">&quot;WORD&quot;</span><span class="p">,</span>        <span class="sa">r</span><span class="s2">&quot;[a-zA-Z]+&quot;</span><span class="p">),</span>
+    <span class="n">lex2</span><span class="o">.</span><span class="n">Rule</span><span class="p">(</span><span class="s2">&quot;NUMBER&quot;</span><span class="p">,</span>      <span class="sa">r</span><span class="s2">&quot;[0-9]+&quot;</span><span class="p">),</span>
+    <span class="n">lex2</span><span class="o">.</span><span class="n">Rule</span><span class="p">(</span><span class="s2">&quot;PUNCTUATION&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;[.,:;!?</span><span class="se">\\</span><span class="s2">-]&quot;</span><span class="p">)</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you intend to use multiple rulesets, that reuse earlier defined rules, it is better to store the <a class="reference internal" href="#lex2.Rule" title="lex2.Rule"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rule</span></code></a> instances into separate variables first and reference them in rulesets.</p>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="01_installing.html" class="btn btn-neutral float-left" title="Installing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="03_lexer_usage.html" class="btn btn-neutral float-right" title="Lexer Usage" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020-2022, DeltaRazero.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
