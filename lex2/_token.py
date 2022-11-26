@@ -38,7 +38,7 @@ class Token:
     data : str
     """Result of regex match."""
 
-    groups : __.t.Iterable[str]
+    groups : __.t.Sequence[str]
     """Result of regex match, split by encapsulated groups."""
 
     pos : __.textio.TextPosition
@@ -47,7 +47,7 @@ class Token:
 
     # :: CONSTRUCTOR :: #
 
-    def __init__(self, id: str="", data: str="", pos: __.textio.TextPosition=__.textio.TextPosition(), groups: __.t.Iterable[str]=()):
+    def __init__(self, id: str="", data: str="", pos: __.textio.TextPosition=__.textio.TextPosition(), groups: __.t.Sequence[str]=()):
         """Token object instance initializer.
 
         Parameters
