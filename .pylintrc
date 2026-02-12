@@ -12,42 +12,42 @@ max-line-length = 120
 # multiple time (only on the command line, not in the configuration file where
 # it should appear only once).
 disable=
-    superfluous-parens,
-    useless-return,
-    ; invalid-name,
-    import-outside-toplevel,
-    pointless-string-statement,
-    import-error,
-    wrong-import-position,
-    multiple-statements,
-    protected-access,
-    cyclic-import,
-    too-few-public-methods,
-    too-many-instance-attributes,
-    redefined-builtin,
-    too-many-branches,
-    inconsistent-return-statements,
+  superfluous-parens,
+  useless-return,
+  ; invalid-name,
+  import-outside-toplevel,
+  pointless-string-statement,
+  import-error,
+  wrong-import-position,
+  multiple-statements,
+  protected-access,
+  cyclic-import,
+  too-few-public-methods,
+  too-many-instance-attributes,
+  redefined-builtin,
+  too-many-branches,
+  inconsistent-return-statements,
 
 good-names=
-    __, ; Used for imports classes
-    i, j, k, _, n, ; Indices
-    f, fp, ; Files and I/O
+  __, ; Used for imports classes
+  i, j, k, _, n, ; Indices
+  f, fp, ; Files and I/O
 
-    ; Library specific cases to ignore
-    id,
-    s,
-    ln, col,
-    tp, ts,
+  ; Library specific cases to ignore
+  id,
+  s,
+  ln, col,
+  tp, ts,
 
 good-names-rgxs=
-    .+_t$,
-    [A-Z]+_T$, ; types like notation in c++
+  .+_t$,
+  [A-Z]+_T$, ; types like notation in c++
 
-    ; allow class aliases to be constants (like macros)
-    [A-Z_]+$,
+  ; allow class aliases to be constants (like macros)
+  [A-Z_]+$,
 
-    ; Matcher implementation names
-    .+_Matcher$,
+  ; Matcher implementation names
+  .+_Matcher$,
 
 ; Docstring not necessary for private classes/methods/functions
 no-docstring-rgx=^_*

@@ -19,6 +19,7 @@
         "restructuredtext",
         "python",
     ],
+    "git.enabled": false,
     "esbonio.sphinx.confDir": "${workspaceFolder}/doc/src",
     "esbonio.sphinx.srcDir": "${workspaceFolder}/doc/src",
     "esbonio.sphinx.buildDir": "${workspaceFolder}/doc/build",

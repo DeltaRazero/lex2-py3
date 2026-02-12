@@ -18,33 +18,33 @@ def ReadTxt(fName: str):
 import lex2
 
 setuptools.setup(
-    name="lex2",
-    version=lex2.__version__,
+  name="lex2",
+  version=lex2.__version__,
 
-    packages=setuptools.find_packages(),
-    python_requires='>=3.6',
+  packages=setuptools.find_packages(),
+  python_requires='>=3.10',
 
-    author="DeltaRazero",
-    author_email="deltarazero@gmail.com",
-    license="zlib",
+  author="DeltaRazero",
+  author_email="deltarazero@gmail.com",
+  license="zlib",
 
-    description="Flexible, ruleset-based tokenizer using regex.",
-    long_description=ReadTxt("./README.md"),
-    long_description_content_type="text/markdown",
+  description="Flexible, ruleset-based tokenizer using regex.",
+  long_description=ReadTxt("./README.md"),
+  long_description_content_type="text/markdown",
 
-    keywords="lexer tokenizer sphinx",
-    classifiers=[
-        "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3 :: Only",
-        "Operating System :: OS Independent",
+  keywords="lexer tokenizer sphinx",
+  classifiers=[
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Operating System :: OS Independent",
 
-        "License :: OSI Approved :: zlib/libpng License",
+    "License :: OSI Approved :: zlib/libpng License",
 
-        "Development Status :: 5 - Production/Stable",
+    "Development Status :: 5 - Production/Stable",
 
-        "Intended Audience :: Developers",
-        "Topic :: Scientific/Engineering :: Information Analysis",
-        "Topic :: Software Development :: Compilers",
-        "Topic :: Text Processing",
-    ],
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    "Topic :: Software Development :: Compilers",
+    "Topic :: Text Processing",
+  ],
 )

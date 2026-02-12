@@ -9,33 +9,33 @@ at runtime.
 '''
 zlib License
 
-(C) 2020-2022 DeltaRazero
+(C) 2020-2025 DeltaRazero
 All rights reserved.
 '''
 
-__version__ = "1.1.1"
+__version__ = "1.3.0"
 
 # ***************************************************************************************
 
 from . import (
-    excs,
-    textio,
-    util,
+  excs,
+  textio,
+  util,
 )
 
-from ._rule  import Rule, RuleGroup, RulesetType
+from ._rule  import Rule, RuleGroup, Ruleset
 from ._token import Token
 from . import predefs
 
 from ._opts import LexerOptions
 
-from ._itf_lexer   import ILexer
-from ._itf_matcher import IMatcher
+from ._lexer_interface   import LexerInterface
+from ._matcher_interface import MatcherInterface
 
 from . import lexer
 from . import matcher
 from ._make_lexer import (
-    DEFAULT_LEXER,
-    DEFAULT_MATCHER,
-    make_lexer,
+  DEFAULT_LEXER,
+  DEFAULT_MATCHER,
+  make_lexer,
 )

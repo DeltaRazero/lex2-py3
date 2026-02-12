@@ -3,19 +3,19 @@
 '''
 zlib License
 
-(C) 2020-2022 DeltaRazero
+(C) 2020-2025 DeltaRazero
 All rights reserved.
 '''
 
-# ***************************************************************************************
+# ******************************************************************************
 
 from lex2 import util
 
-# ***************************************************************************************
+# ******************************************************************************
 
-# Core
-from ._base_matcher import BaseMatcher
+# Core.
+from ._matcher_base import MatcherBase
 
-# Implementations
+# Implementations.
 if (util.deps.is_module_installed("re")):
-    from ._std_re import ReMatcher
+  from ._std_re import ReMatcher

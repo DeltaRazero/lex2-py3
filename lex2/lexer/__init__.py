@@ -3,15 +3,15 @@
 '''
 zlib License
 
-(C) 2020-2022 DeltaRazero
+(C) 2020-2025 DeltaRazero
 All rights reserved.
 '''
 
-# ***************************************************************************************
+# ******************************************************************************
 
-# Core
-from ._base_lexer import BaseLexer
+# Core.
+from ._lexer_base import LexerBase
 from ._profiler import ProfilerLexer
 
-# Implementations
-from ._generic_lexer import GenericLexer
+# Implementations.
+from ._std_lexer import StdLexer

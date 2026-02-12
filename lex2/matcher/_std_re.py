@@ -3,67 +3,70 @@
 '''
 zlib License
 
-(C) 2020-2022 DeltaRazero
+(C) 2020-2025 DeltaRazero
 All rights reserved.
 '''
 
-# ***************************************************************************************
+# ******************************************************************************
 
 class __:
-    '<imports>'
+  '<imports>'
 
-    import typing as t
-    import re
+  import typing as t
+  import re
 
-    from . import (
-        BaseMatcher
+  from . import (
+    MatcherBase,
+  )
+
+  from lex2 import (
+    textio,
+    Token,
+  )
+
+# ******************************************************************************
+
+class ReMatcher (__.MatcherBase):
+  """Implementation of IMatcher using Python's builtin `re` module.
+  """
+
+  __slots__ = ('_pattern')
+
+  # :: PRIVATE ATTRIBUTES :: #
+
+  # t.Pattern is an instance of a compiled regex pattern of Python's builtin 're' module
+  _pattern : __.t.Pattern[str]
+
+  # :: CONSTRUCTOR :: #
+
+  def __init__(self) -> None:
+    return
+
+  # :: PUBLIC METHODS :: #
+
+  @staticmethod
+  def uid() -> str:
+    return ReMatcher.__name__
+
+  def compile_pattern(self, regex: str) -> None:
+    self._pattern = __.re.compile(regex)
+    return
+
+  def match(self, ts: __.textio.TextstreamInterface, token: __.Token) -> bool:
+    regex_match = self._pattern.match(
+      # ts.get_buffer(),          # Data input
+      # ts.get_buffer_position(), # Read STARTING AT position
+      # ts.get_buffer_size(),     # Read UNTIL position
+      # NOTE: Direct access is done to improve performance. Using the interface
+      # methods is encouraged in a compiled language.
+      ts._buffer,      # Data input
+      ts._buffer_pos,  # Read STARTING AT position
+      ts._buffer_size, # Read UNTIL position
     )
 
-    from lex2 import (
-        textio,
-        Token,
-    )
+    if (not regex_match):
+      return False
 
-# ***************************************************************************************
-
-class ReMatcher (__.BaseMatcher):
-    """Implementation of IMatcher using Python's builtin `re` module.
-    """
-
-    __slots__ = ('_pattern')
-
-    # :: PRIVATE ATTRIBUTES :: #
-
-    # t.Pattern is an instance of a compiled regex pattern of Python's builtin 're' module
-    _pattern : __.t.Pattern[str]
-
-
-    # :: CONSTRUCTOR :: #
-
-    def __init__(self) -> None:
-        super().__init__()
-        return
-
-
-    # :: PUBLIC METHODS :: #
-
-    def compile_pattern(self, regex: str) -> None:
-        self._pattern = __.re.compile(regex)
-        return
-
-
-    def match(self, ts: __.textio.ITextstream, token: __.Token) -> bool:
-        regex_match = self._pattern.match(
-            # ts.get_string_buffer(),          # Data input
-            # ts.get_string_buffer_position(), # Read STARTING AT position
-            # ts.get_string_buffer_size(),     # Read UNTIL position
-            ts._string_buffer,      # Data input
-            ts._string_buffer_pos,  # Read STARTING AT position
-            ts._string_buffer_size, # Read UNTIL position
-        )
-
-        if (regex_match):
-            token.data = regex_match.group()
-            token.groups = regex_match.groups()
-            return True
-        return False
+    token.data = regex_match.group()
+    token.groups = regex_match.groups()
+    return True

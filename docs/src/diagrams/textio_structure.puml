@@ -2,26 +2,26 @@
 @startuml textio_structure
 !include _skin_settings.iuml
 
-' ***************************************************************************************
+' ******************************************************************************
 
-interface ITextIO
+interface TextIOInterface
 {
     + {abstract} **void** open()
     + {abstract} **void** load()
     + {abstract} **void** close()
 }
 
-class TextIO implements ITextIO
+class TextIO implements TextIOInterface
 {
-    - **ITextstream?** _ts
+    - **TextstreamInterface?** _ts
 ___
     + **void** open()
     + **void** load()
     + **bool** close()
 }
-TextIO *-- ITextstream
+TextIO *-- TextstreamInterface
 
-' ***************************************************************************************
+' ******************************************************************************
 
 enum TextstreamType
 {
@@ -29,50 +29,50 @@ enum TextstreamType
     * DISK
 }
 
-interface ITextstream
+interface TextstreamInterface
 {
     + {abstract} **void** close()
     + {abstract} **void** update()
     + {abstract} **bool** is_eof()
 }
-ITextstream -up-> TextstreamType
+TextstreamInterface -up-> TextstreamType
 
-abstract class BaseTextstream implements ITextstream
+abstract class TextstreamBase implements TextstreamInterface
 {
     + **bool** is_eof()
 }
 
-class TextstreamDisk extends BaseTextstream
+class TextstreamDisk extends TextstreamBase
 {
     + **void** close()
     + **void** update()
 }
 
-class TextstreamMemory extends BaseTextstream
+class TextstreamMemory extends TextstreamBase
 {
     + **void** close()
     + **void** update()
 }
 
-' ***************************************************************************************
+' ******************************************************************************
 
-interface ILexer extends ITextIO
+interface LexerInterface extends TextIOInterface
 
-note right of ILexer
+note right of LexerInterface
     Return type of
      ""make_lexer()""
 endnote
 
-abstract class BaseLexer implements ILexer
-abstract class BaseLexer extends    TextIO
+abstract class LexerBase implements LexerInterface
+abstract class LexerBase extends    TextIO
 
-class Lexer <<implementation>> extends BaseLexer
+class Lexer <<implementation>> extends LexerBase
 
 note right of Lexer
     Returned object of
         ""make_lexer()""
 endnote
 
-' ***************************************************************************************
+' ******************************************************************************
 
 @enduml

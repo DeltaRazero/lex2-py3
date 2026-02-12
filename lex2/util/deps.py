@@ -3,30 +3,30 @@
 '''
 zlib License
 
-(C) 2020-2022 DeltaRazero
+(C) 2020-2025 DeltaRazero
 All rights reserved.
 '''
 
-# ***************************************************************************************
+# ******************************************************************************
 
 class __:
-    '<imports>'
+  '<imports>'
 
-    import importlib.util
+  import importlib.util
 
-# ***************************************************************************************
+# ******************************************************************************
 
 def is_module_installed(module_name: str) -> bool:
-    """Checks whether a specified module is installed.
+  """Checks whether a specified module is installed.
 
-    Parameters
-    ----------
-    module_name : str
-        Name of the module.
+  Parameters
+  ----------
+  module_name : str
+    Name of the module.
 
-    Returns
-    -------
-    bool
-    """
-    module = __.importlib.util.find_spec(module_name)
-    return module is not None
+  Returns
+  -------
+  bool
+  """
+  module = __.importlib.util.find_spec(module_name)
+  return module is not None

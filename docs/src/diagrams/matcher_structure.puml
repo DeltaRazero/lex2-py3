@@ -4,17 +4,17 @@
 
 ' skinparam Linetype ortho
 
-' ***************************************************************************************
+' ******************************************************************************
 
-interface ITextIO
+interface TextIOInterface
 
-class TextIO implements ITextIO
+class TextIO implements TextIOInterface
 {
-    - **ITextstream?** _ts
+    - **TextstreamInterface?** _ts
 }
-TextIO *-- ITextstream
+TextIO *-- TextstreamInterface
 
-' ***************************************************************************************
+' ******************************************************************************
 
 enum TextstreamType
 {
@@ -22,46 +22,46 @@ enum TextstreamType
     * DISK
 }
 
-interface ITextstream
+interface TextstreamInterface
 {
-    + {abstract} **string** get_string_buffer()
-    + {abstract} **int** get_string_buffer_position()
-    + {abstract} **int** get_string_buffer_size()
+    + {abstract} **string** get_buffer()
+    + {abstract} **int** get_buffer_position()
+    + {abstract} **int** get_buffer_size()
 }
-ITextstream -up-> TextstreamType
+TextstreamInterface -up-> TextstreamType
 
-abstract class BaseTextstream implements ITextstream
+abstract class TextstreamBase implements TextstreamInterface
 {
-    - **string** _string_buffer
-    - **int** _string_buffer_position
-    - **int** _string_buffer_size
+    - **string** _buffer
+    - **int** _buffer_position
+    - **int** _buffer_size
 ___
-    + **string** get_string_buffer()
-    + **int** get_string_buffer_position()
-    + **int** get_string_buffer_size()
+    + **string** get_buffer()
+    + **int** get_buffer_position()
+    + **int** get_buffer_size()
 }
 
-class TextstreamDisk   extends BaseTextstream
-class TextstreamMemory extends BaseTextstream
+class TextstreamDisk   extends TextstreamBase
+class TextstreamMemory extends TextstreamBase
 
-' ***************************************************************************************
+' ******************************************************************************
 
-interface ILexer extends ITextIO
+interface LexerInterface extends TextIOInterface
 
-abstract class BaseLexer implements ILexer
-abstract class BaseLexer extends    TextIO
-abstract class BaseLexer
+abstract class LexerBase implements LexerInterface
+abstract class LexerBase extends    TextIO
+abstract class LexerBase
 {
     - **List<Ruleset>** _rulesets
 }
 
-BaseLexer "1" o-r- "0..*" Ruleset : "     "
+LexerBase "1" o-r- "0..*" Ruleset : "     "
 
-class Lexer <<implementation>> extends BaseLexer
+class Lexer <<implementation>> extends LexerBase
 
-' ***************************************************************************************
+' ******************************************************************************
 
-interface IMatcher
+interface MatcherInterface
 {
     + {abstract} **string** get_implementation_id()
     + {abstract} **void** compile_pattern()
@@ -69,18 +69,18 @@ interface IMatcher
 }
 
 note as n1
-    Lexer passes its ""ITextstream""
+    Lexer passes its ""TextstreamInterface""
     instance ""_ts"" to ""match()"" so
     matchers can access and use
     the string buffer variables.
 endnote
 
-IMatcher::match <.. n1
-BaseTextstream .right. n1
+MatcherInterface::match <.. n1
+TextstreamBase .right. n1
 
 
 
-abstract class BaseMatcher implements IMatcher
+abstract class MatcherBase implements MatcherInterface
 {
     - {abstract} **string** _implementation_id
 ___
@@ -88,7 +88,7 @@ ___
 }
 
 
-class Matcher <<implementation>> extends BaseMatcher
+class Matcher <<implementation>> extends MatcherBase
 {
     - //**CompiledRegex** _re//
 ___
@@ -109,12 +109,12 @@ endnote
 class Rule
 {
     + **str** regex
-    - **IMatcher?** _matcher
+    - **MatcherInterface?** _matcher
 ___
-    + **IMatcher?** get_matcher()
+    + **MatcherInterface?** get_matcher()
     + **void** set_matcher()
 }
-Rule "1 " *-down- "0..1 " IMatcher
+Rule "1 " *-down- "0..1 " MatcherInterface
 
 
 class Ruleset <<typedef>> {
@@ -123,13 +123,13 @@ class Ruleset <<typedef>> {
 
 Ruleset "1 " o-down- "0..* " Rule
 
-' ***************************************************************************************
+' ******************************************************************************
 
 class Token
 
 Lexer --> Token
-IMatcher <-left- Token
+MatcherInterface <-left- Token
 
-' ***************************************************************************************
+' ******************************************************************************
 
 @enduml

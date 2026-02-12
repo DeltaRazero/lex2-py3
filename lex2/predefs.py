@@ -3,66 +3,63 @@
 '''
 zlib License
 
-(C) 2020-2022 DeltaRazero
+(C) 2020-2025 DeltaRazero
 All rights reserved.
 '''
 
 # ***************************************************************************************
 
 class __:
-    '<imports>'
+  '<imports>'
 
-    from lex2 import (
-        Rule,
-        RuleGroup,
-    )
+  from lex2 import (
+    Rule,
+    RuleGroup,
+  )
 
 # ***************************************************************************************
 
 class Comments (__.RuleGroup):
-    """Rule group for defining sourcecode-style comments."""
+  """Rule group for defining sourcecode-style comments."""
 
-    def __init__(self):
-        """"""
-        super().__init__(
-            id="COMMENT",
-            returns=False
-        )
-        return
+  def __init__(self):
+    super().__init__(
+      id="COMMENT",
+      returns=False,
+    )
+    return
 
+  def add_singleline_comment(self, start_regex: str) -> 'Comments':
+    """Adds a definition for a singleline comment.
 
-    def add_singleline_comment(self, start_regex: str) -> 'Comments':
-        """Adds a definition for a singleline comment.
+    Parameters
+    ----------
+    start_regex : str
+      Regex denoting the start of a singleline comment.
 
-        Parameters
-        ----------
-        start_regex : str
-            Regex denoting the start of a singleline comment.
+    Returns
+    -------
+    Comments
+    """
+    self._add_regex_group(rf'{start_regex}.*')
+    return self
 
-        Returns
-        -------
-        Comments
-        """
-        self._add_regex_group(rf'{start_regex}.*')
-        return self
+  def add_multiline_comment(self, start_regex: str, end_regex: str) -> 'Comments':
+    """Adds a definition for a multiline comment.
 
+    Parameters
+    ----------
+    start_regex : str
+      Regex denoting the start of a singleline comment.
+    end_regex : str
+      Regex denoting the end of a singleline comment.
 
-    def add_multiline_comment(self, start_regex: str, end_regex: str) -> 'Comments':
-        """Adds a definition for a multiline comment.
-
-        Parameters
-        ----------
-        start_regex : str
-            Regex denoting the start of a singleline comment.
-        end_regex : str
-            Regex denoting the end of a singleline comment.
-
-        Returns
-        -------
-        Comments
-        """
-        self._add_regex_group(rf'{start_regex}[\s\S]*?{end_regex}')
-        return self
+    Returns
+    -------
+    Comments
+    """
+    self._add_regex_group(rf'{start_regex}[\s\S]*?{end_regex}')
+    return self
 
 # ***************************************************************************************
 

@@ -83,12 +83,12 @@ If you find yourself writing boilerplate code to include or format parts of a re
 Ruleset
 -------
 
-Finally, rulesets can be defined as standard lists populated with :py:class:`Rule` object instances. It is recommended to type-hint the list variable (if stored) with the :py:class:`RulesetType` type alias.
+Finally, rulesets can be defined as standard lists populated with :py:class:`Rule` object instances. It is recommended to type-hint the list variable (if stored) with the :py:class:`Ruleset` type alias.
 
 .. code-block:: python3
     :caption: Defining a ruleset
 
-    ruleset: lex2.RulesetType = [
+    ruleset: lex2.Ruleset = [
         lex2.Rule("WORD",        r"[a-zA-Z]+"),
         lex2.Rule("NUMBER",      r"[0-9]+"),
         lex2.Rule("PUNCTUATION", r"[.,:;!?\\-]")

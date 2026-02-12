@@ -10,11 +10,11 @@ In the event that the regex engine used by default (from Python's builtin ``re``
 Underlying Architecture
 -----------------------
 
-While not essential, it may be beneficial to understand the way how the library utilizes a regex engine to match tokens. Each Rule stores a matcher-like object that implements the :class:`BaseMatcher <lex2.matcher.BaseMatcher>` abstract class (and thus the :class:`IMatcher <lex2.IMatcher>` interface). A matcher is responsible for carrying out the matching behaviour to try and identify text according to the regex pattern stored in the rule.
+While not essential, it may be beneficial to understand the way how the library utilizes a regex engine to match tokens. Each Rule stores a matcher-like object that implements the :class:`MatcherBase <lex2.matcher.MatcherBase>` abstract class (and thus the :class:`MatcherInterface <lex2.MatcherInterface>` interface). A matcher is responsible for carrying out the matching behaviour to try and identify text according to the regex pattern stored in the rule.
 
-When a ruleset is assigned to a lexer, it will immediately check if each rule's matcher attribute is set accordingly, and will otherwise instantiate an appropriate matcher implementation. Also, if a matcher has not yet compiled the corresponding regex pattern, the lexer will automatically call the :meth:`compile_pattern() <lex2.IMatcher.compile_pattern>` method to do so.
+When a ruleset is assigned to a lexer, it will immediately check if each rule's matcher attribute is set accordingly, and will otherwise instantiate an appropriate matcher implementation. Also, if a matcher has not yet compiled the corresponding regex pattern, the lexer will automatically call the :meth:`compile_pattern() <lex2.MatcherInterface.compile_pattern>` method to do so.
 
-When the lexer iterates over rules, it will access each rule's matcher and call the :meth:`match() <lex2.IMatcher.match>` method. This will a boolean to indicate whether a match was found. A lexer passes down its textstream to :meth:`match() <lex2.IMatcher.match>` to be used as input data for the compiled regex pattern, and passes down an instance of :class:`Token <lex2.Token>` for the matcher to store the match data in.
+When the lexer iterates over rules, it will access each rule's matcher and call the :meth:`match() <lex2.MatcherInterface.match>` method. This will a boolean to indicate whether a match was found. A lexer passes down its textstream to :meth:`match() <lex2.MatcherInterface.match>` to be used as input data for the compiled regex pattern, and passes down an instance of :class:`Token <lex2.Token>` for the matcher to store the match data in.
 
 *The UML class diagram below visualizes and summarizes the relationships between classes and interfaces just discussed.*
 
@@ -32,16 +32,16 @@ To explain how to define and use a custom matcher, it's best illustrated using a
 
 There's a few components:
 
-* All matcher classes must inherit from the :class:`BaseMatcher <lex2.matcher.BaseMatcher>` abstract base class.
+* All matcher classes must inherit from the :class:`MatcherBase <lex2.matcher.MatcherBase>` abstract base class.
 * The base class constructor must be called.
-* Implementation of the :meth:`compile_pattern() <lex2.IMatcher.compile_pattern>` method.
+* Implementation of the :meth:`compile_pattern() <lex2.MatcherInterface.compile_pattern>` method.
 
     * A regex pattern string is given as input for generating a compiled regex pattern.
     * The compiled regex pattern needs to be stored as a class instance attribute, or via a reference to another object.
 
-* Implementation of the :meth:`match() <lex2.IMatcher.match>` method.
+* Implementation of the :meth:`match() <lex2.MatcherInterface.match>` method.
 
-    * The lexer's textstream is passed down to use as input for the compiled regex pattern. It is an instance of :class:`ITextstream <lex2.textio.ITextstream>`.
+    * The lexer's textstream is passed down to use as input for the compiled regex pattern. It is an instance of :class:`TextstreamInterface <lex2.textio.TextstreamInterface>`.
       |br|
       |i| Also see :ref:`Improving match() Performance on Python`. |/i|
 
@@ -55,7 +55,7 @@ There's a few components:
     import lex2
     import regex as rgx
 
-    class CustomMatcher (lex2.matcher.BaseMatcher):
+    class CustomMatcher (lex2.matcher.MatcherBase):
 
         _pattern : rgx.Pattern
 
@@ -65,7 +65,7 @@ There's a few components:
         def compile_pattern(self, regex: str) -> None:
             self._pattern = rgx.compile(regex)
 
-        def match(self, ts: lex2.textio.ITextstream, token: lex2.Token) -> bool:
+        def match(self, ts: lex2.textio.TextstreamInterface, token: lex2.Token) -> bool:
             regex_match = self._pattern.match(
                 ts.get_string_buffer(),      # Data
                 ts.get_string_buffer_pos(),  # Data position start
@@ -92,7 +92,7 @@ Because Python has to constantly do dictionary lookups, accessing the string buf
 .. code-block:: python3
     :caption: Accessing string buffer variables directly
 
-    def match(self, ts: lex2.textio.ITextstream, token: lex2.Token) -> bool:
+    def match(self, ts: lex2.textio.TextstreamInterface, token: lex2.Token) -> bool:
         regex_match = self._pattern.match(
             ts._string_buffer,      # Data
             ts._string_buffer_pos,  # Data position start
